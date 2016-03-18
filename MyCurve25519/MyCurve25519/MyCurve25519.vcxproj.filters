@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ed25519">
+      <UniqueIdentifier>{cd46b6f0-8fe3-4aa9-a3a3-82fb955fd01c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ed25519\additions">
+      <UniqueIdentifier>{5d14c7d8-1eaa-42e1-a249-3f62e2bd4adf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ed25519\nacl_includes">
+      <UniqueIdentifier>{ec9bed41-513a-405e-ace1-4a396d3117a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ed25519\nacl_sha512">
+      <UniqueIdentifier>{2e70db54-4747-4715-b6f8-9318d4e24e4a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mycurve25519.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Curve25519_Internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\ge.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\ge_add.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\ge_madd.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\ge_msub.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\ge_p2_dbl.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\ge_sub.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\pow22523.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\pow225521.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\sc.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\sqrtm1.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\api.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\base.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\base2.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\d.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\d2.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\fe.h">
+      <Filter>ed25519</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\additions\compare.h">
+      <Filter>ed25519\additions</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\additions\crypto_hash_sha512.h">
+      <Filter>ed25519\additions</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\additions\curve_sigs.h">
+      <Filter>ed25519\additions</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\additions\zeroize.h">
+      <Filter>ed25519\additions</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\nacl_includes\crypto_int32.h">
+      <Filter>ed25519\nacl_includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\nacl_includes\crypto_int64.h">
+      <Filter>ed25519\nacl_includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\nacl_includes\crypto_sign.h">
+      <Filter>ed25519\nacl_includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\nacl_includes\crypto_sign_edwards25519sha512batch.h">
+      <Filter>ed25519\nacl_includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\nacl_includes\crypto_uint32.h">
+      <Filter>ed25519\nacl_includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\nacl_includes\crypto_uint64.h">
+      <Filter>ed25519\nacl_includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ed25519\nacl_includes\crypto_verify_32.h">
+      <Filter>ed25519\nacl_includes</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="mycurve25519.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Curve25519_Internal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_invert.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_isnegative.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_isnonzero.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_mul.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_neg.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_pow22523.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_sq.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_sq2.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_sub.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_tobytes.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_add.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_double_scalarmult.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_frombytes.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_madd.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_msub.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p1p1_to_p2.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p1p1_to_p3.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p2_0.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p2_dbl.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p3_0.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p3_dbl.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p3_to_cached.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p3_to_p2.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_p3_tobytes.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_precomp_0.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_scalarmult_base.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_sub.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\ge_tobytes.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\open.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\sc_muladd.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\sc_reduce.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\sign.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_0.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_1.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_add.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_cmov.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_copy.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\fe_frombytes.cpp">
+      <Filter>ed25519</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\additions\compare.cpp">
+      <Filter>ed25519\additions</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\additions\curve_sigs.cpp">
+      <Filter>ed25519\additions</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\additions\sign_modified.cpp">
+      <Filter>ed25519\additions</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\additions\zeroize.cpp">
+      <Filter>ed25519\additions</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\nacl_sha512\blocks.cpp">
+      <Filter>ed25519\nacl_sha512</Filter>
+    </ClCompile>
+    <ClCompile Include="ed25519\nacl_sha512\hash.cpp">
+      <Filter>ed25519\nacl_sha512</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

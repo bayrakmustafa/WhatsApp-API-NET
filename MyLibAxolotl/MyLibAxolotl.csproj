@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1DEBDA0C-62C7-40A9-B74A-0F086FC2B65D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MyLibAxolotl</RootNamespace>
+    <AssemblyName>MyLibAxolotl</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Google.ProtocolBuffers, Version=2.4.1.555, Culture=neutral, PublicKeyToken=55f7125234beb589, processorArchitecture=MSIL">
+      <HintPath>..\MyCurve25519\Packages\Google.ProtocolBuffers.2.4.1.555\lib\net40\Google.ProtocolBuffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.ProtocolBuffers.Serialization, Version=2.4.1.555, Culture=neutral, PublicKeyToken=55f7125234beb589, processorArchitecture=MSIL">
+      <HintPath>..\MyCurve25519\Packages\Google.ProtocolBuffers.2.4.1.555\lib\net40\Google.ProtocolBuffers.Serialization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="May, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\MyCurve25519\Packages\Strilanc.Value.May.1.0.2\lib\portable-net4+sl4+wp7+win8\May.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AxolotlAddress.cs" />
+    <Compile Include="DecryptionCallback.cs" />
+    <Compile Include="DuplicateMessageException.cs" />
+    <Compile Include="Ecc\Curve.cs" />
+    <Compile Include="Ecc\Curve25519.cs" />
+    <Compile Include="Ecc\Curve25519KeyPair.cs" />
+    <Compile Include="Ecc\DjbECPrivateKey.cs" />
+    <Compile Include="Ecc\DjbECPublicKey.cs" />
+    <Compile Include="Ecc\ECKeyPair.cs" />
+    <Compile Include="Ecc\ECPrivateKey.cs" />
+    <Compile Include="Ecc\ECPublicKey.cs" />
+    <Compile Include="Ecc\Impl\Curve25519NativeProvider.cs" />
+    <Compile Include="Ecc\Impl\ICurve25519Provider.cs" />
+    <Compile Include="Groups\GroupCipher.cs" />
+    <Compile Include="Groups\GroupSessionBuilder.cs" />
+    <Compile Include="Groups\Ratchet\SenderChainKey.cs" />
+    <Compile Include="Groups\Ratchet\SenderMessageKey.cs" />
+    <Compile Include="Groups\SenderKeyName.cs" />
+    <Compile Include="Groups\State\SenderKeyRecord.cs" />
+    <Compile Include="Groups\State\SenderKeyState.cs" />
+    <Compile Include="Groups\State\SenderKeyStore.cs" />
+    <Compile Include="IdentityKey.cs" />
+    <Compile Include="IdentityKeyPair.cs" />
+    <Compile Include="InvalidKeyException.cs" />
+    <Compile Include="InvalidKeyIdException.cs" />
+    <Compile Include="InvalidMacException.cs" />
+    <Compile Include="InvalidMessageException.cs" />
+    <Compile Include="InvalidVersionException.cs" />
+    <Compile Include="Kdf\DerivedMessageSecrets.cs" />
+    <Compile Include="Kdf\DerivedRootSecrets.cs" />
+    <Compile Include="Kdf\HKDF.cs" />
+    <Compile Include="Kdf\HKDFv2.cs" />
+    <Compile Include="Kdf\HKDFv3.cs" />
+    <Compile Include="LegacyMessageException.cs" />
+    <Compile Include="NoSessionException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\CiphertextMessage.cs" />
+    <Compile Include="Protocol\KeyExchangeMessage.cs" />
+    <Compile Include="Protocol\PreKeyWhisperMessage.cs" />
+    <Compile Include="Protocol\SenderKeyDistributionMessage.cs" />
+    <Compile Include="Protocol\SenderKeyMessage.cs" />
+    <Compile Include="Protocol\WhisperMessage.cs" />
+    <Compile Include="Protocol\WhisperProtos.cs" />
+    <Compile Include="Ratchet\AliceAxolotlParameters.cs" />
+    <Compile Include="Ratchet\BobAxolotlParameters.cs" />
+    <Compile Include="Ratchet\ChainKey.cs" />
+    <Compile Include="Ratchet\MessageKeys.cs" />
+    <Compile Include="Ratchet\RatchetingSession.cs" />
+    <Compile Include="Ratchet\RootKey.cs" />
+    <Compile Include="Ratchet\SymmetricAxolotlParameters.cs" />
+    <Compile Include="SessionBuilder.cs" />
+    <Compile Include="SessionCipher.cs" />
+    <Compile Include="StaleKeyExchangeException.cs" />
+    <Compile Include="State\AxolotlStore.cs" />
+    <Compile Include="State\IdentityKeyStore.cs" />
+    <Compile Include="State\Impl\InMemoryAxolotlStore.cs" />
+    <Compile Include="State\Impl\InMemoryIdentityKeyStore.cs" />
+    <Compile Include="State\Impl\InMemoryPreKeyStore.cs" />
+    <Compile Include="State\Impl\InMemorySessionStore.cs" />
+    <Compile Include="State\Impl\InMemorySignedPreKeyStore.cs" />
+    <Compile Include="State\PreKeyBundle.cs" />
+    <Compile Include="State\PreKeyRecord.cs" />
+    <Compile Include="State\PreKeyStore.cs" />
+    <Compile Include="State\SessionRecord.cs" />
+    <Compile Include="State\SessionState.cs" />
+    <Compile Include="State\SessionStore.cs" />
+    <Compile Include="State\SignedPreKeyRecord.cs" />
+    <Compile Include="State\SignedPreKeyStore.cs" />
+    <Compile Include="State\StorageProtos.cs" />
+    <Compile Include="UntrustedIdentityException.cs" />
+    <Compile Include="Util\ByteUtil.cs" />
+    <Compile Include="Util\HMAC.cs" />
+    <Compile Include="Util\KeyHelper.cs" />
+    <Compile Include="Util\Medium.cs" />
+    <Compile Include="Util\Pair.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logging\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Packages.config" />
+    <None Include="Protobuf\LocalStorageProtocol.proto" />
+    <None Include="Protobuf\Makefile.bat" />
+    <None Include="Protobuf\WhisperTextProtocol.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyCurve25519\MyCurve25519\MyCurve25519.vcxproj">
+      <Project>{c2bed275-103a-437a-8da3-0e17ea241f3e}</Project>
+      <Name>MyCurve25519</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

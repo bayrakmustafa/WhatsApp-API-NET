@@ -1,0 +1,32 @@
+# User-specific files
+WhatsAppApi_vs2010.userprefs
+*.userprefs
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio 2015 cache/options directory
+.vs/
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+#Project Files
+WhatsTest/Program.cs
+/MyCurve25519/Ipch/
