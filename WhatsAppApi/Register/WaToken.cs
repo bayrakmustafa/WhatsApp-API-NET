@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace WhatsAppApi.Register
 {
-    class WaToken
+    internal class WaToken
     {
         public static string GenerateToken(string number)
         {
@@ -16,7 +13,6 @@ namespace WhatsAppApi.Register
             byte[] asciiBytes = ASCIIEncoding.ASCII.GetBytes(token);
             byte[] hashedBytes = MD5CryptoServiceProvider.Create().ComputeHash(asciiBytes);
             return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
-
         }
 
         public static string GenerateTokenAndroid(string number)
@@ -65,7 +61,7 @@ namespace WhatsAppApi.Register
             return enc.GetString(base64EncodedBytes);
         }
 
-        static byte[] Hash(string input)
+        private static byte[] Hash(string input)
         {
             return SHA1.Create().ComputeHash(Encoding.GetEncoding(28591).GetBytes(input));
         }

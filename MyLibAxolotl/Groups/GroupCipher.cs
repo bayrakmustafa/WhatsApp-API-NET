@@ -1,6 +1,8 @@
-﻿/** 
+﻿using System;
+
+/**
  * Copyright (C) 2015 langboost, smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,7 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -18,12 +20,6 @@
 using Tr.Com.Eimza.LibAxolotl.Groups.Ratchet;
 using Tr.Com.Eimza.LibAxolotl.Groups.State;
 using Tr.Com.Eimza.LibAxolotl.Protocol;
-using Tr.Com.Eimza.LibAxolotl.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.Groups
 {
@@ -37,9 +33,9 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
      *
      * @author Moxie Marlinspike
      */
+
     public class GroupCipher
     {
-
         public static readonly Object LOCK = new Object();
 
         private readonly SenderKeyStore senderKeyStore;
@@ -58,6 +54,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
          * @return Ciphertext.
          * @throws NoSessionException
          */
+
         public byte[] Encrypt(byte[] paddedPlaintext)
         {
             lock (LOCK)
@@ -96,6 +93,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
          * @throws InvalidMessageException
          * @throws DuplicateMessageException
          */
+
         public byte[] Decrypt(byte[] senderKeyMessageBytes)
         {
             return Decrypt(senderKeyMessageBytes, new NullDecryptionCallback());
@@ -116,6 +114,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
          * @throws InvalidMessageException
          * @throws DuplicateMessageException
          */
+
         public byte[] Decrypt(byte[] senderKeyMessageBytes, DecryptionCallback callback)
         {
             lock (LOCK)
@@ -172,20 +171,20 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
                 }
             }
 
-			//Avoiding a uint overflow
-			uint senderChainKeyIteration = senderChainKey.GetIteration();
-			if ((iteration > senderChainKeyIteration) && (iteration - senderChainKeyIteration > 2000))
-			{
-				throw new InvalidMessageException("Over 2000 messages into the future!");
-			}
+            //Avoiding a uint overflow
+            uint senderChainKeyIteration = senderChainKey.GetIteration();
+            if ((iteration > senderChainKeyIteration) && (iteration - senderChainKeyIteration > 2000))
+            {
+                throw new InvalidMessageException("Over 2000 messages into the future!");
+            }
 
-			while (senderChainKey.GetIteration() < iteration)
-			{
-				senderKeyState.AddSenderMessageKey(senderChainKey.GetSenderMessageKey());
-				senderChainKey = senderChainKey.GetNext();
-			}
+            while (senderChainKey.GetIteration() < iteration)
+            {
+                senderKeyState.AddSenderMessageKey(senderChainKey.GetSenderMessageKey());
+                senderChainKey = senderChainKey.GetNext();
+            }
 
-			senderKeyState.SetSenderChainKey(senderChainKey.GetNext());
+            senderKeyState.SetSenderChainKey(senderChainKey.GetNext());
             return senderChainKey.GetSenderMessageKey();
         }
 
@@ -218,15 +217,16 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
                 return Tr.Com.Eimza.LibAxolotl.Util.Encrypt.AesCbcPkcs5(plaintext, key, iv);
             }
             catch (Exception e)
-    {
+            {
                 throw new Exception(e.Message);
             }
         }
 
-        private  class NullDecryptionCallback : DecryptionCallback
+        private class NullDecryptionCallback : DecryptionCallback
         {
-            public void HandlePlaintext(byte[] plaintext) { }
+            public void HandlePlaintext(byte[] plaintext)
+            {
+            }
         }
-
     }
 }

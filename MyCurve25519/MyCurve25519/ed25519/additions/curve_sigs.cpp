@@ -6,7 +6,7 @@
 #include "..\nacl_includes\crypto_sign.h"
 
 void curve25519_keygen(unsigned char* curve25519_pubkey_out,
-	const unsigned char* curve25519_privkey_in)
+					   const unsigned char* curve25519_privkey_in)
 {
 	ge_p3 ed; /* Ed25519 pubkey point */
 	fe ed_y, ed_y_plus_one, one_minus_ed_y, inv_one_minus_ed_y;
@@ -36,9 +36,9 @@ void curve25519_keygen(unsigned char* curve25519_pubkey_out,
 }
 
 int curve25519_sign(unsigned char* signature_out,
-	const unsigned char* curve25519_privkey,
-	const unsigned char* msg, const unsigned long msg_len,
-	const unsigned char* random)
+					const unsigned char* curve25519_privkey,
+					const unsigned char* msg, const unsigned long msg_len,
+					const unsigned char* random)
 {
 	ge_p3 ed_pubkey_point; /* Ed25519 pubkey point */
 	unsigned char ed_pubkey[32]; /* Ed25519 encoded pubkey */
@@ -57,7 +57,7 @@ int curve25519_sign(unsigned char* signature_out,
 
 	/* Perform an Ed25519 signature with explicit private key */
 	crypto_sign_modified(sigbuf, msg, msg_len, curve25519_privkey,
-		ed_pubkey, random);
+						 ed_pubkey, random);
 	memmove(signature_out, sigbuf, 64);
 
 	/* Encode the sign bit into signature (in unused high bit of S) */
@@ -69,8 +69,8 @@ int curve25519_sign(unsigned char* signature_out,
 }
 
 int curve25519_verify(const unsigned char* signature,
-	const unsigned char* curve25519_pubkey,
-	const unsigned char* msg, const unsigned long msg_len)
+					  const unsigned char* curve25519_pubkey,
+					  const unsigned char* msg, const unsigned long msg_len)
 {
 	fe mont_x, mont_x_minus_one, mont_x_plus_one, inv_mont_x_plus_one;
 	fe one;
@@ -125,7 +125,7 @@ int curve25519_verify(const unsigned char* signature,
 	(if bad sig), or contains a copy of msg (good sig) */
 	result = crypto_sign_open(verifybuf2, &some_retval, verifybuf, 64 + msg_len, ed_pubkey);
 
-err:
+	err:
 
 	if (verifybuf != NULL) {
 		free(verifybuf);

@@ -28,5 +28,5 @@ bld/
 *.sap
 
 #Project Files
-WhatsTest/Program.cs
 /MyCurve25519/Ipch/
+/MyCurve25519/*.sdf

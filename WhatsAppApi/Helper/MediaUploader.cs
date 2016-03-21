@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace WhatsAppApi.Helper
+﻿namespace WhatsAppApi.Helper
 {
-    class MediaUploader
+    internal class MediaUploader
     {
-
     }
 }

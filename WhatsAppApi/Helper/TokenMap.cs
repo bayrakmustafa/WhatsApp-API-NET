@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace WhatsAppApi.Helper
 {
-    class TokenMap<T, U>
+    internal class TokenMap<T, U>
     {
         public T First
         {
             get;
             set;
         }
+
         public U Second
         {
             get;
             set;
         }
+
         public TokenMap()
         {
         }
+
         public TokenMap(T first, U second)
         {
             this.First = first;
@@ -30,6 +31,7 @@ namespace WhatsAppApi.Helper
     public class TokenDictionary
     {
         private const int secondaryStringsStart = 236;
+
         private static string[] PrimaryStrings = new string[]
         {
               default(string),
@@ -269,6 +271,7 @@ namespace WhatsAppApi.Helper
               "h264",
               "jpeg"
         };
+
         private static string[][] SecondaryStrings = new string[][]
         {
              new string[]
@@ -546,6 +549,7 @@ namespace WhatsAppApi.Helper
             }
             return false;
         }
+
         public void GetToken(int token, ref int subdict, ref string str)
         {
             string[] array = null;

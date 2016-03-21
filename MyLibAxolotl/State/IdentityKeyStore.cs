@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,16 +10,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.State
 {
@@ -28,14 +24,15 @@ namespace Tr.Com.Eimza.LibAxolotl.State
      *
      * @author
      */
+
     public interface IdentityKeyStore
     {
-
         /**
          * Get the local client's identity key pair.
          *
          * @return The local client's persistent identity key pair.
          */
+
         IdentityKeyPair GetIdentityKeyPair();
 
         /**
@@ -46,6 +43,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
          *
          * @return the local client's registration ID.
          */
+
         uint GetLocalRegistrationId();
 
         /**
@@ -56,8 +54,8 @@ namespace Tr.Com.Eimza.LibAxolotl.State
          * @param name        The name of the remote client.
          * @param identityKey The remote client's identity key.
          */
-        bool SaveIdentity(String name, IdentityKey identityKey);
 
+        bool SaveIdentity(String name, IdentityKey identityKey);
 
         /**
          * Verify a remote client's identity key.
@@ -73,7 +71,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
          * @param identityKey The identity key to verify.
          * @return true if trusted, false if untrusted.
          */
-        bool IsTrustedIdentity(String name, IdentityKey identityKey);
 
+        bool IsTrustedIdentity(String name, IdentityKey identityKey);
     }
 }

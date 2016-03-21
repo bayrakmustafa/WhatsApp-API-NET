@@ -1,6 +1,10 @@
-﻿/** 
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+
+/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,19 +14,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using Tr.Com.Eimza.LibAxolotl.Ecc;
 using Tr.Com.Eimza.LibAxolotl.State;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
 
 namespace Tr.Com.Eimza.LibAxolotl.Util
 {
@@ -31,10 +29,12 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
      *
      * @author Moxie Marlinspike
      */
+
     public class KeyHelper
     {
-
-        private KeyHelper() { }
+        private KeyHelper()
+        {
+        }
 
         /**
          * Generate an identity key pair.  Clients should only do this once,
@@ -42,6 +42,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
          *
          * @return the generated IdentityKeyPair.
          */
+
         public static IdentityKeyPair GenerateIdentityKeyPair()
         {
             ECKeyPair keyPair = Curve.GenerateKeyPair();
@@ -60,13 +61,16 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
          *                      higher encoding overhead.
          * @return the generated registration ID.
          */
+
         public static uint GenerateRegistrationId(bool extendedRange)
         {
             //try
             //{
-                //SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-                if (extendedRange) return GetRandomSequence(uint.MaxValue - 1) + 1;
-                else return GetRandomSequence(16380) + 1;
+            //SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            if (extendedRange)
+                return GetRandomSequence(uint.MaxValue - 1) + 1;
+            else
+                return GetRandomSequence(16380) + 1;
             /*}
             catch (NoSuchAlgorithmException e)
             {
@@ -74,16 +78,17 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
             }*/
         }
 
-        public static uint GetRandomSequence(uint maxValue, uint minValue= 0)
-        {            
+        public static uint GetRandomSequence(uint maxValue, uint minValue = 0)
+        {
             RandomNumberGenerator rng = new RNGCryptoServiceProvider();
             byte[] _uint32Buffer = new byte[4];
 
             if (minValue > maxValue)
                 throw new ArgumentOutOfRangeException("minValue");
 
-            if (minValue == maxValue) return minValue;
-             Int64 diff = maxValue - minValue;
+            if (minValue == maxValue)
+                return minValue;
+            Int64 diff = maxValue - minValue;
 
             while (true)
             {
@@ -111,6 +116,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
          * @param count The number of PreKeys to generate.
          * @return the list of generated PreKeyRecords.
          */
+
         public static IList<PreKeyRecord> GeneratePreKeys(uint start, uint count)
         {
             IList<PreKeyRecord> results = new List<PreKeyRecord>();
@@ -131,6 +137,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
          *
          * @return the generated last resort PreKeyRecord.
          */
+
         public static PreKeyRecord GenerateLastResortPreKey()
         {
             ECKeyPair keyPair = Curve.GenerateKeyPair();
@@ -146,6 +153,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
          * @return the generated signed PreKey
          * @throws InvalidKeyException when the provided identity key is invalid
          */
+
         public static SignedPreKeyRecord GenerateSignedPreKey(IdentityKeyPair identityKeyPair, uint signedPreKeyId)
         {
             ECKeyPair keyPair = Curve.GenerateKeyPair();
@@ -153,7 +161,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
 
             return new SignedPreKeyRecord(signedPreKeyId, GetTime(), keyPair, signature);
         }
-
 
         public static ECKeyPair GenerateSenderSigningKey()
         {
@@ -166,7 +173,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
             byte[] key = new byte[32];
             rng.GetBytes(key);
             return key;
-
         }
 
         public static uint GenerateSenderKeyId()

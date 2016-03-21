@@ -1,6 +1,9 @@
-﻿/** 
+﻿using System;
+using System.IO;
+
+/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,33 +13,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using Tr.Com.Eimza.LibAxolotl.Util;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.Kdf
 {
     public abstract class HKDF
     {
-
         private static readonly int HASH_OUTPUT_SIZE = 32;
 
         public static HKDF CreateFor(uint messageVersion)
         {
             switch (messageVersion)
             {
-                case 2: return new HKDFv2();
-                case 3: return new HKDFv3();
-                default: throw new Exception("Unknown version: " + messageVersion);
+                case 2:
+                    return new HKDFv2();
+
+                case 3:
+                    return new HKDFv3();
+
+                default:
+                    throw new Exception("Unknown version: " + messageVersion);
             }
         }
 
@@ -102,6 +103,5 @@ namespace Tr.Com.Eimza.LibAxolotl.Kdf
         }
 
         protected abstract int GetIterationStartOffset();
-
     }
 }

@@ -6,15 +6,15 @@
 #define crypto_sign_edwards25519sha512batch_ref10_BYTES 64
 #ifdef __cplusplus
 #include <string>
-extern std::string crypto_sign_edwards25519sha512batch_ref10(const std::string &,const std::string &);
-extern std::string crypto_sign_edwards25519sha512batch_ref10_open(const std::string &,const std::string &);
+extern std::string crypto_sign_edwards25519sha512batch_ref10(const std::string &, const std::string &);
+extern std::string crypto_sign_edwards25519sha512batch_ref10_open(const std::string &, const std::string &);
 extern std::string crypto_sign_edwards25519sha512batch_ref10_keypair(std::string *);
 extern "C" {
-#endif
-extern int crypto_sign_edwards25519sha512batch_ref10(unsigned char *,unsigned long long *,const unsigned char *,unsigned long long,const unsigned char *);
-extern int crypto_sign_edwards25519sha512batch_ref10_open(unsigned char *,unsigned long long *,const unsigned char *,unsigned long long,const unsigned char *);
-extern int crypto_sign_edwards25519sha512batch_ref10_keypair(unsigned char *,unsigned char *);
-#ifdef __cplusplus
+	#endif
+	extern int crypto_sign_edwards25519sha512batch_ref10(unsigned char *, unsigned long long *, const unsigned char *, unsigned long long, const unsigned char *);
+	extern int crypto_sign_edwards25519sha512batch_ref10_open(unsigned char *, unsigned long long *, const unsigned char *, unsigned long long, const unsigned char *);
+	extern int crypto_sign_edwards25519sha512batch_ref10_keypair(unsigned char *, unsigned char *);
+	#ifdef __cplusplus
 }
 #endif
 

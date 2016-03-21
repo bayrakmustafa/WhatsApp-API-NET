@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using WhatsAppApi.Account;
 using WhatsAppApi.Parser;
 using WhatsAppApi.Response;
 
 namespace WhatsAppPort
 {
-    class WhatsMessageHandler
+    internal class WhatsMessageHandler
     {
         private Dictionary<string, List<FMessage>> messageHistory;
 
-        private Dictionary<string, WhatsEventHandler.MessageRecievedHandler> userMessageDict; 
+        private Dictionary<string, WhatsEventHandler.MessageRecievedHandler> userMessageDict;
 
         public WhatsMessageHandler()
         {
@@ -26,7 +23,7 @@ namespace WhatsAppPort
             if (mess == null || mess.identifier_key.remote_jid == null || mess.identifier_key.remote_jid.Length == 0)
                 return;
 
-            if(!this.messageHistory.ContainsKey(mess.identifier_key.remote_jid))
+            if (!this.messageHistory.ContainsKey(mess.identifier_key.remote_jid))
                 this.messageHistory.Add(mess.identifier_key.remote_jid, new List<FMessage>());
 
             this.messageHistory[mess.identifier_key.remote_jid].Add(mess);
@@ -49,7 +46,6 @@ namespace WhatsAppPort
 
         public void RegisterUser(User user, WhatsEventHandler.MessageRecievedHandler messHandler)
         {
-            
         }
     }
 }

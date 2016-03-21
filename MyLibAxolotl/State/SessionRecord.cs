@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,16 +10,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Tr.Com.Eimza.LibAxolotl.State.StorageProtos;
 
 namespace Tr.Com.Eimza.LibAxolotl.State
@@ -29,9 +26,9 @@ namespace Tr.Com.Eimza.LibAxolotl.State
  *
  * @author Moxie Marlinspike
  */
+
     public class SessionRecord
     {
-
         private static int ARCHIVED_STATES_MAX_LENGTH = 40;
 
         private SessionState sessionState = new SessionState();
@@ -89,11 +86,11 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the list of all currently maintained "previous" session states.
          */
+
         public LinkedList<SessionState> GetPreviousSessionStates()
         {
             return previousStates;
         }
-
 
         public bool IsFresh()
         {
@@ -105,6 +102,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
          * and replace the current {@link org.whispersystems.libaxolotl.state.SessionState}
          * with a fresh reset instance.
          */
+
         public void ArchiveCurrentState()
         {
             PromoteState(new SessionState());
@@ -129,6 +127,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return a serialized version of the current SessionRecord.
          */
+
         public byte[] Serialize()
         {
             List<SessionStructure> previousStructures = new List<SessionStructure>();
@@ -146,6 +145,5 @@ namespace Tr.Com.Eimza.LibAxolotl.State
 
             return record.ToByteArray();
         }
-
     }
 }

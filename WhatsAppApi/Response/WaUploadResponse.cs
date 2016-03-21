@@ -1,29 +1,73 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using WhatsAppApi.Helper;
 
 namespace WhatsAppApi.Response
 {
     public class WaUploadResponse
     {
-        public string url { get; set; }
-        public string mimetype { get; set; }
-        public int size { get; set; }
-        public string filehash { get; set; }
-        public string type { get; set; }
-        public int width { get; set; }
-        public int height { get; set; }
+        public string url
+        {
+            get; set;
+        }
 
-        public int duration { get; set; }
-        public string acodec { get; set; }
-        public int asampfreq { get; set; }
-        public string asampfmt { get; set; }
-        public int abitrate { get; set; }
+        public string mimetype
+        {
+            get; set;
+        }
+
+        public int size
+        {
+            get; set;
+        }
+
+        public string filehash
+        {
+            get; set;
+        }
+
+        public string type
+        {
+            get; set;
+        }
+
+        public int width
+        {
+            get; set;
+        }
+
+        public int height
+        {
+            get; set;
+        }
+
+        public int duration
+        {
+            get; set;
+        }
+
+        public string acodec
+        {
+            get; set;
+        }
+
+        public int asampfreq
+        {
+            get; set;
+        }
+
+        public string asampfmt
+        {
+            get; set;
+        }
+
+        public int abitrate
+        {
+            get; set;
+        }
 
         public WaUploadResponse()
-        { }
+        {
+        }
 
         public WaUploadResponse(ProtocolTreeNode node)
         {

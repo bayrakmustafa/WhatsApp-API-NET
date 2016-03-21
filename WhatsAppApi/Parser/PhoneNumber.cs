@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace WhatsAppApi.Parser
 {
@@ -11,6 +9,7 @@ namespace WhatsAppApi.Parser
         public string Country;
         public string CC;
         public string Number;
+
         public string FullNumber
         {
             get
@@ -18,6 +17,7 @@ namespace WhatsAppApi.Parser
                 return this.CC + this.Number;
             }
         }
+
         public string ISO3166;
         public string ISO639;
         protected string _mcc;

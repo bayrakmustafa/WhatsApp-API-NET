@@ -56,6 +56,10 @@
       <Project>{3FC9096A-C4D2-40C7-BE7B-D98ACAB3BD2B}</Project>
       <Name>WhatsAppApi</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WhatsAppPw\WhatsAppPw.csproj">
+      <Project>{e9a43a31-2023-487c-a57a-d581f714bbf8}</Project>
+      <Name>WhatsAppPw</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

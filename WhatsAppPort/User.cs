@@ -1,16 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WhatsAppApi.Account;
+﻿using WhatsAppApi.Account;
 
 namespace WhatsAppPort
 {
     public class User
     {
-        public string PhoneNumber { get; private set; }
-        public string UserName { get; private set; }
-        public WhatsUser WhatsUser { get; private set; }
+        public string PhoneNumber
+        {
+            get; private set;
+        }
+
+        public string UserName
+        {
+            get; private set;
+        }
+
+        public WhatsUser WhatsUser
+        {
+            get; private set;
+        }
 
         public User(string phone, string name)
         {
@@ -34,6 +41,5 @@ namespace WhatsAppPort
 
             this.WhatsUser = user;
         }
-
     }
 }

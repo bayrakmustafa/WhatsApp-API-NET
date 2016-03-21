@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl, langboost
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,60 +10,52 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.State.Impl
 {
-	public class InMemoryPreKeyStore : PreKeyStore
-	{
+    public class InMemoryPreKeyStore : PreKeyStore
+    {
+        private readonly IDictionary<uint, byte[]> store = new Dictionary<uint, byte[]>();
 
-		private readonly IDictionary<uint, byte[]> store = new Dictionary<uint, byte[]>();
+        public PreKeyRecord LoadPreKey(uint preKeyId)
+        {
+            try
+            {
+                if (!store.ContainsKey(preKeyId))
+                {
+                    throw new InvalidKeyIdException("No such prekeyrecord!");
+                }
+                byte[] record;
+                store.TryGetValue(preKeyId, out record);  // get()
 
+                return new PreKeyRecord(record);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
-		public PreKeyRecord LoadPreKey(uint preKeyId)
-		{
-			try
-			{
-				if (!store.ContainsKey(preKeyId))
-				{
-					throw new InvalidKeyIdException("No such prekeyrecord!");
-				}
-				byte[] record;
-				store.TryGetValue(preKeyId, out record);  // get()
+        public void StorePreKey(uint preKeyId, PreKeyRecord record)
+        {
+            store[preKeyId] = record.Serialize();
+        }
 
-				return new PreKeyRecord(record);
-			}
-			catch (Exception e)
-			{
-				throw new Exception(e.Message);
-			}
-		}
+        public bool ContainsPreKey(uint preKeyId)
+        {
+            return store.ContainsKey(preKeyId);
+        }
 
-
-		public void StorePreKey(uint preKeyId, PreKeyRecord record)
-		{
-			store[preKeyId] = record.Serialize();
-		}
-
-
-		public bool ContainsPreKey(uint preKeyId)
-		{
-			return store.ContainsKey(preKeyId);
-		}
-
-
-		public void RemovePreKey(uint preKeyId)
-		{
-			store.Remove(preKeyId);
-		}
-	}
+        public void RemovePreKey(uint preKeyId)
+        {
+            store.Remove(preKeyId);
+        }
+    }
 }

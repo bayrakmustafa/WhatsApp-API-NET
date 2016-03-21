@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl, langboost
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,176 +10,174 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using Google.ProtocolBuffers;
+using Strilanc.Value;
+using System.Collections.Generic;
 using Tr.Com.Eimza.LibAxolotl.Ecc;
 using Tr.Com.Eimza.LibAxolotl.Groups.Ratchet;
-using Strilanc.Value;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Tr.Com.Eimza.LibAxolotl.State.StorageProtos;
 
 namespace Tr.Com.Eimza.LibAxolotl.Groups.State
 {
-	/**
+    /**
      * Represents the state of an individual SenderKey ratchet.
      *
      * @author
      */
-	public class SenderKeyState
-	{
-		private static readonly int MAX_MESSAGE_KEYS = 2000;
 
-		private SenderKeyStateStructure senderKeyStateStructure;
+    public class SenderKeyState
+    {
+        private static readonly int MAX_MESSAGE_KEYS = 2000;
 
-		public SenderKeyState(uint id, uint iteration, byte[] chainKey, ECPublicKey signatureKey)
-			: this(id, iteration, chainKey, signatureKey, May<ECPrivateKey>.NoValue)
-		{
-		}
+        private SenderKeyStateStructure senderKeyStateStructure;
 
-		public SenderKeyState(uint id, uint iteration, byte[] chainKey, ECKeyPair signatureKey)
-		: this(id, iteration, chainKey, signatureKey.GetPublicKey(), new May<ECPrivateKey>(signatureKey.GetPrivateKey()))
-		{
-		}
+        public SenderKeyState(uint id, uint iteration, byte[] chainKey, ECPublicKey signatureKey)
+            : this(id, iteration, chainKey, signatureKey, May<ECPrivateKey>.NoValue)
+        {
+        }
 
-		private SenderKeyState(uint id, uint iteration, byte[] chainKey,
-							  ECPublicKey signatureKeyPublic,
-							  May<ECPrivateKey> signatureKeyPrivate)
-		{
-			SenderKeyStateStructure.Types.SenderChainKey senderChainKeyStructure =
-				SenderKeyStateStructure.Types.SenderChainKey.CreateBuilder()
-													  .SetIteration(iteration)
-													  .SetSeed(ByteString.CopyFrom(chainKey))
-													  .Build();
+        public SenderKeyState(uint id, uint iteration, byte[] chainKey, ECKeyPair signatureKey)
+        : this(id, iteration, chainKey, signatureKey.GetPublicKey(), new May<ECPrivateKey>(signatureKey.GetPrivateKey()))
+        {
+        }
 
-			SenderKeyStateStructure.Types.SenderSigningKey.Builder signingKeyStructure =
-				SenderKeyStateStructure.Types.SenderSigningKey.CreateBuilder()
-														.SetPublic(ByteString.CopyFrom(signatureKeyPublic.Serialize()));
+        private SenderKeyState(uint id, uint iteration, byte[] chainKey,
+                              ECPublicKey signatureKeyPublic,
+                              May<ECPrivateKey> signatureKeyPrivate)
+        {
+            SenderKeyStateStructure.Types.SenderChainKey senderChainKeyStructure =
+                SenderKeyStateStructure.Types.SenderChainKey.CreateBuilder()
+                                                      .SetIteration(iteration)
+                                                      .SetSeed(ByteString.CopyFrom(chainKey))
+                                                      .Build();
 
-			if (signatureKeyPrivate.HasValue)
-			{
-				signingKeyStructure.SetPrivate(ByteString.CopyFrom(signatureKeyPrivate.ForceGetValue().Serialize()));
-			}
+            SenderKeyStateStructure.Types.SenderSigningKey.Builder signingKeyStructure =
+                SenderKeyStateStructure.Types.SenderSigningKey.CreateBuilder()
+                                                        .SetPublic(ByteString.CopyFrom(signatureKeyPublic.Serialize()));
 
-			this.senderKeyStateStructure = SenderKeyStateStructure.CreateBuilder()
-																  .SetSenderKeyId(id)
-																  .SetSenderChainKey(senderChainKeyStructure)
-																  .SetSenderSigningKey(signingKeyStructure)
-																  .Build();
-		}
+            if (signatureKeyPrivate.HasValue)
+            {
+                signingKeyStructure.SetPrivate(ByteString.CopyFrom(signatureKeyPrivate.ForceGetValue().Serialize()));
+            }
 
-		public SenderKeyState(SenderKeyStateStructure senderKeyStateStructure)
-		{
-			this.senderKeyStateStructure = senderKeyStateStructure;
-		}
+            this.senderKeyStateStructure = SenderKeyStateStructure.CreateBuilder()
+                                                                  .SetSenderKeyId(id)
+                                                                  .SetSenderChainKey(senderChainKeyStructure)
+                                                                  .SetSenderSigningKey(signingKeyStructure)
+                                                                  .Build();
+        }
 
-		public uint GetKeyId()
-		{
-			return senderKeyStateStructure.SenderKeyId;
-		}
+        public SenderKeyState(SenderKeyStateStructure senderKeyStateStructure)
+        {
+            this.senderKeyStateStructure = senderKeyStateStructure;
+        }
 
-		public SenderChainKey GetSenderChainKey()
-		{
-			return new SenderChainKey(senderKeyStateStructure.SenderChainKey.Iteration,
-									  senderKeyStateStructure.SenderChainKey.Seed.ToByteArray());
-		}
+        public uint GetKeyId()
+        {
+            return senderKeyStateStructure.SenderKeyId;
+        }
 
-		public void SetSenderChainKey(SenderChainKey chainKey)
-		{
-			SenderKeyStateStructure.Types.SenderChainKey senderChainKeyStructure =
-				SenderKeyStateStructure.Types.SenderChainKey.CreateBuilder()
-													  .SetIteration(chainKey.GetIteration())
-													  .SetSeed(ByteString.CopyFrom(chainKey.GetSeed()))
-													  .Build();
+        public SenderChainKey GetSenderChainKey()
+        {
+            return new SenderChainKey(senderKeyStateStructure.SenderChainKey.Iteration,
+                                      senderKeyStateStructure.SenderChainKey.Seed.ToByteArray());
+        }
 
-			this.senderKeyStateStructure = senderKeyStateStructure.ToBuilder()
-																  .SetSenderChainKey(senderChainKeyStructure)
-																  .Build();
-		}
+        public void SetSenderChainKey(SenderChainKey chainKey)
+        {
+            SenderKeyStateStructure.Types.SenderChainKey senderChainKeyStructure =
+                SenderKeyStateStructure.Types.SenderChainKey.CreateBuilder()
+                                                      .SetIteration(chainKey.GetIteration())
+                                                      .SetSeed(ByteString.CopyFrom(chainKey.GetSeed()))
+                                                      .Build();
 
-		public ECPublicKey GetSigningKeyPublic()
-		{
-			return Curve.DecodePoint(senderKeyStateStructure.SenderSigningKey.Public.ToByteArray(), 0);
-		}
+            this.senderKeyStateStructure = senderKeyStateStructure.ToBuilder()
+                                                                  .SetSenderChainKey(senderChainKeyStructure)
+                                                                  .Build();
+        }
 
-		public ECPrivateKey GetSigningKeyPrivate()
-		{
-			return Curve.DecodePrivatePoint(senderKeyStateStructure.SenderSigningKey.Private.ToByteArray());
-		}
+        public ECPublicKey GetSigningKeyPublic()
+        {
+            return Curve.DecodePoint(senderKeyStateStructure.SenderSigningKey.Public.ToByteArray(), 0);
+        }
 
-		public bool HasSenderMessageKey(uint iteration)
-		{
-			foreach (SenderKeyStateStructure.Types.SenderMessageKey senderMessageKey in senderKeyStateStructure.SenderMessageKeysList)
-			{
-				if (senderMessageKey.Iteration == iteration) return true;
-			}
+        public ECPrivateKey GetSigningKeyPrivate()
+        {
+            return Curve.DecodePrivatePoint(senderKeyStateStructure.SenderSigningKey.Private.ToByteArray());
+        }
 
-			return false;
-		}
+        public bool HasSenderMessageKey(uint iteration)
+        {
+            foreach (SenderKeyStateStructure.Types.SenderMessageKey senderMessageKey in senderKeyStateStructure.SenderMessageKeysList)
+            {
+                if (senderMessageKey.Iteration == iteration)
+                    return true;
+            }
 
-		public void AddSenderMessageKey(SenderMessageKey senderMessageKey)
-		{
-			SenderKeyStateStructure.Types.SenderMessageKey senderMessageKeyStructure =
-				SenderKeyStateStructure.Types.SenderMessageKey.CreateBuilder()
-														.SetIteration(senderMessageKey.GetIteration())
-														.SetSeed(ByteString.CopyFrom(senderMessageKey.GetSeed()))
-														.Build();
+            return false;
+        }
 
-			SenderKeyStateStructure.Builder builder = this.senderKeyStateStructure.ToBuilder();
-			builder.AddSenderMessageKeys(senderMessageKeyStructure);
+        public void AddSenderMessageKey(SenderMessageKey senderMessageKey)
+        {
+            SenderKeyStateStructure.Types.SenderMessageKey senderMessageKeyStructure =
+                SenderKeyStateStructure.Types.SenderMessageKey.CreateBuilder()
+                                                        .SetIteration(senderMessageKey.GetIteration())
+                                                        .SetSeed(ByteString.CopyFrom(senderMessageKey.GetSeed()))
+                                                        .Build();
 
-			if (builder.SenderMessageKeysList.Count > MAX_MESSAGE_KEYS)
-			{
-				builder.SenderMessageKeysList.RemoveAt(0);
-			}
-			this.senderKeyStateStructure = builder.Build();
-		}
+            SenderKeyStateStructure.Builder builder = this.senderKeyStateStructure.ToBuilder();
+            builder.AddSenderMessageKeys(senderMessageKeyStructure);
 
-		public SenderMessageKey RemoveSenderMessageKey(uint iteration)
-		{
-			LinkedList<SenderKeyStateStructure.Types.SenderMessageKey> keys = new LinkedList<SenderKeyStateStructure.Types.SenderMessageKey>(senderKeyStateStructure.SenderMessageKeysList);
-			IEnumerator<SenderKeyStateStructure.Types.SenderMessageKey> iterator = keys.GetEnumerator(); // iterator();
+            if (builder.SenderMessageKeysList.Count > MAX_MESSAGE_KEYS)
+            {
+                builder.SenderMessageKeysList.RemoveAt(0);
+            }
+            this.senderKeyStateStructure = builder.Build();
+        }
 
-			SenderKeyStateStructure.Types.SenderMessageKey result = null;
+        public SenderMessageKey RemoveSenderMessageKey(uint iteration)
+        {
+            LinkedList<SenderKeyStateStructure.Types.SenderMessageKey> keys = new LinkedList<SenderKeyStateStructure.Types.SenderMessageKey>(senderKeyStateStructure.SenderMessageKeysList);
+            IEnumerator<SenderKeyStateStructure.Types.SenderMessageKey> iterator = keys.GetEnumerator(); // iterator();
 
-			while (iterator.MoveNext()) // hastNext
-			{
-				SenderKeyStateStructure.Types.SenderMessageKey senderMessageKey = iterator.Current; // next();
+            SenderKeyStateStructure.Types.SenderMessageKey result = null;
 
-				if (senderMessageKey.Iteration == iteration) //senderMessageKey.getIteration()
-				{
-					result = senderMessageKey;
-					keys.Remove(senderMessageKey); //iterator.remove();
-					break;
-				}
-			}
+            while (iterator.MoveNext()) // hastNext
+            {
+                SenderKeyStateStructure.Types.SenderMessageKey senderMessageKey = iterator.Current; // next();
 
-			this.senderKeyStateStructure = this.senderKeyStateStructure.ToBuilder()
-																	   .ClearSenderMessageKeys()
-																	   //.AddAllSenderMessageKeys(keys)
-																	   .AddRangeSenderMessageKeys(keys)
-																	   .Build();
+                if (senderMessageKey.Iteration == iteration) //senderMessageKey.getIteration()
+                {
+                    result = senderMessageKey;
+                    keys.Remove(senderMessageKey); //iterator.remove();
+                    break;
+                }
+            }
 
-			if (result != null)
-			{
-				return new SenderMessageKey(result.Iteration, result.Seed.ToByteArray());
-			}
-			else
-			{
-				return null;
-			}
-		}
+            this.senderKeyStateStructure = this.senderKeyStateStructure.ToBuilder()
+                                                                       .ClearSenderMessageKeys()
+                                                                       //.AddAllSenderMessageKeys(keys)
+                                                                       .AddRangeSenderMessageKeys(keys)
+                                                                       .Build();
 
-		public SenderKeyStateStructure GetStructure()
-		{
-			return senderKeyStateStructure;
-		}
-	}
+            if (result != null)
+            {
+                return new SenderMessageKey(result.Iteration, result.Seed.ToByteArray());
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public SenderKeyStateStructure GetStructure()
+        {
+            return senderKeyStateStructure;
+        }
+    }
 }

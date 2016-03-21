@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace WhatsAppApi.Helper
+﻿namespace WhatsAppApi.Helper
 {
     public class AccountInfo
     {
@@ -11,14 +6,17 @@ namespace WhatsAppApi.Helper
         {
             get; private set;
         }
+
         public string Kind
         {
             get; private set;
         }
+
         public string Creation
         {
             get; private set;
         }
+
         public string Expiration
         {
             get; private set;

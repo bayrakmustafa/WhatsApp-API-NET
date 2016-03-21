@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using WhatsAppApi;
 using WhatsAppApi.Helper;
-using WhatsAppApi.Parser;
 
 namespace WhatsAppPort
 {
@@ -51,7 +42,7 @@ namespace WhatsAppPort
                 tmpAddUser.ShowDialog(this);
                 if (tmpAddUser.DialogResult != DialogResult.OK)
                     return;
-                if(tmpAddUser.Tag == null || !(tmpAddUser.Tag is User))
+                if (tmpAddUser.Tag == null || !(tmpAddUser.Tag is User))
                     return;
 
                 var tmpUser = tmpAddUser.Tag as User;
@@ -72,7 +63,7 @@ namespace WhatsAppPort
 
         private void ProcessMessages(object sender, DoWorkEventArgs args)
         {
-            if(sender == null)
+            if (sender == null)
                 return;
 
             while (this.isRunning)
@@ -110,17 +101,14 @@ namespace WhatsAppPort
 
         private void GetMessageSender(ProtocolTreeNode protocolNode)
         {
-            
         }
 
         private void GetMessageBody(ProtocolTreeNode protocolNode)
         {
-            
         }
 
         private void GetMessageType(ProtocolTreeNode protocolNode)
         {
-            
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

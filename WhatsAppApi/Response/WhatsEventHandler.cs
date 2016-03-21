@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using WhatsAppApi.Parser;
 
 namespace WhatsAppApi.Response
@@ -13,6 +9,7 @@ namespace WhatsAppApi.Response
     public static class WhatsEventHandler
     {
         #region Delegates
+
         /// <summary>
         /// Event occures when the message has been recieved
         /// </summary>
@@ -49,9 +46,10 @@ namespace WhatsAppApi.Response
         /// <param name="t">?</param>
         public delegate void GroupNewSubjectHandler(string from, string uJid, string subject, int t);
 
-        #endregion
+        #endregion Delegates
 
         #region Events
+
         /// <summary>
         /// Event occures when the message has been recieved
         /// </summary>
@@ -72,7 +70,7 @@ namespace WhatsAppApi.Response
         /// </summary>
         public static event PhotoChangedHandler PhotoChangedEvent;
 
-        #endregion
+        #endregion Events
 
         #region OnMethods
 
@@ -91,7 +89,7 @@ namespace WhatsAppApi.Response
                 var tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
                 if (tmpSyncInvoke != null && tmpSyncInvoke.InvokeRequired)
                 {
-                    tmpSyncInvoke.BeginInvoke(tmpSingleCast, new object[] {mess});
+                    tmpSyncInvoke.BeginInvoke(tmpSingleCast, new object[] { mess });
                     continue;
                 }
                 h.BeginInvoke(mess, null, null);
@@ -166,7 +164,6 @@ namespace WhatsAppApi.Response
             }
         }
 
-
-        #endregion
+        #endregion OnMethods
     }
 }

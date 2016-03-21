@@ -112,7 +112,7 @@ static void fproduct(limb *output, const limb *in2, const limb *in) {
 		((limb)((s32)in2[3])) * ((s32)in[0]);
 	output[4] = ((limb)((s32)in2[2])) * ((s32)in[2]) +
 		2 * (((limb)((s32)in2[1])) * ((s32)in[3]) +
-		((limb)((s32)in2[3])) * ((s32)in[1])) +
+			 ((limb)((s32)in2[3])) * ((s32)in[1])) +
 		((limb)((s32)in2[0])) * ((s32)in[4]) +
 		((limb)((s32)in2[4])) * ((s32)in[0]);
 	output[5] = ((limb)((s32)in2[2])) * ((s32)in[3]) +
@@ -122,8 +122,8 @@ static void fproduct(limb *output, const limb *in2, const limb *in) {
 		((limb)((s32)in2[0])) * ((s32)in[5]) +
 		((limb)((s32)in2[5])) * ((s32)in[0]);
 	output[6] = 2 * (((limb)((s32)in2[3])) * ((s32)in[3]) +
-		((limb)((s32)in2[1])) * ((s32)in[5]) +
-		((limb)((s32)in2[5])) * ((s32)in[1])) +
+					 ((limb)((s32)in2[1])) * ((s32)in[5]) +
+					 ((limb)((s32)in2[5])) * ((s32)in[1])) +
 		((limb)((s32)in2[2])) * ((s32)in[4]) +
 		((limb)((s32)in2[4])) * ((s32)in[2]) +
 		((limb)((s32)in2[0])) * ((s32)in[6]) +
@@ -138,9 +138,9 @@ static void fproduct(limb *output, const limb *in2, const limb *in) {
 		((limb)((s32)in2[7])) * ((s32)in[0]);
 	output[8] = ((limb)((s32)in2[4])) * ((s32)in[4]) +
 		2 * (((limb)((s32)in2[3])) * ((s32)in[5]) +
-		((limb)((s32)in2[5])) * ((s32)in[3]) +
-		((limb)((s32)in2[1])) * ((s32)in[7]) +
-		((limb)((s32)in2[7])) * ((s32)in[1])) +
+			 ((limb)((s32)in2[5])) * ((s32)in[3]) +
+			 ((limb)((s32)in2[1])) * ((s32)in[7]) +
+			 ((limb)((s32)in2[7])) * ((s32)in[1])) +
 		((limb)((s32)in2[2])) * ((s32)in[6]) +
 		((limb)((s32)in2[6])) * ((s32)in[2]) +
 		((limb)((s32)in2[0])) * ((s32)in[8]) +
@@ -156,10 +156,10 @@ static void fproduct(limb *output, const limb *in2, const limb *in) {
 		((limb)((s32)in2[0])) * ((s32)in[9]) +
 		((limb)((s32)in2[9])) * ((s32)in[0]);
 	output[10] = 2 * (((limb)((s32)in2[5])) * ((s32)in[5]) +
-		((limb)((s32)in2[3])) * ((s32)in[7]) +
-		((limb)((s32)in2[7])) * ((s32)in[3]) +
-		((limb)((s32)in2[1])) * ((s32)in[9]) +
-		((limb)((s32)in2[9])) * ((s32)in[1])) +
+					  ((limb)((s32)in2[3])) * ((s32)in[7]) +
+					  ((limb)((s32)in2[7])) * ((s32)in[3]) +
+					  ((limb)((s32)in2[1])) * ((s32)in[9]) +
+					  ((limb)((s32)in2[9])) * ((s32)in[1])) +
 		((limb)((s32)in2[4])) * ((s32)in[6]) +
 		((limb)((s32)in2[6])) * ((s32)in[4]) +
 		((limb)((s32)in2[2])) * ((s32)in[8]) +
@@ -174,9 +174,9 @@ static void fproduct(limb *output, const limb *in2, const limb *in) {
 		((limb)((s32)in2[9])) * ((s32)in[2]);
 	output[12] = ((limb)((s32)in2[6])) * ((s32)in[6]) +
 		2 * (((limb)((s32)in2[5])) * ((s32)in[7]) +
-		((limb)((s32)in2[7])) * ((s32)in[5]) +
-		((limb)((s32)in2[3])) * ((s32)in[9]) +
-		((limb)((s32)in2[9])) * ((s32)in[3])) +
+			 ((limb)((s32)in2[7])) * ((s32)in[5]) +
+			 ((limb)((s32)in2[3])) * ((s32)in[9]) +
+			 ((limb)((s32)in2[9])) * ((s32)in[3])) +
 		((limb)((s32)in2[4])) * ((s32)in[8]) +
 		((limb)((s32)in2[8])) * ((s32)in[4]);
 	output[13] = ((limb)((s32)in2[6])) * ((s32)in[7]) +
@@ -186,8 +186,8 @@ static void fproduct(limb *output, const limb *in2, const limb *in) {
 		((limb)((s32)in2[4])) * ((s32)in[9]) +
 		((limb)((s32)in2[9])) * ((s32)in[4]);
 	output[14] = 2 * (((limb)((s32)in2[7])) * ((s32)in[7]) +
-		((limb)((s32)in2[5])) * ((s32)in[9]) +
-		((limb)((s32)in2[9])) * ((s32)in[5])) +
+					  ((limb)((s32)in2[5])) * ((s32)in[9]) +
+					  ((limb)((s32)in2[9])) * ((s32)in[5])) +
 		((limb)((s32)in2[6])) * ((s32)in[8]) +
 		((limb)((s32)in2[8])) * ((s32)in[6]);
 	output[15] = ((limb)((s32)in2[7])) * ((s32)in[8]) +
@@ -196,7 +196,7 @@ static void fproduct(limb *output, const limb *in2, const limb *in) {
 		((limb)((s32)in2[9])) * ((s32)in[6]);
 	output[16] = ((limb)((s32)in2[8])) * ((s32)in[8]) +
 		2 * (((limb)((s32)in2[7])) * ((s32)in[9]) +
-		((limb)((s32)in2[9])) * ((s32)in[7]));
+			 ((limb)((s32)in2[9])) * ((s32)in[7]));
 	output[17] = ((limb)((s32)in2[8])) * ((s32)in[9]) +
 		((limb)((s32)in2[9])) * ((s32)in[8]);
 	output[18] = 2 * ((limb)((s32)in2[9])) * ((s32)in[9]);
@@ -359,54 +359,54 @@ static void fsquare_inner(limb *output, const limb *in) {
 	output[0] = ((limb)((s32)in[0])) * ((s32)in[0]);
 	output[1] = 2 * ((limb)((s32)in[0])) * ((s32)in[1]);
 	output[2] = 2 * (((limb)((s32)in[1])) * ((s32)in[1]) +
-		((limb)((s32)in[0])) * ((s32)in[2]));
+					 ((limb)((s32)in[0])) * ((s32)in[2]));
 	output[3] = 2 * (((limb)((s32)in[1])) * ((s32)in[2]) +
-		((limb)((s32)in[0])) * ((s32)in[3]));
+					 ((limb)((s32)in[0])) * ((s32)in[3]));
 	output[4] = ((limb)((s32)in[2])) * ((s32)in[2]) +
 		4 * ((limb)((s32)in[1])) * ((s32)in[3]) +
 		2 * ((limb)((s32)in[0])) * ((s32)in[4]);
 	output[5] = 2 * (((limb)((s32)in[2])) * ((s32)in[3]) +
-		((limb)((s32)in[1])) * ((s32)in[4]) +
-		((limb)((s32)in[0])) * ((s32)in[5]));
+					 ((limb)((s32)in[1])) * ((s32)in[4]) +
+					 ((limb)((s32)in[0])) * ((s32)in[5]));
 	output[6] = 2 * (((limb)((s32)in[3])) * ((s32)in[3]) +
-		((limb)((s32)in[2])) * ((s32)in[4]) +
-		((limb)((s32)in[0])) * ((s32)in[6]) +
-		2 * ((limb)((s32)in[1])) * ((s32)in[5]));
+					 ((limb)((s32)in[2])) * ((s32)in[4]) +
+					 ((limb)((s32)in[0])) * ((s32)in[6]) +
+					 2 * ((limb)((s32)in[1])) * ((s32)in[5]));
 	output[7] = 2 * (((limb)((s32)in[3])) * ((s32)in[4]) +
-		((limb)((s32)in[2])) * ((s32)in[5]) +
-		((limb)((s32)in[1])) * ((s32)in[6]) +
-		((limb)((s32)in[0])) * ((s32)in[7]));
+					 ((limb)((s32)in[2])) * ((s32)in[5]) +
+					 ((limb)((s32)in[1])) * ((s32)in[6]) +
+					 ((limb)((s32)in[0])) * ((s32)in[7]));
 	output[8] = ((limb)((s32)in[4])) * ((s32)in[4]) +
 		2 * (((limb)((s32)in[2])) * ((s32)in[6]) +
-		((limb)((s32)in[0])) * ((s32)in[8]) +
-		2 * (((limb)((s32)in[1])) * ((s32)in[7]) +
-		((limb)((s32)in[3])) * ((s32)in[5])));
+			 ((limb)((s32)in[0])) * ((s32)in[8]) +
+			 2 * (((limb)((s32)in[1])) * ((s32)in[7]) +
+			 ((limb)((s32)in[3])) * ((s32)in[5])));
 	output[9] = 2 * (((limb)((s32)in[4])) * ((s32)in[5]) +
-		((limb)((s32)in[3])) * ((s32)in[6]) +
-		((limb)((s32)in[2])) * ((s32)in[7]) +
-		((limb)((s32)in[1])) * ((s32)in[8]) +
-		((limb)((s32)in[0])) * ((s32)in[9]));
+					 ((limb)((s32)in[3])) * ((s32)in[6]) +
+					 ((limb)((s32)in[2])) * ((s32)in[7]) +
+					 ((limb)((s32)in[1])) * ((s32)in[8]) +
+					 ((limb)((s32)in[0])) * ((s32)in[9]));
 	output[10] = 2 * (((limb)((s32)in[5])) * ((s32)in[5]) +
-		((limb)((s32)in[4])) * ((s32)in[6]) +
-		((limb)((s32)in[2])) * ((s32)in[8]) +
-		2 * (((limb)((s32)in[3])) * ((s32)in[7]) +
-		((limb)((s32)in[1])) * ((s32)in[9])));
+					  ((limb)((s32)in[4])) * ((s32)in[6]) +
+					  ((limb)((s32)in[2])) * ((s32)in[8]) +
+					  2 * (((limb)((s32)in[3])) * ((s32)in[7]) +
+					  ((limb)((s32)in[1])) * ((s32)in[9])));
 	output[11] = 2 * (((limb)((s32)in[5])) * ((s32)in[6]) +
-		((limb)((s32)in[4])) * ((s32)in[7]) +
-		((limb)((s32)in[3])) * ((s32)in[8]) +
-		((limb)((s32)in[2])) * ((s32)in[9]));
+					  ((limb)((s32)in[4])) * ((s32)in[7]) +
+					  ((limb)((s32)in[3])) * ((s32)in[8]) +
+					  ((limb)((s32)in[2])) * ((s32)in[9]));
 	output[12] = ((limb)((s32)in[6])) * ((s32)in[6]) +
 		2 * (((limb)((s32)in[4])) * ((s32)in[8]) +
-		2 * (((limb)((s32)in[5])) * ((s32)in[7]) +
-		((limb)((s32)in[3])) * ((s32)in[9])));
+			 2 * (((limb)((s32)in[5])) * ((s32)in[7]) +
+			 ((limb)((s32)in[3])) * ((s32)in[9])));
 	output[13] = 2 * (((limb)((s32)in[6])) * ((s32)in[7]) +
-		((limb)((s32)in[5])) * ((s32)in[8]) +
-		((limb)((s32)in[4])) * ((s32)in[9]));
+					  ((limb)((s32)in[5])) * ((s32)in[8]) +
+					  ((limb)((s32)in[4])) * ((s32)in[9]));
 	output[14] = 2 * (((limb)((s32)in[7])) * ((s32)in[7]) +
-		((limb)((s32)in[6])) * ((s32)in[8]) +
-		2 * ((limb)((s32)in[5])) * ((s32)in[9]));
+					  ((limb)((s32)in[6])) * ((s32)in[8]) +
+					  2 * ((limb)((s32)in[5])) * ((s32)in[9]));
 	output[15] = 2 * (((limb)((s32)in[7])) * ((s32)in[8]) +
-		((limb)((s32)in[6])) * ((s32)in[9]));
+					  ((limb)((s32)in[6])) * ((s32)in[9]));
 	output[16] = ((limb)((s32)in[8])) * ((s32)in[8]) +
 		4 * ((limb)((s32)in[7])) * ((s32)in[9]);
 	output[17] = 2 * ((limb)((s32)in[8])) * ((s32)in[9]);
@@ -436,7 +436,7 @@ fsquare(limb *output, const limb *in) {
 /* Take a little-endian, 32-byte number and expand it into polynomial form */
 static void
 fexpand(limb *output, const u8 *input) {
-#define F(n,start,shift,mask) \
+	#define F(n,start,shift,mask) \
   output[n] = ((((limb) input[start + 0]) | \
                 ((limb) input[start + 1]) << 8 | \
                 ((limb) input[start + 2]) << 16 | \
@@ -451,7 +451,7 @@ fexpand(limb *output, const u8 *input) {
 	F(7, 22, 3, 0x1ffffff);
 	F(8, 25, 4, 0x3ffffff);
 	F(9, 28, 6, 0x1ffffff);
-#undef F
+	#undef F
 }
 
 #if (-32 >> 1) != -16
@@ -513,16 +513,16 @@ fcontract(u8 *output, limb *input_limbs) {
 
 		/* There's no greater limb for input[9] to borrow from, but we can multiply
 		* by 19 and borrow from input[0], which is valid mod 2^255-19. */
-	{
-		const s32 mask = input[9] >> 31;
-		const s32 carry = -((input[9] & mask) >> 25);
-		input[9] = input[9] + (carry << 25);
-		input[0] = input[0] - (carry * 19);
-	}
+		{
+			const s32 mask = input[9] >> 31;
+			const s32 carry = -((input[9] & mask) >> 25);
+			input[9] = input[9] + (carry << 25);
+			input[0] = input[0] - (carry * 19);
+		}
 
-	/* After the first iteration, input[1..9] are non-negative and fit within
-	* 25 or 26 bits, depending on position. However, input[0] may be
-	* negative. */
+		/* After the first iteration, input[1..9] are non-negative and fit within
+		* 25 or 26 bits, depending on position. However, input[0] may be
+		* negative. */
 	}
 
 	/* The first borrow-propagation pass above ended with every limb
@@ -537,95 +537,95 @@ fcontract(u8 *output, limb *input_limbs) {
 	input[0] again if the first pass left input[0] negative *and* input[1]
 	through input[9] were all zero.  In that case, input[1] is now 2^25 - 1,
 	and this last borrow-propagation step will leave input[1] non-negative. */
-  {
-	  const s32 mask = input[0] >> 31;
-	  const s32 carry = -((input[0] & mask) >> 26);
-	  input[0] = input[0] + (carry << 26);
-	  input[1] = input[1] - carry;
-  }
-
-  /* All input[i] are now non-negative. However, there might be values between
-  * 2^25 and 2^26 in a limb which is, nominally, 25 bits wide. */
-  for (j = 0; j < 2; j++) {
-	  for (i = 0; i < 9; i++) {
-		  if ((i & 1) == 1) {
-			  const s32 carry = input[i] >> 25;
-			  input[i] &= 0x1ffffff;
-			  input[i + 1] += carry;
-		  }
-		  else {
-			  const s32 carry = input[i] >> 26;
-			  input[i] &= 0x3ffffff;
-			  input[i + 1] += carry;
-		  }
-	  }
-
 	{
-		const s32 carry = input[9] >> 25;
-		input[9] &= 0x1ffffff;
-		input[0] += 19 * carry;
+		const s32 mask = input[0] >> 31;
+		const s32 carry = -((input[0] & mask) >> 26);
+		input[0] = input[0] + (carry << 26);
+		input[1] = input[1] - carry;
 	}
-  }
 
-  /* If the first carry-chain pass, just above, ended up with a carry from
-  * input[9], and that caused input[0] to be out-of-bounds, then input[0] was
-  * < 2^26 + 2*19, because the carry was, at most, two.
-  *
-  * If the second pass carried from input[9] again then input[0] is < 2*19 and
-  * the input[9] -> input[0] carry didn't push input[0] out of bounds. */
+	/* All input[i] are now non-negative. However, there might be values between
+	* 2^25 and 2^26 in a limb which is, nominally, 25 bits wide. */
+	for (j = 0; j < 2; j++) {
+		for (i = 0; i < 9; i++) {
+			if ((i & 1) == 1) {
+				const s32 carry = input[i] >> 25;
+				input[i] &= 0x1ffffff;
+				input[i + 1] += carry;
+			}
+			else {
+				const s32 carry = input[i] >> 26;
+				input[i] &= 0x3ffffff;
+				input[i + 1] += carry;
+			}
+		}
 
-  /* It still remains the case that input might be between 2^255-19 and 2^255.
-  * In this case, input[1..9] must take their maximum value and input[0] must
-  * be >= (2^255-19) & 0x3ffffff, which is 0x3ffffed. */
-  mask = s32_gte(input[0], 0x3ffffed);
-  for (i = 1; i < 10; i++) {
-	  if ((i & 1) == 1) {
-		  mask &= s32_eq(input[i], 0x1ffffff);
-	  }
-	  else {
-		  mask &= s32_eq(input[i], 0x3ffffff);
-	  }
-  }
+		{
+			const s32 carry = input[9] >> 25;
+			input[9] &= 0x1ffffff;
+			input[0] += 19 * carry;
+		}
+	}
 
-  /* mask is either 0xffffffff (if input >= 2^255-19) and zero otherwise. Thus
-  * this conditionally subtracts 2^255-19. */
-  input[0] -= mask & 0x3ffffed;
+	/* If the first carry-chain pass, just above, ended up with a carry from
+	* input[9], and that caused input[0] to be out-of-bounds, then input[0] was
+	* < 2^26 + 2*19, because the carry was, at most, two.
+	*
+	* If the second pass carried from input[9] again then input[0] is < 2*19 and
+	* the input[9] -> input[0] carry didn't push input[0] out of bounds. */
 
-  for (i = 1; i < 10; i++) {
-	  if ((i & 1) == 1) {
-		  input[i] -= mask & 0x1ffffff;
-	  }
-	  else {
-		  input[i] -= mask & 0x3ffffff;
-	  }
-  }
+	/* It still remains the case that input might be between 2^255-19 and 2^255.
+	* In this case, input[1..9] must take their maximum value and input[0] must
+	* be >= (2^255-19) & 0x3ffffff, which is 0x3ffffed. */
+	mask = s32_gte(input[0], 0x3ffffed);
+	for (i = 1; i < 10; i++) {
+		if ((i & 1) == 1) {
+			mask &= s32_eq(input[i], 0x1ffffff);
+		}
+		else {
+			mask &= s32_eq(input[i], 0x3ffffff);
+		}
+	}
 
-  input[1] <<= 2;
-  input[2] <<= 3;
-  input[3] <<= 5;
-  input[4] <<= 6;
-  input[6] <<= 1;
-  input[7] <<= 3;
-  input[8] <<= 4;
-  input[9] <<= 6;
-#define F(i, s) \
+	/* mask is either 0xffffffff (if input >= 2^255-19) and zero otherwise. Thus
+	* this conditionally subtracts 2^255-19. */
+	input[0] -= mask & 0x3ffffed;
+
+	for (i = 1; i < 10; i++) {
+		if ((i & 1) == 1) {
+			input[i] -= mask & 0x1ffffff;
+		}
+		else {
+			input[i] -= mask & 0x3ffffff;
+		}
+	}
+
+	input[1] <<= 2;
+	input[2] <<= 3;
+	input[3] <<= 5;
+	input[4] <<= 6;
+	input[6] <<= 1;
+	input[7] <<= 3;
+	input[8] <<= 4;
+	input[9] <<= 6;
+	#define F(i, s) \
   output[s+0] |=  input[i] & 0xff; \
   output[s+1]  = (input[i] >> 8) & 0xff; \
   output[s+2]  = (input[i] >> 16) & 0xff; \
   output[s+3]  = (input[i] >> 24) & 0xff;
-  output[0] = 0;
-  output[16] = 0;
-  F(0, 0);
-  F(1, 3);
-  F(2, 6);
-  F(3, 9);
-  F(4, 12);
-  F(5, 16);
-  F(6, 19);
-  F(7, 22);
-  F(8, 25);
-  F(9, 28);
-#undef F
+	output[0] = 0;
+	output[16] = 0;
+	F(0, 0);
+	F(1, 3);
+	F(2, 6);
+	F(3, 9);
+	F(4, 12);
+	F(5, 16);
+	F(6, 19);
+	F(7, 22);
+	F(8, 25);
+	F(9, 28);
+	#undef F
 }
 
 /* Input: Q, Q', Q-Q'
@@ -640,10 +640,10 @@ fcontract(u8 *output, limb *input_limbs) {
 * On entry and exit, the absolute value of the limbs of all inputs and outputs
 * are < 2^26. */
 static void fmonty(limb *x2, limb *z2,  /* output 2Q */
-	limb *x3, limb *z3,  /* output Q + Q' */
-	limb *x, limb *z,    /* input Q */
-	limb *xprime, limb *zprime,  /* input Q' */
-	const limb *qmqp /* input Q - Q' */) {
+				   limb *x3, limb *z3,  /* output Q + Q' */
+				   limb *x, limb *z,    /* input Q */
+				   limb *xprime, limb *zprime,  /* input Q' */
+				   const limb *qmqp /* input Q - Q' */) {
 	limb origx[10], origxprime[10], zzz[19], xx[19], zz[19], xxprime[19],
 		zzprime[19], zzzprime[19], xxxprime[19];
 
@@ -759,10 +759,10 @@ cmult(limb *resultx, limb *resultz, const u8 *n, const limb *q) {
 			swap_conditional(nqx, nqpqx, bit);
 			swap_conditional(nqz, nqpqz, bit);
 			fmonty(nqx2, nqz2,
-				nqpqx2, nqpqz2,
-				nqx, nqz,
-				nqpqx, nqpqz,
-				q);
+				   nqpqx2, nqpqz2,
+				   nqx, nqz,
+				   nqpqx, nqpqz,
+				   q);
 			swap_conditional(nqx2, nqpqx2, bit);
 			swap_conditional(nqz2, nqpqz2, bit);
 

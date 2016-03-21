@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using WhatsAppApi.Helper;
-using WhatsAppApi.Parser;
 using WhatsAppApi.Settings;
 
 namespace WhatsAppApi
@@ -142,7 +138,6 @@ namespace WhatsAppApi
             }
         }
 
-        //BRIAN MODIFIED FIXME: SHOULD NOT BE OPENED LIKE THIS INLINE THE Axolotl CLASS INSTEAD
         public void SendNode(ProtocolTreeNode node)
         {
             m_LastSentInfo = DateTime.UtcNow.ToFileTime();

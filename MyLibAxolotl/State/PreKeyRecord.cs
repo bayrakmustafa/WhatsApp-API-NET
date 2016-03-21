@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,25 +10,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using Google.ProtocolBuffers;
-using Tr.Com.Eimza.LibAxolotl.Ecc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Tr.Com.Eimza.LibAxolotl.Ecc;
 using static Tr.Com.Eimza.LibAxolotl.State.StorageProtos;
 
 namespace Tr.Com.Eimza.LibAxolotl.State
 {
     public class PreKeyRecord
     {
-
         private PreKeyRecordStructure structure;
 
         public PreKeyRecord(uint id, ECKeyPair keyPair)
@@ -46,8 +41,6 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         {
             this.structure = PreKeyRecordStructure.ParseFrom(serialized);
         }
-
-
 
         public uint GetId()
         {

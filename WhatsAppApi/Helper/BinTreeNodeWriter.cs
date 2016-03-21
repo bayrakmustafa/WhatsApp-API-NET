@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace WhatsAppApi.Helper
 {
@@ -115,6 +114,7 @@ namespace WhatsAppApi.Helper
         {
             writeBytes(WhatsApp.SysEncoding.GetBytes(bytes));
         }
+
         protected void writeBytes(byte[] bytes)
         {
             int len = bytes.Length;
@@ -180,6 +180,7 @@ namespace WhatsAppApi.Helper
                 }
             }
         }
+
         protected void writeJid(string user, string server)
         {
             this.buffer.Add(0xfa);

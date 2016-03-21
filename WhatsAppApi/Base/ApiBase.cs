@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -74,10 +73,13 @@ namespace WhatsAppApi
             {
                 case VisibilitySetting.None:
                     return "none";
+
                 case VisibilitySetting.Contacts:
                     return "contacts";
+
                 case VisibilitySetting.Everyone:
                     return "all";
+
                 default:
                     throw new Exception("Invalid visibility setting");
             }
@@ -89,10 +91,13 @@ namespace WhatsAppApi
             {
                 case VisibilityCategory.LastSeenTime:
                     return "last";
+
                 case VisibilityCategory.Status:
                     return "status";
+
                 case VisibilityCategory.ProfilePhoto:
                     return "profile";
+
                 default:
                     throw new Exception("Invalid privacy category");
             }
@@ -104,10 +109,13 @@ namespace WhatsAppApi
             {
                 case "last":
                     return VisibilityCategory.LastSeenTime;
+
                 case "status":
                     return VisibilityCategory.Status;
+
                 case "profile":
                     return VisibilityCategory.ProfilePhoto;
+
                 default:
                     throw new Exception(String.Format("Could not parse {0} as privacy category", data));
             }
@@ -119,10 +127,13 @@ namespace WhatsAppApi
             {
                 case "none":
                     return VisibilitySetting.None;
+
                 case "contacts":
                     return VisibilitySetting.Contacts;
+
                 case "all":
                     return VisibilitySetting.Everyone;
+
                 default:
                     throw new Exception(string.Format("Cound not parse {0} as privacy setting", data));
             }
@@ -245,7 +256,6 @@ namespace WhatsAppApi
 
         private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
-
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
 
             foreach (ImageCodecInfo codec in codecs)

@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl, langboost
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,81 +10,72 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.State.Impl
 {
-	public class InMemorySignedPreKeyStore : SignedPreKeyStore
-	{
+    public class InMemorySignedPreKeyStore : SignedPreKeyStore
+    {
+        private readonly IDictionary<uint, byte[]> store = new Dictionary<uint, byte[]>();
 
-		private readonly IDictionary<uint, byte[]> store = new Dictionary<uint, byte[]>();
+        public SignedPreKeyRecord LoadSignedPreKey(uint signedPreKeyId)
+        {
+            try
+            {
+                if (!store.ContainsKey(signedPreKeyId))
+                {
+                    throw new InvalidKeyIdException("No such signedprekeyrecord! " + signedPreKeyId);
+                }
 
+                byte[] record;
+                store.TryGetValue(signedPreKeyId, out record);  // get()
 
-		public SignedPreKeyRecord LoadSignedPreKey(uint signedPreKeyId)
-		{
-			try
-			{
-				if (!store.ContainsKey(signedPreKeyId))
-				{
-					throw new InvalidKeyIdException("No such signedprekeyrecord! " + signedPreKeyId);
-				}
+                return new SignedPreKeyRecord(record);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
-				byte[] record;
-				store.TryGetValue(signedPreKeyId, out record);  // get()
+        public List<SignedPreKeyRecord> LoadSignedPreKeys()
+        {
+            try
+            {
+                List<SignedPreKeyRecord> results = new List<SignedPreKeyRecord>();
 
-				return new SignedPreKeyRecord(record);
-			}
-			catch (Exception e)
-			{
-				throw new Exception(e.Message);
-			}
-		}
+                foreach (byte[] serialized in store.Values) //values()
+                {
+                    results.Add(new SignedPreKeyRecord(serialized));
+                }
 
+                return results;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
-		public List<SignedPreKeyRecord> LoadSignedPreKeys()
-		{
-			try
-			{
-				List<SignedPreKeyRecord> results = new List<SignedPreKeyRecord>();
+        public void StoreSignedPreKey(uint signedPreKeyId, SignedPreKeyRecord record)
+        {
+            store[signedPreKeyId] = record.Serialize();
+        }
 
-				foreach (byte[] serialized in store.Values) //values()
-				{
-					results.Add(new SignedPreKeyRecord(serialized));
-				}
+        public bool ContainsSignedPreKey(uint signedPreKeyId)
+        {
+            return store.ContainsKey(signedPreKeyId);
+        }
 
-				return results;
-			}
-			catch (Exception e)
-			{
-				throw new Exception(e.Message);
-			}
-		}
-
-
-		public void StoreSignedPreKey(uint signedPreKeyId, SignedPreKeyRecord record)
-		{
-			store[signedPreKeyId] = record.Serialize();
-		}
-
-
-		public bool ContainsSignedPreKey(uint signedPreKeyId)
-		{
-			return store.ContainsKey(signedPreKeyId);
-		}
-
-
-		public void RemoveSignedPreKey(uint signedPreKeyId)
-		{
-			store.Remove(signedPreKeyId);
-		}
-	}
+        public void RemoveSignedPreKey(uint signedPreKeyId)
+        {
+            store.Remove(signedPreKeyId);
+        }
+    }
 }

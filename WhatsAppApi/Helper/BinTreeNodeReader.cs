@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Text;
 
 namespace WhatsAppApi.Helper
 {
@@ -13,7 +11,6 @@ namespace WhatsAppApi.Helper
 
         public BinTreeNodeReader()
         {
-
         }
 
         public void SetKey(byte[] key, byte[] mac)
@@ -23,7 +20,6 @@ namespace WhatsAppApi.Helper
 
         public ProtocolTreeNode NextTree(byte[] pInput = null, bool useDecrypt = true)
         {
-
             if (pInput != null && pInput.Length > 0)
             {
                 this.buffer = new List<byte>();
@@ -171,12 +167,15 @@ namespace WhatsAppApi.Helper
                     case 9:
                         chars.Add(dec.ToString()[0]);
                         break;
+
                     case 10:
                         chars.Add('-');
                         break;
+
                     case 11:
                         chars.Add('.');
                         break;
+
                     default:
                         throw new Exception("Bad nibble: " + dec);
                 }

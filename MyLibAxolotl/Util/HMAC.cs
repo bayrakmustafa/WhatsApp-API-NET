@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,7 +10,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -19,11 +19,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace Tr.Com.Eimza.LibAxolotl.Util
 {
@@ -31,7 +28,8 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
     {
         public static byte[] Sha256sum(byte[] key, byte[] message)
         {
-            try {
+            try
+            {
                 using (var hmac = new HMACSHA256(key))
                 {
                     var result = hmac.ComputeHash(message);
@@ -49,14 +47,16 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
     {
         public static byte[] Sign(byte[] key, byte[] message)
         {
-            try{
+            try
+            {
                 using (var hmac = new HMACSHA256(key))
                 {
                     var result = hmac.ComputeHash(message);
                     return result;
                 }
             }
-            catch (Exception e){
+            catch (Exception e)
+            {
                 throw new InvalidOperationException("Assertion Error", e);
             }
         }
@@ -64,28 +64,30 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
         public static bool Verify(byte[] key, byte[] message, byte[] signature)
         {
             bool err = false;
-            // Initialize the keyed hash object. 
+            // Initialize the keyed hash object.
             using (HMACSHA256 hmac = new HMACSHA256(key))
             {
                 byte[] computedHash = hmac.ComputeHash(message);
 
-                for (int i = 0; i < signature.Length; i++){
-                    if (computedHash[i] != signature[i]){
+                for (int i = 0; i < signature.Length; i++)
+                {
+                    if (computedHash[i] != signature[i])
+                    {
                         err = true;
                     }
                 }
             }
-            if (err){
+            if (err)
+            {
                 Console.WriteLine("Hash values differ! Signed file has been tampered with!");
                 return false;
             }
-            else{
+            else
+            {
                 Console.WriteLine("Hash values agree -- no tampering occurred.");
                 return true;
             }
-
         }
-
     }
 
     public class Encrypt
@@ -118,6 +120,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
                 }
             }
         }
+
         public static byte[] AesCtr(byte[] message, byte[] key, uint counter)
         {
             byte[] iv = new byte[16];
@@ -155,13 +158,13 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
     {
         public static byte[] AesCbcPkcs5(byte[] encryptedContent, byte[] key, byte[] iv)
         {
-        /*    byte[] iv = new byte[16]; //initial vector is 16 bytes
-            byte[] encryptedContent = new byte[secret.Length - 16]; //the rest should be encryptedcontent
+            /*    byte[] iv = new byte[16]; //initial vector is 16 bytes
+                byte[] encryptedContent = new byte[secret.Length - 16]; //the rest should be encryptedcontent
 
-            //Copy data to byte array
-            System.Buffer.BlockCopy(secret, 0, iv, 0, iv.Length);
-            System.Buffer.BlockCopy(secret, iv.Length, encryptedContent, 0, encryptedContent.Length);
-          */
+                //Copy data to byte array
+                System.Buffer.BlockCopy(secret, 0, iv, 0, iv.Length);
+                System.Buffer.BlockCopy(secret, iv.Length, encryptedContent, 0, encryptedContent.Length);
+              */
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -175,12 +178,12 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
                     using (CryptoStream cs = new CryptoStream(ms, cryptor.CreateDecryptor(key, iv), CryptoStreamMode.Write))
                     {
                         cs.Write(encryptedContent, 0, encryptedContent.Length);
-
                     }
                     return ms.ToArray();
                 }
             }
         }
+
         public static byte[] AesCtr(byte[] encryptedContent, byte[] key, uint counter)
         {
             byte[] iv = new byte[16];
@@ -198,13 +201,11 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
                     using (CryptoStream cs = new CryptoStream(ms, cryptor.CreateDecryptor(key, iv), CryptoStreamMode.Write))
                     {
                         cs.Write(encryptedContent, 0, encryptedContent.Length);
-
                     }
                     return ms.ToArray();
                 }
             }
         }
-
     }
 
     public static class CryptoHelper

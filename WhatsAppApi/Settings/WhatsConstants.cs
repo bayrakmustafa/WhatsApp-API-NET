@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace WhatsAppApi.Settings
 {
@@ -66,10 +63,10 @@ namespace WhatsAppApi.Settings
 		//public const string UserAgent = "WhatsApp/2.13.21 S40Version/14.26 Device/Nokia302";
         public const string UserAgent = "WhatsApp/2.12.440 Android/4.3 Device/Xiaomi-HM_1SW";
 
-
-        #endregion
+        #endregion ServerConstants
 
         #region ParserConstants
+
         /// <summary>
         /// The number style used
         /// </summary>
@@ -78,7 +75,12 @@ namespace WhatsAppApi.Settings
         /// <summary>
         /// Unix epoch DateTime
         /// </summary>
-        public static DateTime UnixEpoch = new DateTime(0x7b2, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        #endregion
+        public static DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+        #endregion ParserConstants
+
+        public static String WhatsAppCheckHost = "v.whatsapp.net/v2/exist";
+        public static String WhatsAppRegisterHost = "v.whatsapp.net/v2/register";
+        public static String WhatsAppRequestHost = "v.whatsapp.net/v2/code";
     }
 }

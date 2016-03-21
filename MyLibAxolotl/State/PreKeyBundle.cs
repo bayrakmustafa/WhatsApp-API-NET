@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,17 +10,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using Tr.Com.Eimza.LibAxolotl.Ecc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.State
 {
@@ -30,9 +25,9 @@ namespace Tr.Com.Eimza.LibAxolotl.State
  *
  * @author Moxie Marlinspike
  */
+
     public class PreKeyBundle
     {
-
         private uint registrationId;
 
         private uint deviceId;
@@ -63,6 +58,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the device ID this PreKey belongs to.
          */
+
         public uint GetDeviceId()
         {
             return deviceId;
@@ -71,6 +67,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the unique key ID for this PreKey.
          */
+
         public uint GetPreKeyId()
         {
             return preKeyId;
@@ -79,6 +76,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the public key for this PreKey.
          */
+
         public ECPublicKey GetPreKey()
         {
             return preKeyPublic;
@@ -87,6 +85,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the unique key ID for this signed prekey.
          */
+
         public uint GetSignedPreKeyId()
         {
             return signedPreKeyId;
@@ -95,6 +94,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the signed prekey for this PreKeyBundle.
          */
+
         public ECPublicKey GetSignedPreKey()
         {
             return signedPreKeyPublic;
@@ -103,6 +103,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the signature over the signed  prekey.
          */
+
         public byte[] GetSignedPreKeySignature()
         {
             return signedPreKeySignature;
@@ -111,6 +112,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the {@link org.whispersystems.libaxolotl.IdentityKey} of this PreKeys owner.
          */
+
         public IdentityKey GetIdentityKey()
         {
             return identityKey;
@@ -119,6 +121,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         /**
          * @return the registration ID associated with this PreKey.
          */
+
         public uint GetRegistrationId()
         {
             return registrationId;

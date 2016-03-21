@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WhatsAppApi.Settings;
-
-namespace WhatsAppApi.Account
+﻿namespace WhatsAppApi.Account
 {
     public class WhatsUser
     {
         private string serverUrl;
+
         public string Nickname
         {
             get; set;
         }
+
         public string Jid
         {
             get; private set;

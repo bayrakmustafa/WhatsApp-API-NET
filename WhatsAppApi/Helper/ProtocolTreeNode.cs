@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace WhatsAppApi.Helper
 {
@@ -33,7 +32,8 @@ namespace WhatsAppApi.Helper
 
         public ProtocolTreeNode(string tag, IEnumerable<KeyValue> attributeHash, byte[] data = null)
             : this(tag, attributeHash, new ProtocolTreeNode[0], data)
-        { }
+        {
+        }
 
         public ProtocolTreeNode(string tag, IEnumerable<KeyValue> attributeHash)
             : this(tag, attributeHash, new ProtocolTreeNode[0], null)
@@ -62,7 +62,7 @@ namespace WhatsAppApi.Helper
                     ret += string.Format("--{0} byte--", this.data.Length);
                 }
             }
-            
+
             if (this.children != null && this.children.Count() > 0)
             {
                 foreach (var item in this.children)

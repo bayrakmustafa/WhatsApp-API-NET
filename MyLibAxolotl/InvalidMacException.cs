@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TextSecure.libaxolotl
 {
-    class InvalidMacException : Exception
+    internal class InvalidMacException : Exception
     {
-
         public InvalidMacException(String detailMessage)
-            :base(detailMessage)
+            : base(detailMessage)
         {
         }
 
         public InvalidMacException(Exception exception)
-            :base(exception.Message)
+            : base(exception.Message)
         {
-
         }
     }
 }

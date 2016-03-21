@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,22 +10,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.Protocol
 {
     public abstract class CiphertextMessage // interface
     {
-
         public const uint UNSUPPORTED_VERSION = 1;
         public const uint CURRENT_VERSION = 3;
 
@@ -38,7 +31,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
         public const uint ENCRYPTED_MESSAGE_OVERHEAD = 53;
 
         public abstract byte[] Serialize(); // -abstract
-        public abstract uint GetKeyType(); // -abstract
 
+        public abstract uint GetKeyType(); // -abstract
     }
 }

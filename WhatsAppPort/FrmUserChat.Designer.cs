@@ -68,7 +68,7 @@
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(75, 23);
             this.btnSend.TabIndex = 1;
-            this.btnSend.Text = "Senden";
+            this.btnSend.Text = "Send";
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
@@ -78,9 +78,9 @@
             this.lblIsTyping.AutoSize = true;
             this.lblIsTyping.Location = new System.Drawing.Point(12, 325);
             this.lblIsTyping.Name = "lblIsTyping";
-            this.lblIsTyping.Size = new System.Drawing.Size(91, 13);
+            this.lblIsTyping.Size = new System.Drawing.Size(51, 13);
             this.lblIsTyping.TabIndex = 0;
-            this.lblIsTyping.Text = "Schreibt gerade...";
+            this.lblIsTyping.Text = "Typing....";
             this.lblIsTyping.Visible = false;
             // 
             // timerTyping
@@ -88,7 +88,7 @@
             this.timerTyping.Interval = 2000;
             this.timerTyping.Tick += new System.EventHandler(this.timerTyping_Tick);
             // 
-            // frmUserChat
+            // FrmUserChat
             // 
             this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -98,8 +98,8 @@
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtBxSentText);
             this.Controls.Add(this.txtBxChat);
-            this.Name = "frmUserChat";
-            this.Text = "Benutzerchat";
+            this.Name = "FrmUserChat";
+            this.Text = "User Chat";
             this.ResumeLayout(false);
             this.PerformLayout();
 

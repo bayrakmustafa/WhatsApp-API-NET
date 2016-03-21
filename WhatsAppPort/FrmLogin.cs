@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace WhatsAppPort
@@ -44,7 +38,7 @@ namespace WhatsAppPort
                 WhatSocket.Create(user, pass, this.textBoxNick.Text, true);
                 WhatSocket.Instance.Connect();
                 WhatSocket.Instance.Login();
-                //check login status
+                //Check Login Status
                 if (WhatSocket.Instance.ConnectionStatus == WhatsAppApi.WhatsApp.CONNECTION_STATUS.LOGGEDIN)
                 {
                     return true;
@@ -52,7 +46,6 @@ namespace WhatsAppPort
             }
             catch (Exception)
             {
-
             }
             return false;
         }

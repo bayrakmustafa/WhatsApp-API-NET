@@ -1,4 +1,4 @@
-Chat API .NET
+WhatsApp Chat API .NET
 ===========
 
 This is an API written in C# but it can be used in any .NET language. It's a fork from WhatsAPINet, which is based on Chat API (php).

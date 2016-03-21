@@ -1,6 +1,11 @@
-﻿/** 
+﻿using Strilanc.Value;
+using System;
+using System.IO;
+using System.Text;
+
+/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,7 +15,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -19,19 +24,11 @@ using Tr.Com.Eimza.LibAxolotl.Ecc;
 using Tr.Com.Eimza.LibAxolotl.Kdf;
 using Tr.Com.Eimza.LibAxolotl.State;
 using Tr.Com.Eimza.LibAxolotl.Util;
-using Strilanc.Value;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.Ratchet
 {
     public class RatchetingSession
     {
-
         public static void InitializeSession(SessionState sessionState,
                                              uint sessionVersion,
                                              SymmetricAxolotlParameters parameters)
@@ -95,7 +92,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Ratchet
                 secrets.Write(agree2, 0, agree2.Length);
                 secrets.Write(agree3, 0, agree3.Length);
 
-
                 if (sessionVersion >= 3 && parameters.GetTheirOneTimePreKey().HasValue)
                 {
                     byte[] agree4 = Curve.CalculateAgreement(parameters.GetTheirOneTimePreKey().ForceGetValue(),
@@ -120,7 +116,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Ratchet
                                              uint sessionVersion,
                                              BobAxolotlParameters parameters)
         {
-
             try
             {
                 sessionState.SetSessionVersion(sessionVersion);

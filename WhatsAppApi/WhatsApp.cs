@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -17,7 +15,7 @@ using WhatsAppApi.Settings;
 namespace WhatsAppApi
 {
     /// <summary>
-    /// Main api interface
+    /// Main API Interface
     /// </summary>
     public class WhatsApp : WhatsSendBase
     {
@@ -39,7 +37,6 @@ namespace WhatsAppApi
             this.SendMessage(tmpMessage, this.hidden);
         }
 
-        //BRIAN ADDED FOR LOCATION SHARING 
         public string SendMessageLocation(string to, string name, double lat, double lon)
         {
             var tmpMessage = new FMessage(GetJID(to), true) { location_details = name, media_wa_type = FMessage.Type.Location, latitude = lat, longitude = lon };
@@ -77,7 +74,6 @@ namespace WhatsAppApi
             this.SendNode(node);
         }
 
-        // BRIAN MODIFIED ADDED RETURN STRING .. 
         public string SendMessageImage(string to, byte[] ImageData, ImageType imgtype)
         {
             FMessage msg = this.GetFmessageImage(to, ImageData, imgtype);
@@ -100,30 +96,32 @@ namespace WhatsAppApi
                     type = "image/png";
                     extension = "png";
                     break;
+
                 case ImageType.GIF:
                     type = "image/gif";
                     extension = "gif";
                     break;
+
                 default:
                     type = "image/jpeg";
                     extension = "jpg";
                     break;
             }
 
-            //create hash
+            //Create Hash
             string filehash = string.Empty;
-            using(HashAlgorithm sha = HashAlgorithm.Create("sha256"))
+            using (HashAlgorithm sha = HashAlgorithm.Create("sha256"))
             {
                 byte[] raw = sha.ComputeHash(ImageData);
                 filehash = Convert.ToBase64String(raw);
             }
 
-            //request upload
+            //Request Upload
             WaUploadResponse response = this.UploadFile(filehash, "image", ImageData.Length, ImageData, to, type, extension);
 
             if (response != null && !String.IsNullOrEmpty(response.url))
             {
-                //send message
+                //Send Message
                 FMessage msg = new FMessage(to, true)
                 {
                     media_wa_type = FMessage.Type.Image,
@@ -138,7 +136,6 @@ namespace WhatsAppApi
             return null;
         }
 
-        // BRIAN MODIFIED FOR RETURN ID 
         public string SendMessageVideo(string to, byte[] videoData, VideoType vidtype)
         {
             FMessage msg = this.GetFmessageVideo(to, videoData, vidtype);
@@ -161,10 +158,12 @@ namespace WhatsAppApi
                     type = "video/quicktime";
                     extension = "mov";
                     break;
+
                 case VideoType.AVI:
                     type = "video/x-msvideo";
                     extension = "avi";
                     break;
+
                 default:
                     type = "video/mp4";
                     extension = "mp4";
@@ -185,7 +184,8 @@ namespace WhatsAppApi
             if (response != null && !String.IsNullOrEmpty(response.url))
             {
                 //send message
-                FMessage msg = new FMessage(to, true) {
+                FMessage msg = new FMessage(to, true)
+                {
                     media_wa_type = FMessage.Type.Video,
                     media_mime_type = response.mimetype,
                     media_name = response.url.Split('/').Last(),
@@ -218,10 +218,12 @@ namespace WhatsAppApi
                     type = "audio/wav";
                     extension = "wav";
                     break;
+
                 case AudioType.OGG:
                     type = "audio/ogg";
                     extension = "ogg";
                     break;
+
                 default:
                     type = "audio/mpeg";
                     extension = "mp3";
@@ -242,7 +244,8 @@ namespace WhatsAppApi
             if (response != null && !String.IsNullOrEmpty(response.url))
             {
                 //send message
-                FMessage msg = new FMessage(to, true) {
+                FMessage msg = new FMessage(to, true)
+                {
                     media_wa_type = FMessage.Type.Audio,
                     media_mime_type = response.mimetype,
                     media_name = response.url.Split('/').Last(),
@@ -277,7 +280,7 @@ namespace WhatsAppApi
                 if (m_usePoolMessages)
                     System.Threading.Thread.Sleep(500);
                 else
-                this.PollMessage();
+                    this.PollMessage();
                 i++;
             }
             if (this.uploadResponse != null && this.uploadResponse.GetChild("duplicate") != null)
@@ -337,7 +340,7 @@ namespace WhatsAppApi
                     SslStream ssl = new SslStream(tc.GetStream());
                     try
                     {
-                    ssl.AuthenticateAsClient(uri.Host);
+                        ssl.AuthenticateAsClient(uri.Host);
                     }
                     catch (Exception e)
                     {
@@ -372,7 +375,8 @@ namespace WhatsAppApi
                     }
                 }
                 catch (Exception)
-                { }
+                {
+                }
             }
             return null;
         }
@@ -472,8 +476,8 @@ namespace WhatsAppApi
         {
             string id = TicketCounter.MakeId();
             IEnumerable<ProtocolTreeNode> participant = from jid in participants select new ProtocolTreeNode("participant", new[] { new KeyValue("jid", GetJID(jid)) });
-	    var child = new ProtocolTreeNode("create", new[] { new KeyValue("subject", subject) }, new ProtocolTreeNode[] { (ProtocolTreeNode) participant });
-	    var node = new ProtocolTreeNode("iq", new[] { new KeyValue("id", id), new KeyValue("type", "set"), new KeyValue("xmlns", "w:g2"), new KeyValue("to", "g.us") }, new ProtocolTreeNode[] { child });
+            var child = new ProtocolTreeNode("create", new[] { new KeyValue("subject", subject) }, new ProtocolTreeNode[] { (ProtocolTreeNode)participant });
+            var node = new ProtocolTreeNode("iq", new[] { new KeyValue("id", id), new KeyValue("type", "set"), new KeyValue("xmlns", "w:g2"), new KeyValue("to", "g.us") }, new ProtocolTreeNode[] { child });
             this.SendNode(node);
         }
 
@@ -654,7 +658,6 @@ namespace WhatsAppApi
             }
         }
 
-        //BRIAN MODIFIED FOR RETURN ID
         public string SendMessageBroadcast(string[] to, string message)
         {
             var tmpMessage = new FMessage(string.Empty, true) { data = message, media_wa_type = FMessage.Type.Undefined };
@@ -662,7 +665,6 @@ namespace WhatsAppApi
             return tmpMessage.identifier_key.ToString();
         }
 
-        //BRIAN MODIFIED FOR RETURN ID
         public string SendMessageBroadcastImage(string[] recipients, byte[] ImageData, ImageType imgtype)
         {
             string to;
@@ -682,7 +684,6 @@ namespace WhatsAppApi
             return "";
         }
 
-        //BRIAN MODIFIED FOR RETURN ID
         public string SendMessageBroadcastAudio(string[] recipients, byte[] AudioData, AudioType audtype)
         {
             string to;
@@ -702,7 +703,6 @@ namespace WhatsAppApi
             return "";
         }
 
-        //BRIAN MODIFIED FOR RETURN ID
         public string SendMessageBroadcastVideo(string[] recipients, byte[] VideoData, VideoType vidtype)
         {
             string to;
@@ -722,40 +722,39 @@ namespace WhatsAppApi
             return "";
         }
 
-		public void SendMessageBroadcast(string[] to, FMessage message)
-		{
-			if (to != null && to.Length > 0 && message != null && !string.IsNullOrEmpty(message.data))
-			{
-				ProtocolTreeNode child;
-				if (message.media_wa_type == FMessage.Type.Undefined)
-				{
-					//text broadcast
-					child = new ProtocolTreeNode("body", null, null, WhatsApp.SysEncoding.GetBytes(message.data));
-				}
-				else
-				{
-					throw new NotImplementedException();
-				}
+        public void SendMessageBroadcast(string[] to, FMessage message)
+        {
+            if (to != null && to.Length > 0 && message != null && !string.IsNullOrEmpty(message.data))
+            {
+                ProtocolTreeNode child;
+                if (message.media_wa_type == FMessage.Type.Undefined)
+                {
+                    //text broadcast
+                    child = new ProtocolTreeNode("body", null, null, WhatsApp.SysEncoding.GetBytes(message.data));
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
 
-				List<ProtocolTreeNode> toNodes = new List<ProtocolTreeNode>();
-				foreach (string target in to)
-				{
-					toNodes.Add(new ProtocolTreeNode("to", new KeyValue[] { new KeyValue("jid", WhatsAppApi.WhatsApp.GetJID(target)) }));
-				}
+                List<ProtocolTreeNode> toNodes = new List<ProtocolTreeNode>();
+                foreach (string target in to)
+                {
+                    toNodes.Add(new ProtocolTreeNode("to", new KeyValue[] { new KeyValue("jid", WhatsAppApi.WhatsApp.GetJID(target)) }));
+                }
 
-				ProtocolTreeNode broadcastNode = new ProtocolTreeNode("broadcast", null, toNodes);
-				Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-				ProtocolTreeNode messageNode = new ProtocolTreeNode("message", new KeyValue[] {
-					new KeyValue("to", unixTimestamp.ToString() + "@broadcast"),
-					new KeyValue("type", message.media_wa_type == FMessage.Type.Undefined?"text":"media"),
-					new KeyValue("id", message.identifier_key.id)
-				}, new ProtocolTreeNode[] {
-					broadcastNode,
-					child
-				});
-				this.SendNode(messageNode);
-			}
-
+                ProtocolTreeNode broadcastNode = new ProtocolTreeNode("broadcast", null, toNodes);
+                Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                ProtocolTreeNode messageNode = new ProtocolTreeNode("message", new KeyValue[] {
+                    new KeyValue("to", unixTimestamp.ToString() + "@broadcast"),
+                    new KeyValue("type", message.media_wa_type == FMessage.Type.Undefined?"text":"media"),
+                    new KeyValue("id", message.identifier_key.id)
+                }, new ProtocolTreeNode[] {
+                    broadcastNode,
+                    child
+                });
+                this.SendNode(messageNode);
+            }
         }
 
         public void SendNop()
@@ -850,7 +849,7 @@ namespace WhatsAppApi
                 new KeyValue("id", id),
                 new KeyValue("xmlns", "status")
             },
-            new [] {
+            new[] {
                 new ProtocolTreeNode("status", null, System.Text.Encoding.UTF8.GetBytes(status))
             });
 
@@ -1001,13 +1000,13 @@ namespace WhatsAppApi
 
         protected static ProtocolTreeNode GetMessageNode(FMessage message, ProtocolTreeNode pNode, bool hidden = false)
         {
-			Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             return new ProtocolTreeNode("message", new[] {
                 new KeyValue("to", message.identifier_key.remote_jid),
                 new KeyValue("type", message.media_wa_type == FMessage.Type.Undefined?"text":"media"),
                 new KeyValue("id", message.identifier_key.id),
-				new KeyValue("t",unixTimestamp.ToString())
-			},
+                new KeyValue("t",unixTimestamp.ToString())
+            },
             new ProtocolTreeNode[] {
                 pNode
             });

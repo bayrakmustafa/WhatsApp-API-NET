@@ -65,7 +65,7 @@
             this.btnAddContact.UseVisualStyleBackColor = true;
             this.btnAddContact.Click += new System.EventHandler(this.btnAddContact_Click);
             // 
-            // frmForm
+            // FrmForm
             // 
             this.AcceptButton = this.btnAddContact;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -73,8 +73,8 @@
             this.ClientSize = new System.Drawing.Size(228, 380);
             this.Controls.Add(this.btnAddContact);
             this.Controls.Add(this.listViewContacts);
-            this.Name = "frmForm";
-            this.Text = "Form1";
+            this.Name = "FrmForm";
+            this.Text = "Contacts";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);

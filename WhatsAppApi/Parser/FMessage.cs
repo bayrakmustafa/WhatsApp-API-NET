@@ -43,6 +43,7 @@ namespace WhatsAppApi.Parser
             this.User = remote_user;
             this.identifier_key = new FMessageIdentifierKey(remote_user.GetFullJid(), from_me, TicketManager.GenerateId());
         }
+
         internal FMessage(string remote_jid, bool from_me)
         {
             this.status = Status.Undefined;
@@ -57,6 +58,7 @@ namespace WhatsAppApi.Parser
             this.thumb_image = image;
             this.timestamp = new DateTime?(DateTime.Now);
         }
+
         public FMessage(WhatsAppApi.Account.WhatsUser remote_user, string data, object image)
             : this(remote_user, true)
         {

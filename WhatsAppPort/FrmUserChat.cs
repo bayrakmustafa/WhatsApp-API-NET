@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using WhatsAppApi.Account;
-using WhatsAppApi.Helper;
 using WhatsAppApi.Parser;
 using WhatsAppApi.Response;
 
@@ -22,6 +14,7 @@ namespace WhatsAppPort
         //public event Action MessageAckEvent;
         //public event ProtocolDelegate MessageRecievedEvent;
         private User user;
+
         private bool isTyping;
 
         public FrmUserChat(User user)
@@ -40,6 +33,7 @@ namespace WhatsAppPort
 
             this.lblIsTyping.Visible = value;
         }
+
         private void WhatsEventHandlerOnMessageRecievedEvent(FMessage mess)
         {
             var tmpMes = mess.data;

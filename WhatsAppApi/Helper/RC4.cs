@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WhatsAppApi.Helper
+﻿namespace WhatsAppApi.Helper
 {
     public class RC4
     {

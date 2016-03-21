@@ -1,6 +1,6 @@
-﻿/** 
+﻿/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,17 +10,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-using Tr.Com.Eimza.LibAxolotl.State;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl.State
 {
@@ -29,9 +22,9 @@ namespace Tr.Com.Eimza.LibAxolotl.State
      *
      * @author
      */
+
     public interface PreKeyStore
     {
-
         /**
          * Load a local PreKeyRecord.
          *
@@ -39,6 +32,7 @@ namespace Tr.Com.Eimza.LibAxolotl.State
          * @return the corresponding PreKeyRecord.
          * @throws InvalidKeyIdException when there is no corresponding PreKeyRecord.
          */
+
         PreKeyRecord LoadPreKey(uint preKeyId);
 
         /**
@@ -47,20 +41,22 @@ namespace Tr.Com.Eimza.LibAxolotl.State
          * @param preKeyId the ID of the PreKeyRecord to store.
          * @param record the PreKeyRecord.
          */
+
         void StorePreKey(uint preKeyId, PreKeyRecord record);
 
         /**
          * @param preKeyId A PreKeyRecord ID.
          * @return true if the store has a record for the preKeyId, otherwise false.
          */
-         bool ContainsPreKey(uint preKeyId);
+
+        bool ContainsPreKey(uint preKeyId);
 
         /**
          * Delete a PreKeyRecord from local storage.
          *
          * @param preKeyId The ID of the PreKeyRecord to remove.
          */
-        void RemovePreKey(uint preKeyId);
 
+        void RemovePreKey(uint preKeyId);
     }
 }

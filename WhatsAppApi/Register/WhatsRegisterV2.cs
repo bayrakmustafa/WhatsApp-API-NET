@@ -83,8 +83,8 @@ namespace WhatsAppApi.Register
                 RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgent);
                 RequestHttpHeaders.Add("Accept", "text/json");
 
-                response = GetResponse("https://v.whatsapp.net/v2/code", QueryStringParameters, RequestHttpHeaders);
-                // request = String.Format("https://v.whatsapp.net/v2/code?method={0}&in={1}&cc={2}&id={3}&lg={4}&lc={5}&token={6}&sim_mcc=000&sim_mnc=000", method, pn.Number, pn.CC, id, pn.ISO639, pn.ISO3166, token, pn.MCC, pn.MNC);
+                response = GetResponse("https://" + WhatsConstants.WhatsAppRequestHost, QueryStringParameters, RequestHttpHeaders);
+                // request = String.Format("https://" + WhatsConstants.WhatsAppRequestHost + ?method={0}&in={1}&cc={2}&id={3}&lg={4}&lc={5}&token={6}&sim_mcc=000&sim_mnc=000", method, pn.Number, pn.CC, id, pn.ISO639, pn.ISO3166, token, pn.MCC, pn.MNC);
                 // response = GetResponse(request);
                 password = response.GetJsonValue("pw");
                 if (!string.IsNullOrEmpty(password))
@@ -118,7 +118,7 @@ namespace WhatsAppApi.Register
                 }
                 PhoneNumber pn = new PhoneNumber(phoneNumber);
 
-                string uri = string.Format("https://v.whatsapp.net/v2/register?cc={0}&in={1}&id={2}&code={3}", pn.CC, pn.Number, id, code);
+                string uri = string.Format("https://" + WhatsConstants.WhatsAppRegisterHost + "?cc={0}&in={1}&id={2}&code={3}", pn.CC, pn.Number, id, code);
                 response = GetResponse(uri);
                 if (response.GetJsonValue("status") == "ok")
                 {
@@ -149,7 +149,7 @@ namespace WhatsAppApi.Register
                 }
                 PhoneNumber pn = new PhoneNumber(phoneNumber);
 
-                string uri = string.Format("https://v.whatsapp.net/v2/exist?cc={0}&in={1}&id={2}&&lg={3}&lc={4}", pn.CC, pn.Number, id, pn.ISO639, pn.ISO3166);
+                string uri = String.Format("https://" + WhatsConstants.WhatsAppCheckHost + "?cc={0}&in={1}&id={2}&&lg={3}&lc={4}", pn.CC, pn.Number, id, pn.ISO639, pn.ISO3166);
                 response = GetResponse(uri);
                 if (response.GetJsonValue("status") == "ok")
                 {
@@ -163,7 +163,6 @@ namespace WhatsAppApi.Register
             }
         }
 
-        // BRIAN ADDED
         private static string GetResponse(string url, NameValueCollection QueryStringParameters = null, NameValueCollection RequestHeaders = null)
         {
             string ResponseText = null;
@@ -257,7 +256,7 @@ namespace WhatsAppApi.Register
                     i > 127
                 )
                 {
-                    //encode 
+                    //encode
                     sb.Append('%');
                     sb.AppendFormat("{0:x2}", (byte)c);
                 }
@@ -288,7 +287,6 @@ namespace WhatsAppApi.Register
         {
             return string.Join(string.Empty, MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(s)).Select(item => item.ToString("x2")).ToArray());
         }
-
 
         private static void GetLanguageAndLocale(this CultureInfo self, out string language, out string locale)
         {

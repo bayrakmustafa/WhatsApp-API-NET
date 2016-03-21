@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using WhatsAppApi.Helper;
 using WhatsAppApi.Parser;
 using WhatsAppApi.Response;
 using WhatsAppApi.Settings;
-
 
 namespace WhatsAppApi
 {
@@ -146,7 +144,6 @@ namespace WhatsAppApi
                 b.AddRange(WhatsApp.SysEncoding.GetBytes(this.phoneNumber));
                 b.AddRange(this._ChallengeBytes);
 
-
                 byte[] data = b.ToArray();
                 this.BinWriter.Key.EncodeMessage(data, 0, 4, data.Length - 4);
                 var node = new ProtocolTreeNode("response", null, null, data);
@@ -204,11 +201,13 @@ namespace WhatsAppApi
                                 //delivered to target
                                 this.FireOnGetMessageReceivedClient(from, id);
                                 break;
+
                             case "read":
                                 this.FireOnGetMessageReadedClient(from, id);
                                 //read by target
                                 //todo
                                 break;
+
                             case "played":
                                 //played by target
                                 //todo
@@ -226,7 +225,6 @@ namespace WhatsAppApi
                         SendNotificationAck(node, type);
                     }
 
-                    //BRIAN AxolotlCrypt
                     if (ProtocolTreeNode.TagEquals(node, "retry"))
                     {
                         SendGetCipherKeysFromUser(ExtractNumber(node.GetAttribute("from")), true);
@@ -236,7 +234,6 @@ namespace WhatsAppApi
                     {
                         this.HandleMessage(node, autoReceipt);
                     }
-
 
                     if (ProtocolTreeNode.TagEquals(node, "iq"))
                     {
@@ -269,9 +266,11 @@ namespace WhatsAppApi
                                 case "dirty":
                                     this.SendClearDirty(child.GetAttribute("type"));
                                     break;
+
                                 case "offline":
                                     //this.SendQrSync(null);
                                     break;
+
                                 default:
                                     throw new NotImplementedException(node.NodeString());
                             }
@@ -286,9 +285,11 @@ namespace WhatsAppApi
                             case "composing":
                                 this.FireOnGetTyping(node.GetAttribute("from"));
                                 break;
+
                             case "paused":
                                 this.FireOnGetPaused(node.GetAttribute("from"));
                                 break;
+
                             default:
                                 throw new NotImplementedException(node.NodeString());
                         }
@@ -319,7 +320,6 @@ namespace WhatsAppApi
             return false;
         }
 
-        //BRIAN MADE PUBLIC FIXME:
         public void HandleMessage(ProtocolTreeNode node, bool autoReceipt)
         {
             if (!string.IsNullOrEmpty(node.GetAttribute("notify")))
@@ -331,7 +331,6 @@ namespace WhatsAppApi
             {
                 throw new NotImplementedException(node.NodeString());
             }
-
 
             if (node.GetChild("body") != null || node.GetChild("enc") != null)
             {
@@ -376,6 +375,7 @@ namespace WhatsAppApi
                         preview = media.GetData();
                         this.FireOnGetMessageImage(node, from, id, file, size, url, preview, UserName);
                         break;
+
                     case "audio":
                         file = media.GetAttribute("file");
                         size = Int32.Parse(media.GetAttribute("size"));
@@ -383,6 +383,7 @@ namespace WhatsAppApi
                         preview = media.GetData();
                         this.FireOnGetMessageAudio(node, from, id, file, size, url, preview, UserName);
                         break;
+
                     case "video":
                         file = media.GetAttribute("file");
                         size = Int32.Parse(media.GetAttribute("size"));
@@ -390,6 +391,7 @@ namespace WhatsAppApi
                         preview = media.GetData();
                         this.FireOnGetMessageVideo(node, from, id, file, size, url, preview, UserName);
                         break;
+
                     case "location":
                         double lon = double.Parse(media.GetAttribute("longitude"), System.Globalization.CultureInfo.InvariantCulture);
                         double lat = double.Parse(media.GetAttribute("latitude"), System.Globalization.CultureInfo.InvariantCulture);
@@ -398,6 +400,7 @@ namespace WhatsAppApi
                         url = media.GetAttribute("url");
                         this.FireOnGetMessageLocation(node, from, id, lon, lat, url, name, preview, UserName);
                         break;
+
                     case "vcard":
                         ProtocolTreeNode vcard = media.GetChild("vcard");
                         name = vcard.GetAttribute("name");
@@ -412,13 +415,16 @@ namespace WhatsAppApi
         protected void HandleIq(ProtocolTreeNode node)
         {
             #region error iq
+
             if (node.GetAttribute("type") == "error")
             {
                 this.FireOnError(node.GetAttribute("id"), node.GetAttribute("from"), Int32.Parse(node.GetChild("error").GetAttribute("code")), node.GetChild("error").GetAttribute("text"));
             }
-            #endregion
+
+            #endregion error iq
 
             #region sync iq
+
             if (node.GetChild("sync") != null)
             {
                 //sync result
@@ -447,9 +453,11 @@ namespace WhatsAppApi
                 Int32.TryParse(sync.GetAttribute("index"), out index);
                 this.FireOnGetSyncResult(index, sync.GetAttribute("sid"), existingUsers, failedNumbers.ToArray());
             }
-            #endregion 
+
+            #endregion sync iq
 
             #region type iq
+
             if (node.GetAttribute("type").Equals("result", StringComparison.OrdinalIgnoreCase)
                 && node.GetChild("query") != null)
             {
@@ -481,17 +489,21 @@ namespace WhatsAppApi
                     this.FireOnGetPhoto(from, id, dat);
                 }
             }
-            #endregion
+
+            #endregion type iq
 
             #region ping iq
+
             if (node.GetAttribute("type").Equals("get", StringComparison.OrdinalIgnoreCase)
                 && node.GetChild("ping") != null)
             {
                 this.SendPong(node.GetAttribute("id"));
             }
-            #endregion
+
+            #endregion ping iq
 
             #region group result iq
+
             if (node.GetAttribute("type").Equals("result", StringComparison.OrdinalIgnoreCase)
                 && node.GetChild("group") != null)
             {
@@ -510,9 +522,11 @@ namespace WhatsAppApi
                 }
                 this.FireOnGetGroups(groups.ToArray());
             }
-            #endregion
+
+            #endregion group result iq
 
             #region participant result iq
+
             if (node.GetAttribute("type").Equals("result", StringComparison.OrdinalIgnoreCase)
                 && node.GetChild("participant") != null)
             {
@@ -527,9 +541,11 @@ namespace WhatsAppApi
                 }
                 this.FireOnGetGroupParticipants(node.GetAttribute("from"), participants.ToArray());
             }
-            #endregion
+
+            #endregion participant result iq
 
             #region status result iq
+
             if (node.GetAttribute("type") == "result" && node.GetChild("status") != null)
             {
                 foreach (ProtocolTreeNode status in node.GetChild("status").GetAllChildren())
@@ -540,9 +556,11 @@ namespace WhatsAppApi
                         WhatsApp.SysEncoding.GetString(status.GetData()));
                 }
             }
-            #endregion
 
-            #region privacy result iq
+            #endregion status result iq
+
+            #region privacy result IQ
+
             if (node.GetAttribute("type") == "result" && node.GetChild("privacy") != null)
             {
                 Dictionary<VisibilityCategory, VisibilitySetting> settings = new Dictionary<VisibilityCategory, VisibilitySetting>();
@@ -555,14 +573,17 @@ namespace WhatsAppApi
                 }
                 this.FireOnGetPrivacySettings(settings);
             }
-            #endregion
 
-            #region CipherKeys iq BRIAN
+            #endregion privacy result IQ
+
+            #region CipherKeys IQ
+
             ProtocolTreeNode[] pnodes = ProcessIqTreeNode(node);
             if (pnodes != null)
                 foreach (ProtocolTreeNode pnode in pnodes)
                     this.HandleMessage(pnode, true);
-            #endregion
+
+            #endregion CipherKeys IQ
         }
 
         protected void HandleNotification(ProtocolTreeNode node)
@@ -583,12 +604,14 @@ namespace WhatsAppApi
                     }
 
                     break;
+
                 case "picture":
                     ProtocolTreeNode child = node.children.FirstOrDefault();
                     this.FireOnNotificationPicture(child.tag,
                         child.GetAttribute("jid"),
                         child.GetAttribute("id"));
                     break;
+
                 case "status":
                     ProtocolTreeNode child2 = node.children.FirstOrDefault();
                     this.FireOnGetStatus(node.GetAttribute("from"),
@@ -596,6 +619,7 @@ namespace WhatsAppApi
                         node.GetAttribute("notify"),
                         System.Text.Encoding.UTF8.GetString(child2.GetData()));
                     break;
+
                 case "subject":
                     //fire username notify
                     this.FireOnGetContactName(node.GetAttribute("participant"),
@@ -607,9 +631,11 @@ namespace WhatsAppApi
                         System.Text.Encoding.UTF8.GetString(node.GetChild("body").GetData()),
                         GetDateTimeFromTimestamp(node.GetAttribute("t")));
                     break;
+
                 case "contacts":
                     //TODO
                     break;
+
                 case "participant":
                     string gjid = node.GetAttribute("from");
                     string t = node.GetAttribute("t");
@@ -716,7 +742,6 @@ namespace WhatsAppApi
 
         protected void SendMessageReceived(FMessage message, string type = "read")
         {
-
             KeyValue toAttrib = new KeyValue("to", message.identifier_key.remote_jid);
             KeyValue idAttrib = new KeyValue("id", message.identifier_key.id);
 
@@ -758,6 +783,5 @@ namespace WhatsAppApi
                                                              }, tmpChild);
             this.SendNode(resultNode);
         }
-
     }
 }

@@ -1,6 +1,9 @@
-﻿/** 
+﻿using Strilanc.Value;
+using System;
+
+/**
  * Copyright (C) 2015 smndtrl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -10,7 +13,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -21,12 +24,6 @@ using Tr.Com.Eimza.LibAxolotl.Protocol;
 using Tr.Com.Eimza.LibAxolotl.Ratchet;
 using Tr.Com.Eimza.LibAxolotl.State;
 using Tr.Com.Eimza.LibAxolotl.Util;
-using Strilanc.Value;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tr.Com.Eimza.LibAxolotl
 {
@@ -47,9 +44,9 @@ namespace Tr.Com.Eimza.LibAxolotl
  *
  * @author Moxie Marlinspike
  */
+
     public class SessionBuilder
     {
-
         private readonly SessionStore sessionStore;
         private readonly PreKeyStore preKeyStore;
         private readonly SignedPreKeyStore signedPreKeyStore;
@@ -64,6 +61,7 @@ namespace Tr.Com.Eimza.LibAxolotl
          * @param identityKeyStore The {@link org.whispersystems.libaxolotl.state.IdentityKeyStore} containing the client's identity key information.
          * @param remoteAddress The address of the remote user to build a session with.
          */
+
         public SessionBuilder(SessionStore sessionStore,
                               PreKeyStore preKeyStore,
                               SignedPreKeyStore signedPreKeyStore,
@@ -82,6 +80,7 @@ namespace Tr.Com.Eimza.LibAxolotl
          * @param store The {@link org.whispersystems.libaxolotl.state.AxolotlStore} to store all state information in.
          * @param remoteAddress The address of the remote user to build a session with.
          */
+
         public SessionBuilder(AxolotlStore store, AxolotlAddress remoteAddress)
             : this(store, store, store, store, remoteAddress)
         {
@@ -102,7 +101,8 @@ namespace Tr.Com.Eimza.LibAxolotl
          * @throws org.whispersystems.libaxolotl.UntrustedIdentityException when the {@link IdentityKey} of the sender is untrusted.
          */
         /*package*/
-        internal May<uint>  Process(SessionRecord sessionRecord, PreKeyWhisperMessage message)
+
+        internal May<uint> Process(SessionRecord sessionRecord, PreKeyWhisperMessage message)
         {
             uint messageVersion = message.GetMessageVersion();
             IdentityKey theirIdentityKey = message.GetIdentityKey();
@@ -116,9 +116,16 @@ namespace Tr.Com.Eimza.LibAxolotl
 
             switch (messageVersion)
             {
-                case 2: unsignedPreKeyId = ProcessV2(sessionRecord, message); break;
-                case 3: unsignedPreKeyId = ProcessV3(sessionRecord, message); break;
-                default: throw new Exception("Unknown version: " + messageVersion);
+                case 2:
+                    unsignedPreKeyId = ProcessV2(sessionRecord, message);
+                    break;
+
+                case 3:
+                    unsignedPreKeyId = ProcessV3(sessionRecord, message);
+                    break;
+
+                default:
+                    throw new Exception("Unknown version: " + messageVersion);
             }
 
             identityKeyStore.SaveIdentity(remoteAddress.GetName(), theirIdentityKey);
@@ -127,7 +134,6 @@ namespace Tr.Com.Eimza.LibAxolotl
 
         private May<uint> ProcessV3(SessionRecord sessionRecord, PreKeyWhisperMessage message)
         {
-
             if (sessionRecord.HasSessionState(message.GetMessageVersion(), message.GetBaseKey().Serialize()))
             {
                 //Log.w(TAG, "We've already setup a session for this V3 message, letting bundled message fall through...");
@@ -153,7 +159,8 @@ namespace Tr.Com.Eimza.LibAxolotl
                 parameters.SetOurOneTimePreKey(May<ECKeyPair>.NoValue);
             }
 
-            if (!sessionRecord.IsFresh()) sessionRecord.ArchiveCurrentState();
+            if (!sessionRecord.IsFresh())
+                sessionRecord.ArchiveCurrentState();
 
             RatchetingSession.InitializeSession(sessionRecord.GetSessionState(), message.GetMessageVersion(), parameters.Create());
 
@@ -196,7 +203,8 @@ namespace Tr.Com.Eimza.LibAxolotl
                           .SetTheirIdentityKey(message.GetIdentityKey())
                           .SetTheirBaseKey(message.GetBaseKey());
 
-            if (!sessionRecord.IsFresh()) sessionRecord.ArchiveCurrentState();
+            if (!sessionRecord.IsFresh())
+                sessionRecord.ArchiveCurrentState();
 
             RatchetingSession.InitializeSession(sessionRecord.GetSessionState(), message.GetMessageVersion(), parameters.Create());
 
@@ -225,6 +233,7 @@ namespace Tr.Com.Eimza.LibAxolotl
          *                                                                  {@link IdentityKey} is not
          *                                                                  trusted.
          */
+
         public void Process(PreKeyBundle preKey)
         {
             lock (SessionCipher.SESSION_LOCK)
@@ -265,7 +274,8 @@ namespace Tr.Com.Eimza.LibAxolotl
                               .SetTheirRatchetKey(theirSignedPreKey)
                               .SetTheirOneTimePreKey(supportsV3 ? theirOneTimePreKey : May<ECPublicKey>.NoValue);
 
-                if (!sessionRecord.IsFresh()) sessionRecord.ArchiveCurrentState();
+                if (!sessionRecord.IsFresh())
+                    sessionRecord.ArchiveCurrentState();
 
                 RatchetingSession.InitializeSession(sessionRecord.GetSessionState(),
                                                     supportsV3 ? (uint)3 : 2,
@@ -289,6 +299,7 @@ namespace Tr.Com.Eimza.LibAxolotl
          * @return The KeyExchangeMessage to respond with, or null if no response is necessary.
          * @throws InvalidKeyException if the received KeyExchangeMessage is badly formatted.
          */
+
         public KeyExchangeMessage Process(KeyExchangeMessage message)
 
         {
@@ -301,8 +312,10 @@ namespace Tr.Com.Eimza.LibAxolotl
 
                 KeyExchangeMessage responseMessage = null;
 
-                if (message.IsInitiate()) responseMessage = processInitiate(message);
-                else processResponse(message);
+                if (message.IsInitiate())
+                    responseMessage = processInitiate(message);
+                else
+                    processResponse(message);
 
                 return responseMessage;
             }
@@ -343,7 +356,8 @@ namespace Tr.Com.Eimza.LibAxolotl
 
             SymmetricAxolotlParameters parameters = builder.Create();
 
-            if (!sessionRecord.IsFresh()) sessionRecord.ArchiveCurrentState();
+            if (!sessionRecord.IsFresh())
+                sessionRecord.ArchiveCurrentState();
 
             RatchetingSession.InitializeSession(sessionRecord.GetSessionState(),
                                                 Math.Min(message.GetMaxVersion(), CiphertextMessage.CURRENT_VERSION),
@@ -372,8 +386,10 @@ namespace Tr.Com.Eimza.LibAxolotl
             if (!hasPendingKeyExchange || sessionState.GetPendingKeyExchangeSequence() != message.GetSequence())
             {
                 //Log.w(TAG, "No matching sequence for response. Is simultaneous initiate response: " + isSimultaneousInitiateResponse);
-                if (!isSimultaneousInitiateResponse) throw new StaleKeyExchangeException();
-                else return;
+                if (!isSimultaneousInitiateResponse)
+                    throw new StaleKeyExchangeException();
+                else
+                    return;
             }
 
             SymmetricAxolotlParameters.Builder parameters = SymmetricAxolotlParameters.NewBuilder();
@@ -385,7 +401,8 @@ namespace Tr.Com.Eimza.LibAxolotl
                       .SetTheirRatchetKey(message.GetRatchetKey())
                       .SetTheirIdentityKey(message.GetIdentityKey());
 
-            if (!sessionRecord.IsFresh()) sessionRecord.ArchiveCurrentState();
+            if (!sessionRecord.IsFresh())
+                sessionRecord.ArchiveCurrentState();
 
             RatchetingSession.InitializeSession(sessionRecord.GetSessionState(),
                                                 Math.Min(message.GetMaxVersion(), CiphertextMessage.CURRENT_VERSION),
@@ -401,7 +418,6 @@ namespace Tr.Com.Eimza.LibAxolotl
 
             sessionStore.StoreSession(remoteAddress, sessionRecord);
             identityKeyStore.SaveIdentity(remoteAddress.GetName(), message.GetIdentityKey());
-
         }
 
         /**
@@ -409,6 +425,7 @@ namespace Tr.Com.Eimza.LibAxolotl
          *
          * @return the KeyExchangeMessage to deliver.
          */
+
         public KeyExchangeMessage Process()
         {
             lock (SessionCipher.SESSION_LOCK)
@@ -435,7 +452,5 @@ namespace Tr.Com.Eimza.LibAxolotl
                 }
             }
         }
-
-
     }
 }
