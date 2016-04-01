@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using WhatsAppPasswordExtractor;
 
 namespace WhatsAppPort
 {
@@ -38,6 +39,7 @@ namespace WhatsAppPort
                 WhatSocket.Create(user, pass, this.textBoxNick.Text, true);
                 WhatSocket.Instance.Connect();
                 WhatSocket.Instance.Login();
+
                 //Check Login Status
                 if (WhatSocket.Instance.ConnectionStatus == WhatsAppApi.WhatsApp.CONNECTION_STATUS.LOGGEDIN)
                 {
@@ -58,6 +60,20 @@ namespace WhatsAppPort
             {
                 this.textBoxPass.Text = regForm.password;
                 this.textBoxPhone.Text = regForm.number;
+            }
+        }
+
+        private void btnGetPassword_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(textBoxPhone.Text))
+            {
+                MessageBox.Show(this, "Please enter your phone number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+            {
+                String password = PwExtractor.ExtractPassword(textBoxPhone.Text);
+                textBoxPass.Text = password;
             }
         }
     }

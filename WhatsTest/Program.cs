@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -14,82 +15,54 @@ namespace WhatsTest
 {
     internal class Program
     {
-        // DEMO STORE SHOULD BE DATABASE OR PERMANENT MEDIA IN REAL CASE
-        private static IDictionary<string, IdentitiesObject> IdentitiesObjectDic = new Dictionary<string, IdentitiesObject>();
-
-        private static IDictionary<uint, PreKeysObject> PreKeysObjectDic = new Dictionary<uint, PreKeysObject>();
-        private static IDictionary<uint, SenderKeysObject> SenderKeysObjectDic = new Dictionary<uint, SenderKeysObject>();
-        private static IDictionary<string, SessionsObject> SessionsObjectDic = new Dictionary<string, SessionsObject>();
-        private static IDictionary<uint, SignedPreKeysObject> SignedPreKeysObjectDic = new Dictionary<uint, SignedPreKeysObject>();
-
-        private static WhatsApp wa = null;
+        private static WhatsApp _WhatsAppApi = null;
 
         private static void Main(string[] args)
         {
-            var tmpEncoding = Encoding.UTF8;
-            System.Console.OutputEncoding = Encoding.Default;
-            System.Console.InputEncoding = Encoding.Default;
-            string nickname = "";
-            string sender = ""; // Mobile number with country code (but without + or 00)
-            string password = PwExtractor.ExtractPassword(sender);//v2 password
-            string target = "";// Mobile number to send the message to
+            Encoding tmpEncoding = Encoding.UTF8;
+            System.Console.OutputEncoding = Encoding.UTF8;
+            System.Console.InputEncoding = Encoding.UTF8;
 
-            wa = new WhatsApp(sender, password, nickname, true);
+            string nickname = "";
+            string sender = ""; //Mobile Number with Country Code (but without + or 00)
+            string password = "="; //v2 password
+            string _Target = ""; // Mobile Number to Send the Message to
+
+            _WhatsAppApi = new WhatsApp(sender, password, nickname, true);
 
             //Event Bindings
-            wa.OnLoginSuccess += OnLoginSuccess;
-            wa.OnLoginFailed += OnLoginFailed;
-            wa.OnGetMessage += OnGetMessage;
-            wa.OnGetMessageReadedClient += OnGetMessageReadedClient;
-            wa.OnGetMessageReceivedClient += OnGetMessageReceivedClient;
-            wa.OnGetMessageReceivedServer += OnGetMessageReceivedServer;
-            wa.OnNotificationPicture += OnNotificationPicture;
-            wa.OnGetPresence += OnGetPresence;
-            wa.OnGetGroupParticipants += OnGetGroupParticipants;
-            wa.OnGetLastSeen += OnGetLastSeen;
-            wa.OnGetTyping += OnGetTyping;
-            wa.OnGetPaused += OnGetPaused;
-            wa.OnGetMessageImage += OnGetMessageImage;
-            wa.OnGetMessageAudio += OnGetMessageAudio;
-            wa.OnGetMessageVideo += OnGetMessageVideo;
-            wa.OnGetMessageLocation += OnGetMessageLocation;
-            wa.OnGetMessageVcard += OnGetMessageVcard;
-            wa.OnGetPhoto += OnGetPhoto;
-            wa.OnGetPhotoPreview += OnGetPhotoPreview;
-            wa.OnGetGroups += OnGetGroups;
-            wa.OnGetSyncResult += OnGetSyncResult;
-            wa.OnGetStatus += OnGetStatus;
-            wa.OnGetPrivacySettings += OnGetPrivacySettings;
-            DebugAdapter.Instance.OnPrintDebug += Instance_OnPrintDebug;
-            wa.SendGetServerProperties();
-            //ISessionStore AxolotlStore
-            wa.OnstoreSession += OnstoreSession;
-            wa.OnloadSession += OnloadSession;
-            wa.OngetSubDeviceSessions += OngetSubDeviceSessions;
-            wa.OncontainsSession += OncontainsSession;
-            wa.OndeleteSession += OndeleteSession;
-            // IPreKeyStore AxolotlStore
-            wa.OnstorePreKey += OnstorePreKey;
-            wa.OnloadPreKey += OnloadPreKey;
-            wa.OnloadPreKeys += OnloadPreKeys;
-            wa.OncontainsPreKey += OncontainsPreKey;
-            wa.OnremovePreKey += OnremovePreKey;
-            // ISignedPreKeyStore AxolotlStore
-            wa.OnstoreSignedPreKey += OnstoreSignedPreKey;
-            wa.OnloadSignedPreKey += OnloadSignedPreKey;
-            wa.OnloadSignedPreKeys += OnloadSignedPreKeys;
-            wa.OncontainsSignedPreKey += OncontainsSignedPreKey;
-            wa.OnremoveSignedPreKey += OnremoveSignedPreKey;
-            // IIdentityKeyStore AxolotlStore
-            wa.OngetIdentityKeyPair += OngetIdentityKeyPair;
-            wa.OngetLocalRegistrationId += OngetLocalRegistrationId;
-            wa.OnisTrustedIdentity += OnisTrustedIdentity;
-            wa.OnsaveIdentity += OnsaveIdentity;
-            wa.OnstoreLocalData += OnstoreLocalData;
-            // Error Notification ErrorAxolotl
-            wa.OnErrorAxolotl += OnErrorAxolotl;
+            _WhatsAppApi.OnLoginSuccess += OnLoginSuccess;
+            _WhatsAppApi.OnLoginFailed += OnLoginFailed;
+            _WhatsAppApi.OnGetMessage += OnGetMessage;
+            _WhatsAppApi.OnGetMessageReadedClient += OnGetMessageReadedClient;
+            _WhatsAppApi.OnGetMessageReceivedClient += OnGetMessageReceivedClient;
+            _WhatsAppApi.OnGetMessageReceivedServer += OnGetMessageReceivedServer;
+            _WhatsAppApi.OnNotificationPicture += OnNotificationPicture;
+            _WhatsAppApi.OnGetPresence += OnGetPresence;
+            _WhatsAppApi.OnGetGroupParticipants += OnGetGroupParticipants;
+            _WhatsAppApi.OnGetLastSeen += OnGetLastSeen;
+            _WhatsAppApi.OnGetTyping += OnGetTyping;
+            _WhatsAppApi.OnGetPaused += OnGetPaused;
+            _WhatsAppApi.OnGetMessageImage += OnGetMessageImage;
+            _WhatsAppApi.OnGetMessageAudio += OnGetMessageAudio;
+            _WhatsAppApi.OnGetMessageVideo += OnGetMessageVideo;
+            _WhatsAppApi.OnGetMessageLocation += OnGetMessageLocation;
+            _WhatsAppApi.OnGetMessageVcard += OnGetMessageVcard;
+            _WhatsAppApi.OnGetPhoto += OnGetPhoto;
+            _WhatsAppApi.OnGetPhotoPreview += OnGetPhotoPreview;
+            _WhatsAppApi.OnGetGroups += OnGetGroups;
+            _WhatsAppApi.OnGetSyncResult += OnGetSyncResult;
+            _WhatsAppApi.OnGetStatus += OnGetStatus;
+            _WhatsAppApi.OnGetPrivacySettings += OnGetPrivacySettings;
 
-            wa.Connect();
+            //DebugAdapter.Instance.OnPrintDebug += Instance_OnPrintDebug;
+
+            _WhatsAppApi.SendGetServerProperties();
+
+            // Error Notification ErrorAxolotl
+            _WhatsAppApi.OnErrorAxolotl += OnErrorAxolotl;
+
+            _WhatsAppApi.Connect();
 
             string datFile = GetDatFileName(sender);
             byte[] nextChallenge = null;
@@ -103,14 +76,14 @@ namespace WhatsTest
                 catch (Exception) { };
             }
 
-            wa.Login(nextChallenge);
-            wa.SendGetPrivacyList();
-            wa.SendGetClientConfig();
+            _WhatsAppApi.Login(nextChallenge);
+            _WhatsAppApi.SendGetPrivacyList();
+            _WhatsAppApi.SendGetClientConfig();
 
-            if (wa.LoadPreKeys() == null)
-                wa.SendSetPreKeys(true);
+            if (_WhatsAppApi.LoadPreKeys() == null)
+                _WhatsAppApi.SendSetPreKeys(true);
 
-            ProcessChat(wa, target);
+            ProcessChat(_WhatsAppApi, _Target);
             Console.ReadKey();
         }
 
@@ -126,7 +99,14 @@ namespace WhatsTest
 
         private static void OnGetPrivacySettings(Dictionary<ApiBase.VisibilityCategory, ApiBase.VisibilitySetting> settings)
         {
-            throw new NotImplementedException();
+            if (settings != null)
+            {
+                foreach (KeyValuePair<ApiBase.VisibilityCategory, ApiBase.VisibilitySetting> visibilitySetting in settings)
+                {
+                    Console.WriteLine("Visibility Category : " + visibilitySetting.Key);
+                    Console.WriteLine("Visibility Setting : " + visibilitySetting.Value);
+                }
+            }
         }
 
         private static void OnGetStatus(string from, string type, string name, string status)
@@ -180,7 +160,6 @@ namespace WhatsTest
             File.WriteAllBytes(string.Format("{0}.vcf", name), data);
         }
 
-        // string User new
         private static void OnGetMessageLocation(ProtocolTreeNode locationNode, string from, string id, double lon, double lat, string url, string name, byte[] preview, string User)
         {
             Console.WriteLine("Got location from {0} ({1}, {2})", from, lat, lon);
@@ -197,14 +176,12 @@ namespace WhatsTest
             OnGetMedia(fileName, url, preview);
         }
 
-        // string name new
         private static void OnGetMessageAudio(ProtocolTreeNode mediaNode, string from, string id, string fileName, int fileSize, string url, byte[] preview, string name)
         {
             Console.WriteLine("Got audio from {0}", from, fileName);
             OnGetMedia(fileName, url, preview);
         }
 
-        // string name new
         private static void OnGetMessageImage(ProtocolTreeNode mediaNode, string from, string id, string fileName, int size, string url, byte[] preview, string name)
         {
             Console.WriteLine("Got image from {0}", from, fileName);
@@ -213,9 +190,7 @@ namespace WhatsTest
 
         private static void OnGetMedia(string file, string url, byte[] data)
         {
-            //save preview
-            File.WriteAllBytes(string.Format("preview_{0}.jpg", file), data);
-            //download
+            File.WriteAllBytes(string.Format("Preview_{0}.jpg", file), data);
             using (WebClient wc = new WebClient())
             {
                 wc.DownloadFileAsync(new Uri(url), file, null);
@@ -234,7 +209,7 @@ namespace WhatsTest
 
         private static void OnGetLastSeen(string from, DateTime lastSeen)
         {
-            Console.WriteLine("{0} last seen on {1}", from, lastSeen.ToString());
+            Console.WriteLine("{0} last seen on {1}", from, lastSeen.ToString(CultureInfo.InvariantCulture));
         }
 
         private static void OnGetMessageReceivedServer(string from, string id)
@@ -263,13 +238,12 @@ namespace WhatsTest
 
         private static void OnNotificationPicture(string type, string jid, string id)
         {
-            //TODO
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private static void OnGetMessage(ProtocolTreeNode node, string from, string id, string name, string message, bool receipt_sent)
         {
-            Console.WriteLine("Message from {0} {1}: {2}", name, from, message);
+            Console.WriteLine("Message From {0} {1}: {2}", name, from, message);
         }
 
         private static void OnLoginFailed(string data)
@@ -289,15 +263,15 @@ namespace WhatsTest
             catch (Exception) { }
         }
 
-        private static void ProcessChat(WhatsApp wa, string dst)
+        private static void ProcessChat(WhatsApp _WhatsAppApi, string _Dest)
         {
-            var thRecv = new Thread(t =>
+            Thread thRecv = new Thread(t =>
                                         {
                                             try
                                             {
-                                                while (wa != null)
+                                                while (_WhatsAppApi != null)
                                                 {
-                                                    wa.PollMessages();
+                                                    _WhatsAppApi.PollMessages();
                                                     Thread.Sleep(100);
                                                     continue;
                                                 }
@@ -312,443 +286,57 @@ namespace WhatsTest
             thRecv.Start();
 
             WhatsUserManager usrMan = new WhatsUserManager();
-            var tmpUser = usrMan.CreateUser(dst, "User");
+            var tmpUser = usrMan.CreateUser(_Dest, "User");
 
             while (true)
             {
-                string line = Console.ReadLine();
-                if (line == null && line.Length == 0)
+                String line = Console.ReadLine();
+                if (String.IsNullOrEmpty(line))
                     continue;
 
                 string command = line.Trim();
                 switch (command)
                 {
                     case "/query":
-                        //var dst = dst//trim(strstr($line, ' ', FALSE));
                         Console.WriteLine("[] Interactive conversation with {0}:", tmpUser);
                         break;
 
                     case "/accountinfo":
-                        Console.WriteLine("[] Account Info: {0}", wa.GetAccountInfo().ToString());
+                        Console.WriteLine("[] Account Info: {0}", _WhatsAppApi.GetAccountInfo().ToString());
                         break;
 
                     case "/lastseen":
                         Console.WriteLine("[] Request last seen {0}", tmpUser);
-                        wa.SendQueryLastOnline(tmpUser.GetFullJid());
+                        _WhatsAppApi.SendQueryLastOnline(tmpUser.GetFullJid());
                         break;
 
                     case "/exit":
-                        wa = null;
+                        _WhatsAppApi = null;
                         thRecv.Abort();
                         return;
 
                     case "/start":
-                        wa.SendComposing(tmpUser.GetFullJid());
+                        _WhatsAppApi.SendComposing(tmpUser.GetFullJid());
                         break;
 
                     case "/pause":
-                        wa.SendPaused(tmpUser.GetFullJid());
+                        _WhatsAppApi.SendPaused(tmpUser.GetFullJid());
                         break;
 
                     default:
                         Console.WriteLine("[] Send message to {0}: {1}", tmpUser, line);
-                        wa.SendMessage(tmpUser.GetFullJid(), line);
+                        _WhatsAppApi.SendMessage(tmpUser.GetFullJid(), line);
                         break;
                 }
             }
         }
 
-        // ALL NE REQUIRED INTERFACES FOR AXOLOTL ARE BELOW
         /// <summary>
-        /// recieve all errormessgaes from the Axolotl process to record
+        /// Recieve All Error Messgaes From the Axolotl Orocess to Record
         /// </summary>
         /// <param name="ErrorMessage"></param>
         private static void OnErrorAxolotl(string ErrorMessage)
         {
-        }
-
-        #region DATABASE BINDING FOR IIdentityKeyStore
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="identityKey"></param>
-        private static bool OnsaveIdentity(string recipientId, byte[] identityKey)
-        {
-            if (IdentitiesObjectDic.ContainsKey(recipientId))
-                IdentitiesObjectDic.Remove(recipientId);
-
-            IdentitiesObjectDic.Add(recipientId, new IdentitiesObject()
-            {
-                RecipientId = recipientId,
-                PublicKey = identityKey
-            });
-
-            return true;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="identityKey"></param>
-        /// <returns></returns>
-        private static bool OnisTrustedIdentity(string recipientId, byte[] identityKey)
-        {
-            IdentitiesObject trusted;
-            IdentitiesObjectDic.TryGetValue(recipientId, out trusted);
-            return true; // (trusted == null || trusted.public_key.Equals(identityKey));
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
-        private static uint OngetLocalRegistrationId()
-        {
-            IdentitiesObject identity;
-            IdentitiesObjectDic.TryGetValue("-1", out identity);
-            return (identity == null) ? 000000 : uint.Parse(identity.RegistrationId);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
-        private static List<byte[]> OngetIdentityKeyPair()
-        {
-            List<byte[]> result = new List<byte[]> { };
-            IdentitiesObject identity;
-            IdentitiesObjectDic.TryGetValue("-1", out identity);
-            if (identity != null)
-            {
-                result.Add(identity.PublicKey);
-                result.Add(identity.PrivateKey);
-            }
-
-            if (result.Count == 0)
-                return null;
-
-            return result;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="registrationId"></param>
-        /// <param name="publickey"></param>
-        /// <param name="privatekey"></param>
-        private static void OnstoreLocalData(uint registrationId, byte[] publickey, byte[] privatekey)
-        {
-            if (IdentitiesObjectDic.ContainsKey("-1"))
-                IdentitiesObjectDic.Remove("-1");
-
-            IdentitiesObjectDic.Add("-1", new IdentitiesObject()
-            {
-                RecipientId = "-1",
-                RegistrationId = registrationId.ToString(),
-                PublicKey = publickey,
-                PrivateKey = privatekey
-            });
-        }
-
-        #endregion DATABASE BINDING FOR IIdentityKeyStore
-
-        #region DATABASE BINDING FOR ISignedPreKeyStore
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="preKeyId"></param>
-        private static void OnremoveSignedPreKey(uint preKeyId)
-        {
-            if (SignedPreKeysObjectDic.ContainsKey(preKeyId))
-                SignedPreKeysObjectDic.Remove(preKeyId);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="preKeyId"></param>
-        /// <returns></returns>
-        private static bool OncontainsSignedPreKey(uint preKeyId)
-        {
-            SignedPreKeysObject prekey;
-            SignedPreKeysObjectDic.TryGetValue(preKeyId, out prekey);
-            return (prekey != null);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
-        private static List<byte[]> OnloadSignedPreKeys()
-        {
-            List<byte[]> result = new List<byte[]> { };
-            foreach (SignedPreKeysObject key in SignedPreKeysObjectDic.Values)
-                result.Add(key.Record);
-
-            if (result.Count == 0)
-                return null;
-
-            return result;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="preKeyId"></param>
-        /// <returns></returns>
-        private static byte[] OnloadSignedPreKey(uint preKeyId)
-        {
-            SignedPreKeysObject prekey;
-            SignedPreKeysObjectDic.TryGetValue(preKeyId, out prekey);
-            return (prekey == null) ? new byte[] { } : prekey.Record;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="signedPreKeyId"></param>
-        /// <param name="signedPreKeyRecord"></param>
-        private static void OnstoreSignedPreKey(uint signedPreKeyId, byte[] signedPreKeyRecord)
-        {
-            if (SignedPreKeysObjectDic.ContainsKey(signedPreKeyId))
-                SignedPreKeysObjectDic.Remove(signedPreKeyId);
-
-            SignedPreKeysObjectDic.Add(signedPreKeyId, new SignedPreKeysObject()
-            {
-                PreKeyId = signedPreKeyId,
-                Record = signedPreKeyRecord
-            });
-        }
-
-        #endregion DATABASE BINDING FOR ISignedPreKeyStore
-
-        #region DATABASE BINDING FOR IPreKeyStore
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="preKeyId"></param>
-        private static void OnremovePreKey(uint preKeyId)
-        {
-            if (PreKeysObjectDic.ContainsKey(preKeyId))
-                PreKeysObjectDic.Remove(preKeyId);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="preKeyId"></param>
-        /// <returns></returns>
-        private static bool OncontainsPreKey(uint preKeyId)
-        {
-            PreKeysObject prekey;
-            PreKeysObjectDic.TryGetValue(preKeyId, out prekey);
-            return (prekey != null);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="preKeyId"></param>
-        /// <returns></returns>
-        private static byte[] OnloadPreKey(uint preKeyId)
-        {
-            PreKeysObject prekey;
-            PreKeysObjectDic.TryGetValue(preKeyId, out prekey);
-            return (prekey == null) ? new byte[] { } : prekey.Record;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <returns></returns>
-        private static List<byte[]> OnloadPreKeys()
-        {
-            List<byte[]> result = new List<byte[]> { };
-            foreach (PreKeysObject key in PreKeysObjectDic.Values)
-                result.Add(key.Record);
-
-            if (result.Count == 0)
-                return null;
-
-            return result;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="prekeyId"></param>
-        /// <param name="preKeyRecord"></param>
-        private static void OnstorePreKey(uint prekeyId, byte[] preKeyRecord)
-        {
-            if (PreKeysObjectDic.ContainsKey(prekeyId))
-                PreKeysObjectDic.Remove(prekeyId);
-
-            PreKeysObjectDic.Add(prekeyId, new PreKeysObject()
-            {
-                PreKeyId = prekeyId.ToString(),
-                Record = preKeyRecord
-            });
-        }
-
-        #endregion DATABASE BINDING FOR IPreKeyStore
-
-        #region DATABASE BINDING FOR ISessionStore
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="deviceId"></param>
-        private static void OndeleteSession(string recipientId, uint deviceId)
-        {
-            if (SessionsObjectDic.ContainsKey(recipientId))
-                SessionsObjectDic.Remove(recipientId);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="deviceId"></param>
-        /// <returns></returns>
-        private static bool OncontainsSession(string recipientId, uint deviceId)
-        {
-            SessionsObject session;
-            SessionsObjectDic.TryGetValue(recipientId, out session);
-            return (session != null);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <returns></returns>
-        private static List<uint> OngetSubDeviceSessions(string recipientId)
-        {
-            List<uint> result = new List<uint> { };
-            foreach (SessionsObject key in SessionsObjectDic.Values)
-                result.Add(key.DeviceId);
-
-            return result;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="deviceId"></param>
-        /// <returns></returns>
-        private static byte[] OnloadSession(string recipientId, uint deviceId)
-        {
-            SessionsObject session;
-            SessionsObjectDic.TryGetValue(recipientId, out session);
-            return (session == null) ? new byte[] { } : session.Record;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="deviceId"></param>
-        /// <param name="sessionRecord"></param>
-        private static void OnstoreSession(string recipientId, uint deviceId, byte[] sessionRecord)
-        {
-            if (SessionsObjectDic.ContainsKey(recipientId))
-                SessionsObjectDic.Remove(recipientId);
-
-            SessionsObjectDic.Add(recipientId, new SessionsObject()
-            {
-                DeviceId = deviceId,
-                RecipientId = recipientId,
-                Record = sessionRecord
-            });
-        }
-
-        #endregion DATABASE BINDING FOR ISessionStore
-    }
-
-    public class IdentitiesObject
-    {
-        public string RecipientId
-        {
-            get; set;
-        }
-
-        public string RegistrationId
-        {
-            get; set;
-        }
-
-        public byte[] PublicKey
-        {
-            get; set;
-        }
-
-        public byte[] PrivateKey
-        {
-            get; set;
-        }
-    }
-
-    public class PreKeysObject
-    {
-        public string PreKeyId
-        {
-            get; set;
-        }
-
-        public byte[] Record
-        {
-            get; set;
-        }
-    }
-
-    public class SenderKeysObject
-    {
-        public uint SenderKeyId
-        {
-            get; set;
-        }
-
-        public byte[] Record
-        {
-            get; set;
-        }
-    }
-
-    public class SessionsObject
-    {
-        public string RecipientId
-        {
-            get; set;
-        }
-
-        public uint DeviceId
-        {
-            get; set;
-        }
-
-        public byte[] Record
-        {
-            get; set;
-        }
-    }
-
-    public class SignedPreKeysObject
-    {
-        public uint PreKeyId
-        {
-            get; set;
-        }
-
-        public byte[] Record
-        {
-            get; set;
         }
     }
 }

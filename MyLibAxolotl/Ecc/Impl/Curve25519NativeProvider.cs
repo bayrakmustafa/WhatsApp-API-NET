@@ -19,7 +19,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Ecc.Impl
 {
     internal class Curve25519NativeProvider : ICurve25519Provider
     {
-        private mycurve25519.Curve25519Native native = new mycurve25519.Curve25519Native();
+        private MyCurve25519.Curve25519Native native = new MyCurve25519.Curve25519Native();
 
         public byte[] CalculateAgreement(byte[] ourPrivate, byte[] theirPublic)
         {

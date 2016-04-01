@@ -15,6 +15,7 @@ namespace WhatsAppPort
         {
             this.messageHistory = new Dictionary<string, List<FMessage>>();
             this.userMessageDict = new Dictionary<string, WhatsEventHandler.MessageRecievedHandler>();
+
             WhatsEventHandler.MessageRecievedEvent += WhatsEventHandlerOnMessageRecievedEvent;
         }
 

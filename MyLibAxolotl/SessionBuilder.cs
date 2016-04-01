@@ -248,19 +248,19 @@ namespace Tr.Com.Eimza.LibAxolotl
                                            preKey.GetSignedPreKey().Serialize(),
                                            preKey.GetSignedPreKeySignature()))
                 {
-                    throw new InvalidKeyException("Invalid signature on device key!");
+                    throw new InvalidKeyException("Invalid Signature on Device Key!");
                 }
 
                 if (preKey.GetSignedPreKey() == null && preKey.GetPreKey() == null)
                 {
-                    throw new InvalidKeyException("Both signed and unsigned prekeys are absent!");
+                    throw new InvalidKeyException("Both Signed and Unsigned Prekeys are Absent!");
                 }
 
                 bool supportsV3 = preKey.GetSignedPreKey() != null;
                 SessionRecord sessionRecord = sessionStore.LoadSession(remoteAddress);
                 ECKeyPair ourBaseKey = Curve.GenerateKeyPair();
                 ECPublicKey theirSignedPreKey = supportsV3 ? preKey.GetSignedPreKey() : preKey.GetPreKey();
-                ECPublicKey test = preKey.GetPreKey(); // TODO: cleanup
+                ECPublicKey test = preKey.GetPreKey(); // TODO: Cleanup
                 May<ECPublicKey> theirOneTimePreKey = (test == null) ? May<ECPublicKey>.NoValue : new May<ECPublicKey>(test);
                 May<uint> theirOneTimePreKeyId = theirOneTimePreKey.HasValue ? new May<uint>(preKey.GetPreKeyId()) :
                                                                                               May<uint>.NoValue;

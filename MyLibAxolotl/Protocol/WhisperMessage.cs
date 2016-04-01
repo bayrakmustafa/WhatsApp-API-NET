@@ -70,7 +70,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
                 this.previousCounter = whisperMessage.PreviousCounter;
                 this.ciphertext = whisperMessage.Ciphertext.ToByteArray();
             }
-            catch (/*InvalidProtocolBufferException | InvalidKeyException | Parse*/Exception e)
+            catch (Exception e)
             {
                 throw new InvalidMessageException(e);
             }
@@ -153,7 +153,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
                 byte[] fullMac = Sign.Sha256sum(macKey, stream.ToArray());
                 return ByteUtil.Trim(fullMac, MAC_LENGTH);
             }
-            catch (/*NoSuchAlgorithmException | java.security.InvalidKey*/Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
@@ -171,8 +171,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
 
         public static bool IsLegacy(byte[] message)
         {
-            return message != null && message.Length >= 1 &&
-                ByteUtil.HighBitsToInt(message[0]) <= CiphertextMessage.UNSUPPORTED_VERSION;
+            return message != null && message.Length >= 1 && ByteUtil.HighBitsToInt(message[0]) <= CiphertextMessage.UNSUPPORTED_VERSION;
         }
     }
 }

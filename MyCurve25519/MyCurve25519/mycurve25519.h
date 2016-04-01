@@ -11,7 +11,7 @@
 
 using namespace System;
 
-namespace mycurve25519
+namespace MyCurve25519
 {
 	public ref class Curve25519Native
 	{

@@ -75,8 +75,8 @@
             this.Controls.Add(this.listViewContacts);
             this.Name = "FrmForm";
             this.Text = "Contacts";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmForm_FormClosing);
+            this.Load += new System.EventHandler(this.FrmForm_Load);
             this.ResumeLayout(false);
 
         }

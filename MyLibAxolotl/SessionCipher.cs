@@ -131,7 +131,6 @@ namespace Tr.Com.Eimza.LibAxolotl
          */
 
         public byte[] Decrypt(PreKeyWhisperMessage ciphertext)
-
         {
             return Decrypt(ciphertext, new NullDecryptionCallback());
         }
@@ -243,7 +242,7 @@ namespace Tr.Com.Eimza.LibAxolotl
         {
             lock (SESSION_LOCK)
             {
-                IEnumerator<SessionState> previousStates = sessionRecord.GetPreviousSessionStates().GetEnumerator(); //iterator
+                IEnumerator<SessionState> previousStates = sessionRecord.GetPreviousSessionStates().GetEnumerator();
                 LinkedList<Exception> exceptions = new LinkedList<Exception>();
 
                 try
@@ -256,17 +255,17 @@ namespace Tr.Com.Eimza.LibAxolotl
                 }
                 catch (InvalidMessageException e)
                 {
-                    exceptions.AddLast(e); // add (java default behavioir addlast)
+                    exceptions.AddLast(e);
                 }
 
-                while (previousStates.MoveNext()) //hasNext();
+                while (previousStates.MoveNext())
                 {
                     try
                     {
-                        SessionState promotedState = new SessionState(previousStates.Current); //.next()
+                        SessionState promotedState = new SessionState(previousStates.Current);
                         byte[] plaintext = Decrypt(promotedState, ciphertext);
 
-                        sessionRecord.GetPreviousSessionStates().Remove(previousStates.Current); // previousStates.remove()
+                        sessionRecord.GetPreviousSessionStates().Remove(previousStates.Current);
                         sessionRecord.PromoteState(promotedState);
 
                         return plaintext;
@@ -290,23 +289,18 @@ namespace Tr.Com.Eimza.LibAxolotl
 
             if (ciphertextMessage.GetMessageVersion() != sessionState.GetSessionVersion())
             {
-                throw new InvalidMessageException($"Message version {ciphertextMessage.GetMessageVersion()}, but session version {sessionState.GetSessionVersion()}");
+                throw new InvalidMessageException($"Message Version {ciphertextMessage.GetMessageVersion()}, But Session Version {sessionState.GetSessionVersion()}");
             }
 
             uint messageVersion = ciphertextMessage.GetMessageVersion();
             ECPublicKey theirEphemeral = ciphertextMessage.GetSenderRatchetKey();
             uint counter = ciphertextMessage.GetCounter();
             ChainKey chainKey = GetOrCreateChainKey(sessionState, theirEphemeral);
-            MessageKeys messageKeys = GetOrCreateMessageKeys(sessionState, theirEphemeral,
-                                                                      chainKey, counter);
+            MessageKeys messageKeys = GetOrCreateMessageKeys(sessionState, theirEphemeral, chainKey, counter);
 
-            ciphertextMessage.VerifyMac(messageVersion,
-                                            sessionState.GetRemoteIdentityKey(),
-                                            sessionState.GetLocalIdentityKey(),
-                                            messageKeys.GetMacKey());
+            //ciphertextMessage.VerifyMac(messageVersion, sessionState.GetRemoteIdentityKey(), sessionState.GetLocalIdentityKey(), messageKeys.GetMacKey());
 
             byte[] plaintext = GetPlaintext(messageVersion, messageKeys, ciphertextMessage.GetBody());
-
             sessionState.ClearUnacknowledgedPreKeyMessage();
 
             return plaintext;
@@ -327,7 +321,7 @@ namespace Tr.Com.Eimza.LibAxolotl
             {
                 if (!sessionStore.ContainsSession(remoteAddress))
                 {
-                    throw new Exception($"No session for {remoteAddress}!"); // IllegalState
+                    throw new Exception($"No session for {remoteAddress}!");
                 }
 
                 SessionRecord record = sessionStore.LoadSession(remoteAddress);
@@ -383,11 +377,11 @@ namespace Tr.Com.Eimza.LibAxolotl
                 }
             }
 
-            //Avoiding a uint overflow
+            //Avoiding a UInt Overflow
             uint chainKeyIndex = chainKey.GetIndex();
             if ((counter > chainKeyIndex) && (counter - chainKeyIndex > 2000))
             {
-                throw new InvalidMessageException("Over 2000 messages into the future!");
+                throw new InvalidMessageException("Over 2000 Messages into The Future!");
             }
 
             while (chainKey.GetIndex() < counter)
@@ -407,7 +401,7 @@ namespace Tr.Com.Eimza.LibAxolotl
             {
                 if (version >= 3)
                 {
-                    //cipher = getCipher(Cipher.ENCRYPT_MODE, messageKeys.getCipherKey(), messageKeys.getIv());
+                    //cipher = GetCipher(Cipher.ENCRYPT_MODE, messageKeys.getCipherKey(), messageKeys.getIv());
                     return Tr.Com.Eimza.LibAxolotl.Util.Encrypt.AesCbcPkcs5(plaintext, messageKeys.GetCipherKey(), messageKeys.GetIv());
                 }
                 else
@@ -427,7 +421,6 @@ namespace Tr.Com.Eimza.LibAxolotl
             try
             {
                 //Cipher cipher;
-
                 if (version >= 3)
                 {
                     //cipher = getCipher(Cipher.DECRYPT_MODE, messageKeys.getCipherKey(), messageKeys.getIv());

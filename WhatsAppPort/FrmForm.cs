@@ -10,6 +10,7 @@ namespace WhatsAppPort
     public partial class FrmForm : Form
     {
         private WhatsMessageHandler messageHandler;
+
         private BackgroundWorker bgWorker;
         private volatile bool isRunning;
         private Dictionary<string, User> userList;
@@ -25,13 +26,16 @@ namespace WhatsAppPort
             this.phoneNick = nick;
 
             InitializeComponent();
+
             this.userList = new Dictionary<string, User>();
             this.isRunning = true;
+
             this.bgWorker = new BackgroundWorker();
             this.bgWorker.DoWork += ProcessMessages;
             this.bgWorker.ProgressChanged += NewMessageArrived;
             this.bgWorker.WorkerSupportsCancellation = true;
             this.bgWorker.WorkerReportsProgress = true;
+
             this.messageHandler = new WhatsMessageHandler();
         }
 
@@ -48,13 +52,15 @@ namespace WhatsAppPort
                 var tmpUser = tmpAddUser.Tag as User;
                 this.userList.Add(tmpUser.PhoneNumber, tmpUser);
 
-                var tmpListUser = new ListViewItem(tmpUser.UserName);
-                tmpListUser.Tag = tmpUser;
+                var tmpListUser = new ListViewItem(tmpUser.UserName)
+                {
+                    Tag = tmpUser
+                };
                 this.listViewContacts.Items.Add(tmpListUser);
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void FrmForm_Load(object sender, EventArgs e)
         {
             WhatSocket.Instance.Connect();
             WhatSocket.Instance.Login();
@@ -111,7 +117,7 @@ namespace WhatsAppPort
         {
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void FrmForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.isRunning = false;
             this.bgWorker.CancelAsync();

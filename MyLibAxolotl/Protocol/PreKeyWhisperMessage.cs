@@ -42,12 +42,11 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
 
                 if (this.version > CiphertextMessage.CURRENT_VERSION)
                 {
-                    throw new InvalidVersionException("Unknown version: " + this.version);
+                    throw new InvalidVersionException("Unknown Version: " + this.version);
                 }
 
-                WhisperProtos.PreKeyWhisperMessage preKeyWhisperMessage
-                    = WhisperProtos.PreKeyWhisperMessage.ParseFrom(ByteString.CopyFrom(serialized, 1,
-                                                                                       serialized.Length - 1));
+                ByteString messageData = ByteString.CopyFrom(serialized, 1, serialized.Length - 1);
+                WhisperProtos.PreKeyWhisperMessage preKeyWhisperMessage = WhisperProtos.PreKeyWhisperMessage.ParseFrom(messageData);
 
                 if ((version == 2 && !preKeyWhisperMessage.HasPreKeyId) ||
                     (version == 3 && !preKeyWhisperMessage.HasSignedPreKeyId) ||
@@ -55,7 +54,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
                     !preKeyWhisperMessage.HasIdentityKey ||
                     !preKeyWhisperMessage.HasMessage)
                 {
-                    throw new InvalidMessageException("Incomplete message.");
+                    throw new InvalidMessageException("Incomplete Message.");
                 }
 
                 this.serialized = serialized;

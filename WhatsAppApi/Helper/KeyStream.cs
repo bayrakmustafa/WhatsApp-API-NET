@@ -19,28 +19,28 @@ namespace WhatsAppApi.Helper
 
         public static byte[][] GenerateKeys(byte[] password, byte[] nonce)
         {
-            byte[][] array = new byte[4][];
-            byte[][] array2 = array;
-            byte[] array3 = new byte[]
+            byte[][] aArray = new byte[4][];
+            byte[][] bArray = aArray;
+            byte[] cArray = new byte[]
             {
                 1,
                 2,
                 3,
                 4
             };
-            byte[] array4 = new byte[nonce.Length + 1];
+            byte[] dArray = new byte[nonce.Length + 1];
             for (int i = 0; i < nonce.Length; i++)
             {
-                array4[i] = nonce[i];
+                dArray[i] = nonce[i];
             }
-            nonce = array4;
-            for (int j = 0; j < array2.Length; j++)
+            nonce = dArray;
+            for (int j = 0; j < bArray.Length; j++)
             {
-                nonce[nonce.Length - 1] = array3[j];
+                nonce[nonce.Length - 1] = cArray[j];
                 Rfc2898DeriveBytes rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, nonce, 2);
-                array2[j] = rfc2898DeriveBytes.GetBytes(20);
+                bArray[j] = rfc2898DeriveBytes.GetBytes(20);
             }
-            return array2;
+            return bArray;
         }
 
         public void DecodeMessage(byte[] buffer, int macOffset, int offset, int length)

@@ -11,6 +11,7 @@ using WhatsAppApi.Helper;
 using WhatsAppApi.Parser;
 using WhatsAppApi.Response;
 using WhatsAppApi.Settings;
+using WhatsAppApi.Store;
 
 namespace WhatsAppApi
 {
@@ -19,14 +20,47 @@ namespace WhatsAppApi
     /// </summary>
     public class WhatsApp : WhatsSendBase
     {
+        private MemoryAxolotlStore _Store = new MemoryAxolotlStore();
+
         public WhatsApp(string phoneNum, string imei, string nick, bool debug = false, bool hidden = false)
         {
             this.ConstructBase(phoneNum, imei, nick, debug, hidden);
+
+            //ISessionStore AxolotlStore
+            base.OnstoreSession += _Store.OnstoreSession;
+            base.OnloadSession += _Store.OnloadSession;
+            base.OngetSubDeviceSessions += _Store.OngetSubDeviceSessions;
+            base.OncontainsSession += _Store.OncontainsSession;
+            base.OndeleteSession += _Store.OndeleteSession;
+
+            // IPreKeyStore AxolotlStore
+            base.OnstorePreKey += _Store.OnstorePreKey;
+            base.OnloadPreKey += _Store.OnloadPreKey;
+            base.OnloadPreKeys += _Store.OnloadPreKeys;
+            base.OncontainsPreKey += _Store.OncontainsPreKey;
+            base.OnremovePreKey += _Store.OnremovePreKey;
+
+            // ISignedPreKeyStore AxolotlStore
+            base.OnstoreSignedPreKey += _Store.OnstoreSignedPreKey;
+            base.OnloadSignedPreKey += _Store.OnloadSignedPreKey;
+            base.OnloadSignedPreKeys += _Store.OnloadSignedPreKeys;
+            base.OncontainsSignedPreKey += _Store.OncontainsSignedPreKey;
+            base.OnremoveSignedPreKey += _Store.OnremoveSignedPreKey;
+
+            // IIdentityKeyStore AxolotlStore
+            base.OngetIdentityKeyPair += _Store.OngetIdentityKeyPair;
+            base.OngetLocalRegistrationId += _Store.OngetLocalRegistrationId;
+            base.OnisTrustedIdentity += _Store.OnisTrustedIdentity;
+            base.OnsaveIdentity += _Store.OnsaveIdentity;
+            base.OnstoreLocalData += _Store.OnstoreLocalData;
         }
 
         public string SendMessage(string to, string txt)
         {
-            var tmpMessage = new FMessage(GetJID(to), true) { data = txt };
+            FMessage tmpMessage = new FMessage(GetJID(to), true)
+            {
+                data = txt
+            };
             this.SendMessage(tmpMessage, this.hidden);
             return tmpMessage.identifier_key.ToString();
         }
@@ -601,7 +635,7 @@ namespace WhatsAppApi
         public void SendGetServerProperties()
         {
             string id = TicketCounter.MakeId();
-            var node = new ProtocolTreeNode("iq", new[] { new KeyValue("id", id), new KeyValue("type", "get"), new KeyValue("xmlns", "w"), new KeyValue("to", "s.whatsapp.net") },
+            var node = new ProtocolTreeNode("iq", new[] { new KeyValue("id", id), new KeyValue("type", "get"), new KeyValue("xmlns", "w"), new KeyValue("to", WhatsConstants.WhatsAppServer) },
                 new ProtocolTreeNode("props", null));
             this.SendNode(node);
         }
@@ -834,9 +868,9 @@ namespace WhatsAppApi
             string id = TicketCounter.MakeId();
             ProtocolTreeNode[] nodeArray = Enumerable.Select<string, ProtocolTreeNode>(jidSet, (Func<string, int, ProtocolTreeNode>)((jid, index) => new ProtocolTreeNode("item", new KeyValue[] { new KeyValue("type", "jid"), new KeyValue("value", jid), new KeyValue("action", "deny"), new KeyValue("order", index.ToString(CultureInfo.InvariantCulture)) }))).ToArray<ProtocolTreeNode>();
             var child = new ProtocolTreeNode("list", new KeyValue[] { new KeyValue("name", "default") }, (nodeArray.Length == 0) ? null : nodeArray);
-            var node2 = new ProtocolTreeNode("query", null, child);
-            var node3 = new ProtocolTreeNode("iq", new KeyValue[] { new KeyValue("id", id), new KeyValue("type", "set"), new KeyValue("xmlns", "jabber:iq:privacy") }, node2);
-            this.SendNode(node3);
+            var query = new ProtocolTreeNode("query", null, child);
+            var iq = new ProtocolTreeNode("iq", new KeyValue[] { new KeyValue("id", id), new KeyValue("type", "set"), new KeyValue("xmlns", "jabber:iq:privacy") }, query);
+            this.SendNode(iq);
         }
 
         public void SendStatusUpdate(string status)
@@ -1003,7 +1037,7 @@ namespace WhatsAppApi
             Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             return new ProtocolTreeNode("message", new[] {
                 new KeyValue("to", message.identifier_key.remote_jid),
-                new KeyValue("type", message.media_wa_type == FMessage.Type.Undefined?"text":"media"),
+                new KeyValue("type", message.media_wa_type == FMessage.Type.Undefined ? "text" : "media"),
                 new KeyValue("id", message.identifier_key.id),
                 new KeyValue("t",unixTimestamp.ToString())
             },
@@ -1015,6 +1049,28 @@ namespace WhatsAppApi
         protected static ProtocolTreeNode GetSubjectMessage(string to, string id, ProtocolTreeNode child)
         {
             return new ProtocolTreeNode("message", new[] { new KeyValue("to", to), new KeyValue("type", "subject"), new KeyValue("id", id) }, child);
+        }
+
+        public override void ResetEncryption()
+        {
+            //if (this._Store != null)
+            //{
+            //    _Store.Clear();
+            //}
+            //this.retryCounters = new Dictionary<string, int>();
+
+            //this.SendSetPreKeys();
+            //this.PollMessage();
+            //this.PollMessage();
+            //this.Disconnect();
+            //this.Connect();
+            //this.Login();
+            //this.SendGetPrivacyList();
+            //this.SendGetClientConfig();
+            //foreach (KeyValuePair<string, ProtocolTreeNode> protocolTreeNode in retryNodes)
+            //{
+            //    this.ProcessInboundData(protocolTreeNode.Value.GetData());
+            //}
         }
     }
 }

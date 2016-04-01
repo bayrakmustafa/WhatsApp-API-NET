@@ -130,11 +130,9 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
 
                     SenderKeyMessage senderKeyMessage = new SenderKeyMessage(senderKeyMessageBytes);
                     SenderKeyState senderKeyState = record.GetSenderKeyState(senderKeyMessage.GetKeyId());
-
                     senderKeyMessage.VerifySignature(senderKeyState.GetSigningKeyPublic());
 
                     SenderMessageKey senderKey = GetSenderKey(senderKeyState, senderKeyMessage.GetIteration());
-
                     byte[] plaintext = GetPlainText(senderKey.GetIv(), senderKey.GetCipherKey(), senderKeyMessage.GetCipherText());
 
                     callback.HandlePlaintext(plaintext);
@@ -166,8 +164,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
                 }
                 else
                 {
-                    throw new DuplicateMessageException("Received message with old counter: " +
-                                                        senderChainKey.GetIteration() + " , " + iteration);
+                    throw new DuplicateMessageException("Received message with old counter: " + senderChainKey.GetIteration() + " , " + iteration);
                 }
             }
 
@@ -194,7 +191,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
             {
                 /*IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
                 Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
                 cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), ivParameterSpec);*/
 
                 return Tr.Com.Eimza.LibAxolotl.Util.Decrypt.AesCbcPkcs5(ciphertext, key, iv);
@@ -211,7 +207,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
             {
                 /*IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
                 Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
                 cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"), ivParameterSpec);*/
 
                 return Tr.Com.Eimza.LibAxolotl.Util.Encrypt.AesCbcPkcs5(plaintext, key, iv);

@@ -101,6 +101,18 @@ namespace WhatsAppApi.Helper
             return null;
         }
 
+        public ProtocolTreeNode GetChild(int index)
+        {
+            if (this.children != null && this.children.Any())
+            {
+                if (children.Count() >= index)
+                {
+                    return children.ElementAt(index);
+                }
+            }
+            return null;
+        }
+
         public IEnumerable<ProtocolTreeNode> GetAllChildren(string tag)
         {
             var tmpReturn = new List<ProtocolTreeNode>();

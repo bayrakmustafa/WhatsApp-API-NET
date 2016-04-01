@@ -2,10 +2,10 @@
 #include "pch.h"
 #include "Windows.h"
 #include "mycurve25519.h"
-#include "Curve25519_Internal.h" //curve25519_donna
-#include "ed25519\additions\curve_sigs.h" //curve25519_sign
+#include "Curve25519_Internal.h" //Curve25519_donna
+#include "ed25519\additions\curve_sigs.h" //Curve25519_sign
 
-using namespace mycurve25519;
+using namespace MyCurve25519;
 using namespace System;
 using namespace System::Runtime::InteropServices;
 using namespace System::Security::Cryptography;
@@ -23,7 +23,7 @@ Curve25519Native::Curve25519Native()
 {
 }
 
-bool mycurve25519::Curve25519Native::IsNative()
+bool MyCurve25519::Curve25519Native::IsNative()
 {
 	return true;
 }
@@ -55,7 +55,7 @@ array<Byte>^ Curve25519Native::CalculateAgreement(array<Byte>^  privateKey, arra
 	return sharedKey;
 }
 
-array<Byte>^ mycurve25519::Curve25519Native::GeneratePublicKey(array<Byte>^ privateKey)
+array<Byte>^ MyCurve25519::Curve25519Native::GeneratePublicKey(array<Byte>^ privateKey)
 {
 	if (privateKey->Length != CURVE25519_PRIV_KEY_LEN)
 	{
@@ -76,7 +76,7 @@ array<Byte>^ mycurve25519::Curve25519Native::GeneratePublicKey(array<Byte>^ priv
 	return publicKey;
 }
 
-array<Byte>^ mycurve25519::Curve25519Native::GeneratePrivateKey()
+array<Byte>^ MyCurve25519::Curve25519Native::GeneratePrivateKey()
 {
 	Byte* buffer = new Byte[CURVE25519_PRIV_KEY_LEN];
 	ZeroMemory(buffer, (sizeof(Byte) * CURVE25519_PRIV_KEY_LEN));
@@ -89,7 +89,7 @@ array<Byte>^ mycurve25519::Curve25519Native::GeneratePrivateKey()
 	return GeneratePrivateKey(random);
 }
 
-array<Byte>^ mycurve25519::Curve25519Native::GeneratePrivateKey(array<Byte>^ random)
+array<Byte>^ MyCurve25519::Curve25519Native::GeneratePrivateKey(array<Byte>^ random)
 {
 	/*if (random->Length != CURVE25519_PRIV_KEY_LEN)
 	{
@@ -111,7 +111,7 @@ array<Byte>^ mycurve25519::Curve25519Native::GeneratePrivateKey(array<Byte>^ ran
 	return privateKey;
 }
 
-array<Byte>^ mycurve25519::Curve25519Native::CalculateSignature(array<Byte>^ random, array<Byte>^ privateKey, array<Byte>^ message)
+array<Byte>^ MyCurve25519::Curve25519Native::CalculateSignature(array<Byte>^ random, array<Byte>^ privateKey, array<Byte>^ message)
 {
 	if (privateKey->Length != CURVE25519_PRIV_KEY_LEN) {
 		throw gcnew Exception(gcnew System::String(CURVE25519_PRIV_KEY_LEN_ERR_MSG));
@@ -142,7 +142,7 @@ array<Byte>^ mycurve25519::Curve25519Native::CalculateSignature(array<Byte>^ ran
 	}
 }
 
-bool mycurve25519::Curve25519Native::VerifySignature(array<Byte>^ publicKey, array<Byte>^ message, array<Byte>^ signature)
+bool MyCurve25519::Curve25519Native::VerifySignature(array<Byte>^ publicKey, array<Byte>^ message, array<Byte>^ signature)
 {
 	pin_ptr<byte> publicKeyBytes = &publicKey[0];
 	pin_ptr<byte> messageBytes = &message[0];

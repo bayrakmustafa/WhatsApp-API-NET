@@ -26,7 +26,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Ecc
     public enum Curve25519ProviderType
     {
         /// <summary>
-        /// Attempt to provide a native implementation. If one is not available, error out (TODO, could add managed fallback once implemented)
+        /// Attempt to provide a native implementation. If one is not available, error out (TODO, Could Add Managed Fallback Once Implemented)
         /// </summary>
         BEST = 0x05,
 

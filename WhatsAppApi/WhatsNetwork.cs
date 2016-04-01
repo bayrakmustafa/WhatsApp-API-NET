@@ -126,7 +126,7 @@ namespace WhatsAppApi
 
             if (nodeHeader == null || nodeHeader.Length == 0)
             {
-                //empty response
+                //Empty Response
                 return null;
             }
 
@@ -139,7 +139,7 @@ namespace WhatsAppApi
             nodeLength |= (int)nodeHeader[1] << 8;
             nodeLength |= (int)nodeHeader[2] << 0;
 
-            //buffered read
+            //Buffered Read
             int toRead = nodeLength;
             List<byte> nodeData = new List<byte>();
             do

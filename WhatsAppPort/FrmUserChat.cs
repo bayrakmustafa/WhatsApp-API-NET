@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
+using WhatsAppApi;
 using WhatsAppApi.Parser;
 using WhatsAppApi.Response;
 
@@ -13,15 +15,17 @@ namespace WhatsAppPort
         //public event StringDelegate MessageSentEvent;
         //public event Action MessageAckEvent;
         //public event ProtocolDelegate MessageRecievedEvent;
-        private User user;
 
+        private User user;
         private bool isTyping;
 
         public FrmUserChat(User user)
         {
             InitializeComponent();
+
             this.user = user;
             this.isTyping = false;
+
             WhatsEventHandler.MessageRecievedEvent += WhatsEventHandlerOnMessageRecievedEvent;
             WhatsEventHandler.IsTypingEvent += WhatsEventHandlerOnIsTypingEvent;
         }
@@ -74,6 +78,45 @@ namespace WhatsAppPort
             }
             WhatSocket.Instance.SendPaused(this.user.WhatsUser.GetFullJid());
             this.timerTyping.Stop();
+        }
+
+        private void btnSendPicture_Click(object sender, EventArgs e)
+        {
+            FileDialog pictureDialog = new OpenFileDialog();
+            pictureDialog.Title = "Select Image to Send";
+            pictureDialog.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif";
+
+            if (pictureDialog.ShowDialog() == DialogResult.OK)
+            {
+                String picture = pictureDialog.FileName.ToString();
+                byte[] imageData = File.ReadAllBytes(picture);
+
+                FileInfo fileInfo = new FileInfo(picture);
+
+                ApiBase.ImageType imageType = ApiBase.ImageType.JPEG;
+                switch (fileInfo.Extension)
+                {
+                    case "jpeg":
+                        imageType = ApiBase.ImageType.JPEG;
+                        break;
+                    case "jpg":
+                        imageType = ApiBase.ImageType.JPEG;
+                        break;
+                    case "png":
+                        imageType = ApiBase.ImageType.PNG;
+                        break;
+                    case "gif":
+                        imageType = ApiBase.ImageType.GIF;
+                        break;
+                }
+
+                WhatSocket.Instance.SendMessageImage(this.user.WhatsUser.GetFullJid(), imageData, imageType);
+            }
+        }
+
+        private void FrmUserChat_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

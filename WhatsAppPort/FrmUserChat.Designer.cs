@@ -34,6 +34,7 @@
             this.btnSend = new System.Windows.Forms.Button();
             this.lblIsTyping = new System.Windows.Forms.Label();
             this.timerTyping = new System.Windows.Forms.Timer(this.components);
+            this.btnSendPicture = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtBxChat
@@ -64,7 +65,7 @@
             // btnSend
             // 
             this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSend.Location = new System.Drawing.Point(453, 320);
+            this.btnSend.Location = new System.Drawing.Point(453, 325);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(75, 23);
             this.btnSend.TabIndex = 1;
@@ -88,18 +89,31 @@
             this.timerTyping.Interval = 2000;
             this.timerTyping.Tick += new System.EventHandler(this.timerTyping_Tick);
             // 
+            // btnSendPicture
+            // 
+            this.btnSendPicture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSendPicture.Location = new System.Drawing.Point(352, 325);
+            this.btnSendPicture.Name = "btnSendPicture";
+            this.btnSendPicture.Size = new System.Drawing.Size(86, 23);
+            this.btnSendPicture.TabIndex = 2;
+            this.btnSendPicture.Text = "Send Picture";
+            this.btnSendPicture.UseVisualStyleBackColor = true;
+            this.btnSendPicture.Click += new System.EventHandler(this.btnSendPicture_Click);
+            // 
             // FrmUserChat
             // 
             this.AcceptButton = this.btnSend;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(540, 355);
+            this.Controls.Add(this.btnSendPicture);
             this.Controls.Add(this.lblIsTyping);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtBxSentText);
             this.Controls.Add(this.txtBxChat);
             this.Name = "FrmUserChat";
             this.Text = "User Chat";
+            this.Load += new System.EventHandler(this.FrmUserChat_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -112,5 +126,6 @@
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.Label lblIsTyping;
         private System.Windows.Forms.Timer timerTyping;
+        private System.Windows.Forms.Button btnSendPicture;
     }
 }

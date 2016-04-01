@@ -5,6 +5,7 @@ WhatsAppApi_vs2010.userprefs
 *.user
 *.userosscache
 *.sln.docstates
+*.opendb
 
 # Build results
 [Dd]ebug/
@@ -30,3 +31,4 @@ bld/
 #Project Files
 /MyCurve25519/Ipch/
 /MyCurve25519/*.sdf
+/MyCurve25519/*.opendb

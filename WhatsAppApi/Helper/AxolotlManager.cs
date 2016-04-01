@@ -7,24 +7,27 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.RegularExpressions;
 using Tr.Com.Eimza.LibAxolotl;
 using Tr.Com.Eimza.LibAxolotl.Ecc;
 using Tr.Com.Eimza.LibAxolotl.Protocol;
 using Tr.Com.Eimza.LibAxolotl.State;
+using Tr.Com.Eimza.LibAxolotl.Util;
+using WhatsAppApi.Settings;
 
 // Temporary only For Testing
 
 namespace WhatsAppApi.Helper
 {
-    public class AxolotlManager : WhatsAppBase, AxolotlStore
+    public abstract class AxolotlManager : WhatsAppBase, AxolotlStore
     {
-        private Dictionary<string, List<ProtocolTreeNode>> pending_nodes = new Dictionary<string, List<ProtocolTreeNode>>();
-        private Dictionary<string, ProtocolTreeNode> retryNodes = new Dictionary<string, ProtocolTreeNode>();
-        private Dictionary<string, int> retryCounters = new Dictionary<string, int>();
-        private Dictionary<string, SessionCipher> sessionCiphers = new Dictionary<string, SessionCipher>();
-        private List<string> cipherKeys = new List<string>();
-        private List<string> v2Jids = new List<string>();
-        private bool replaceKey = false;
+        public Dictionary<String, List<ProtocolTreeNode>> pending_nodes = new Dictionary<String, List<ProtocolTreeNode>>();
+        public Dictionary<String, ProtocolTreeNode> retryNodes = new Dictionary<String, ProtocolTreeNode>();
+        public Dictionary<String, int> retryCounters = new Dictionary<String, int>();
+        public Dictionary<String, SessionCipher> sessionCiphers = new Dictionary<String, SessionCipher>();
+        public List<String> cipherKeys = new List<String>();
+        public List<String> v2Jids = new List<String>();
+        public bool replaceKey = false;
 
         /// <summary>
         ///
@@ -34,7 +37,7 @@ namespace WhatsAppApi.Helper
         }
 
         /// <summary>
-        /// intercept iq and precess the keys
+        /// Intercept IQ and Precess the Keys
         /// </summary>
         /// <param name="node"></param>
         public ProtocolTreeNode[] ProcessIqTreeNode(ProtocolTreeNode node)
@@ -48,11 +51,14 @@ namespace WhatsAppApi.Helper
                     {
                         string jid = child.GetChild("user").GetAttribute("jid");
                         uint registrationId = DeAdjustID(child.GetChild("registration").GetData());
+
                         IdentityKey identityKey = new IdentityKey(new DjbECPublicKey(child.GetChild("identity").GetData()));
                         uint signedPreKeyId = DeAdjustID(child.GetChild("skey").GetChild("id").GetData());
+
                         DjbECPublicKey signedPreKeyPub = new DjbECPublicKey(child.GetChild("skey").GetChild("value").GetData());
                         byte[] signedPreKeySig = child.GetChild("skey").GetChild("signature").GetData();
                         uint preKeyId = DeAdjustID(child.GetChild("key").GetChild("id").GetData());
+
                         DjbECPublicKey preKeyPublic = new DjbECPublicKey(child.GetChild("key").GetChild("value").GetData());
                         PreKeyBundle preKeyBundle = new PreKeyBundle(registrationId, 1, preKeyId, preKeyPublic, signedPreKeyId, signedPreKeyPub, signedPreKeySig, identityKey);
                         SessionBuilder sessionBuilder = new SessionBuilder(this, this, this, this, new AxolotlAddress(ExtractNumber(jid), 1));
@@ -75,6 +81,7 @@ namespace WhatsAppApi.Helper
             finally
             {
             }
+
             return null;
         }
 
@@ -83,7 +90,7 @@ namespace WhatsAppApi.Helper
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        public ProtocolTreeNode ProcessEncryptedNode(ProtocolTreeNode node)
+        public Pair<Boolean, ProtocolTreeNode> ProcessEncryptedNode(ProtocolTreeNode node)
         {
             string from = node.GetAttribute("from");
             string author = string.Empty;
@@ -92,23 +99,26 @@ namespace WhatsAppApi.Helper
             byte[] encMsg = null;
             ProtocolTreeNode rtnNode = null;
 
+            Pair<Boolean, ProtocolTreeNode> ret = new Pair<bool, ProtocolTreeNode>(false, node);
+
             if (from.IndexOf("s.whatsapp.net", 0, StringComparison.Ordinal) > -1)
             {
                 author = ExtractNumber(node.GetAttribute("from"));
-                version = node.GetAttribute("v");
+
+                version = node.GetChild("enc").GetAttribute("v");
                 encType = node.GetChild("enc").GetAttribute("type");
                 encMsg = node.GetChild("enc").GetData();
 
                 if (!ContainsSession(new AxolotlAddress(author, 1)))
                 {
-                    //we don't have the session to decrypt, save it in pending and process it later
+                    //We don't Have the Session to Decrypt, Save It in Pending and Process it Later
                     AddPendingNode(node);
-                    Helper.DebugAdapter.Instance.FireOnPrintDebug("info : Requesting cipher keys from " + author);
+                    Helper.DebugAdapter.Instance.FireOnPrintDebug("Info : Requesting Cipher Keys From " + author);
                     SendGetCipherKeysFromUser(author);
                 }
                 else
                 {
-                    //decrypt the message with the session
+                    //Decrypt the Message with The Session
                     if (node.GetChild("enc").GetAttribute("count") == "")
                         SetRetryCounter(node.GetAttribute("id"), 1);
                     if (version == "2")
@@ -122,11 +132,12 @@ namespace WhatsAppApi.Helper
                     if (plaintext is bool && false == (bool)plaintext)
                     {
                         SendRetry(node, from, node.GetAttribute("id"), node.GetAttribute("t"));
-                        Helper.DebugAdapter.Instance.FireOnPrintDebug("info : " + string.Format("Couldn't decrypt message id {0} from {1}. Retrying.", node.GetAttribute("id"), author));
-                        return node; // could not decrypt
+                        Helper.DebugAdapter.Instance.FireOnPrintDebug("Error : " + String.Format("Couldn't Decrypt Message ID {0} From {1}. Retrying.", node.GetAttribute("id"), author));
+                        ret = new Pair<bool, ProtocolTreeNode>(false, node);
+                        return ret; // Could Not Decrypt
                     }
 
-                    // success now lets clear all setting and return node
+                    // Success Now Lets Clear All Setting and Return Node
                     if (retryCounters.ContainsKey(node.GetAttribute("id")))
                         retryCounters.Remove(node.GetAttribute("id"));
                     if (retryNodes.ContainsKey(node.GetAttribute("id")))
@@ -146,15 +157,17 @@ namespace WhatsAppApi.Helper
                             break;
                     }
 
-                    Helper.DebugAdapter.Instance.FireOnPrintDebug("info : " + string.Format("Decrypted message with {0} id from {1}", node.GetAttribute("id"), author));
-                    return rtnNode;
+                    Helper.DebugAdapter.Instance.FireOnPrintDebug("info : " + string.Format("Decrypted Message with {0} Id From {1}", node.GetAttribute("id"), author));
+                    ret = new Pair<bool, ProtocolTreeNode>(true, rtnNode);
+                    return ret;
                 }
             }
-            return node;
+            
+            return ret;
         }
 
         /// <summary>
-        /// decrypt an incomming message
+        /// Decrypt an Incomming Message
         /// </summary>
         /// <param name="from"></param>
         /// <param name="ciphertext"></param>
@@ -163,69 +176,80 @@ namespace WhatsAppApi.Helper
         /// <param name="t"></param>
         /// <param name="retry_from"></param>
         /// <param name="skip_unpad"></param>
-        public object DecryptMessage(string from, byte[] ciphertext, string type, string id,
-                                    string t, string retry_from = null, bool skip_unpad = false)
+        public object DecryptMessage(string from, byte[] ciphertext, string type, string id, string t, string retry_from = null, bool skip_unpad = false)
         {
-            //string _Version = "2";
+            string _Version = "1";
 
-            #region pkmsg routine
+            #region Pkmsg Routine
 
             if (type == "pkmsg")
             {
                 if (v2Jids.Contains(ExtractNumber(from)))
-                    //_Version = "2";
-                    try
+                    _Version = "2";
+                try
+                {
+                    PreKeyWhisperMessage preKeyWhisperMessage = new PreKeyWhisperMessage(ciphertext);
+                    SessionCipher sessionCipher = GetSessionCipher(ExtractNumber(from));
+                    byte[] plaintext = sessionCipher.Decrypt(preKeyWhisperMessage);
+                    String text = WhatsApp.SysEncoding.GetString(plaintext);
+
+                    if (_Version == "2" && !skip_unpad)
                     {
-                        PreKeyWhisperMessage preKeyWhisperMessage = new PreKeyWhisperMessage(ciphertext);
-                        SessionCipher sessionCipher = GetSessionCipher(ExtractNumber(from));
-                        return sessionCipher.Decrypt(preKeyWhisperMessage);
-                        // if (version == "2" && !skip_unpad)
-                        //  return UnpadV2Plaintext(plaintext.ToString());
+                        String ret = UnPadv2Plaintext(text);
+                        return WhatsApp.SysEncoding.GetBytes(ret);
                     }
-                    catch (Exception)
-                    {
-                        //ErrorAxolotl(e.Message);
-                        return false;
-                    }
+                }
+                catch (Exception e)
+                {
+                    ErrorAxolotl(e.Message);
+                    return false;
+                }
             }
 
-            #endregion pkmsg routine
+            #endregion Pkmsg Routine
 
-            #region WhisperMessage routine
+            #region WhisperMessage Routine
 
             if (type == "msg")
             {
                 if (v2Jids.Contains(ExtractNumber(from)))
-                    //_Version = "2";
-                    try
+                    _Version = "2";
+                try
+                {
+                    PreKeyWhisperMessage preKeyWhisperMessage = new PreKeyWhisperMessage(ciphertext);
+                    SessionCipher sessionCipher = GetSessionCipher(ExtractNumber(from));
+                    byte[] plaintext = sessionCipher.Decrypt(preKeyWhisperMessage);
+                    String text = WhatsApp.SysEncoding.GetString(plaintext);
+
+                    if (_Version == "2" && !skip_unpad)
                     {
-                        PreKeyWhisperMessage preKeyWhisperMessage = new PreKeyWhisperMessage(ciphertext);
-                        SessionCipher sessionCipher = GetSessionCipher(ExtractNumber(from));
-                        return sessionCipher.Decrypt(preKeyWhisperMessage);
-                        //if (version == "2" && !skip_unpad)
-                        //    return UnpadV2Plaintext(plaintext.ToString());
+                        String ret = UnPadv2Plaintext(text);
+                        return WhatsApp.SysEncoding.GetBytes(ret);
                     }
-                    catch (Exception)
-                    {
-                    }
+                }
+                catch (Exception e)
+                {
+                    ErrorAxolotl(e.Message);
+                    return false;
+                }
             }
 
-            #endregion WhisperMessage routine
+            #endregion WhisperMessage Routine
 
-            #region Group message Cipher routine
+            #region Group Message Cipher Routine
 
             if (type == "skmsg")
             {
                 throw new NotImplementedException();
             }
 
-            #endregion Group message Cipher routine
+            #endregion Group Message Cipher Routine
 
             return false;
         }
 
         /// <summary>
-        /// Send a request to get cipher keys from an user
+        /// Send a request to Get Cipher Keys From an User
         /// </summary>
         /// <param name="number">Phone number of the user you want to get the cipher keys</param>
         /// <param name="replaceKeyIn"></param>
@@ -244,14 +268,14 @@ namespace WhatsAppApi.Helper
                     new KeyValue("id", msgId),
                     new KeyValue("xmlns", "encrypt"),
                     new KeyValue("type", "get"),
-                    new KeyValue("to", "s.whatsapp.net")
+                    new KeyValue("to", WhatsConstants.WhatsAppServer)
                    }, new ProtocolTreeNode[] { keyNode }, null);
 
             this.SendNode(Node);
         }
 
         /// <summary>
-        /// return the stored session cypher for this number
+        /// Return the stored session cypher for this number
         /// </summary>
         public SessionCipher GetSessionCipher(string number)
         {
@@ -268,7 +292,7 @@ namespace WhatsAppApi.Helper
         }
 
         /// <summary>
-        /// Generate the keysets for ourself
+        /// Generate the Keysets for Ourself
         /// </summary>
         /// <returns></returns>
         public bool SendSetPreKeys(bool isnew = false)
@@ -278,19 +302,23 @@ namespace WhatsAppApi.Helper
                 registrationId = (uint)this.GetLocalRegistrationId();
             else
                 registrationId = Tr.Com.Eimza.LibAxolotl.Util.KeyHelper.GenerateRegistrationId(true);
+
             Random random = new Random();
-            uint randomid = (uint)Tr.Com.Eimza.LibAxolotl.Util.KeyHelper.GetRandomSequence(5000);//65536
+            uint randomid = (uint)Tr.Com.Eimza.LibAxolotl.Util.KeyHelper.GetRandomSequence(5000); //5000
+
             IdentityKeyPair identityKeyPair = Tr.Com.Eimza.LibAxolotl.Util.KeyHelper.GenerateIdentityKeyPair();
             byte[] privateKey = identityKeyPair.GetPrivateKey().Serialize();
-            byte[] publicKey = identityKeyPair.GetPublicKey().GetPublicKey().Serialize();
+            byte[] publicKey = identityKeyPair.GetPublicKey().Serialize();
+
             IList<PreKeyRecord> preKeys = Tr.Com.Eimza.LibAxolotl.Util.KeyHelper.GeneratePreKeys((uint)random.Next(), 200);
             SignedPreKeyRecord signedPreKey = Tr.Com.Eimza.LibAxolotl.Util.KeyHelper.GenerateSignedPreKey(identityKeyPair, randomid);
             PreKeyRecord lastResortKey = Tr.Com.Eimza.LibAxolotl.Util.KeyHelper.GenerateLastResortPreKey();
 
             this.StorePreKeys(preKeys);
-            this.StoreLocalData(registrationId, identityKeyPair.GetPublicKey().Serialize(), identityKeyPair.GetPrivateKey().Serialize());
+            this.StoreLocalData(registrationId, publicKey, privateKey);
             this.StoreSignedPreKey(signedPreKey.GetId(), signedPreKey);
-            // FOR INTERNAL TESTING ONLY
+
+            // For Internal Testing Only
             //this.InMemoryTestSetup(identityKeyPair, registrationId);
 
             ProtocolTreeNode[] preKeyNodes = new ProtocolTreeNode[200];
@@ -307,17 +335,19 @@ namespace WhatsAppApi.Helper
             ProtocolTreeNode type = new ProtocolTreeNode("type", null, null, new byte[] { Curve.DJB_TYPE });
             ProtocolTreeNode list = new ProtocolTreeNode("list", null, preKeyNodes, null);
             ProtocolTreeNode sid = new ProtocolTreeNode("id", null, null, AdjustID(signedPreKey.GetId().ToString(), true));
-            ProtocolTreeNode identity = new ProtocolTreeNode("identity", null, null, identityKeyPair.GetPublicKey().GetPublicKey().Serialize().Skip(1).ToArray());
+
+            ProtocolTreeNode identity = new ProtocolTreeNode("identity", null, null, publicKey.Skip(1).ToArray());
             ProtocolTreeNode value = new ProtocolTreeNode("value", null, null, signedPreKey.GetKeyPair().GetPublicKey().Serialize().Skip(1).ToArray());
+
             ProtocolTreeNode signature = new ProtocolTreeNode("signature", null, null, signedPreKey.GetSignature());
             ProtocolTreeNode secretKey = new ProtocolTreeNode("skey", null, new ProtocolTreeNode[] { sid, value, signature }, null);
 
             String id = TicketManager.GenerateId();
-            Helper.DebugAdapter.Instance.FireOnPrintDebug(string.Format("axolotl id = {0}", id));
+            Helper.DebugAdapter.Instance.FireOnPrintDebug(string.Format("Axolotl ID = {0}", id));
 
             ProtocolTreeNode Node = new ProtocolTreeNode("iq", new KeyValue[] {
                     new KeyValue("id", id),
-                    new KeyValue("to", "s.whatsapp.net"),
+                    new KeyValue("to", WhatsConstants.WhatsAppServer),
                     new KeyValue("type", "set"),
                     new KeyValue("xmlns", "encrypt")
                    }, new ProtocolTreeNode[] { identity, registration, type, list, secretKey }, null);
@@ -326,12 +356,6 @@ namespace WhatsAppApi.Helper
             return true;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        public void ResetEncryption()
-        {
-        }
 
         /// <summary>
         /// jid from address
@@ -390,7 +414,7 @@ namespace WhatsAppApi.Helper
         {
             ProtocolTreeNode returnNode = null;
 
-            #region update retry counters
+            #region Update Retry Counters
 
             if (!retryCounters.ContainsKey(id))
             {
@@ -408,12 +432,12 @@ namespace WhatsAppApi.Helper
                 }
             }
 
-            #endregion update retry counters
+            #endregion Update Retry Counters
 
             if (retryCounters[id] > 2)
-                ResetEncryption();
+                this.ResetEncryption();
 
-            retryCounters[id]++;
+            //retryCounters[id]++;
             ProtocolTreeNode retryNode = new ProtocolTreeNode("retry", new[] {
                         new KeyValue("v", "1"),
                         new KeyValue("count", retryCounters[id].ToString()),
@@ -436,6 +460,11 @@ namespace WhatsAppApi.Helper
                                          new ProtocolTreeNode[] { retryNode, registrationNode }, null);
             this.SendNode(returnNode);
         }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public abstract void ResetEncryption();
 
         /// <summary>
         ///
@@ -502,7 +531,7 @@ namespace WhatsAppApi.Helper
         {
             return BitConverter.ToString(bin).Replace("-", string.Empty).ToLower();
 
-            #region old code
+            #region Old Code
 
             /*
             StringBuilder sb = new StringBuilder(bin.Length *2);
@@ -513,7 +542,7 @@ namespace WhatsAppApi.Helper
             return sb.ToString();
             */
 
-            #endregion old code
+            #endregion Old Code
         }
 
         /// <summary>
@@ -532,15 +561,55 @@ namespace WhatsAppApi.Helper
         /// </summary>
         /// <param name="v2plaintext"></param>
         /// <returns></returns>
-        public string UnpadV2Plaintext(string v2plaintext)
+        public string UnPadv2Plaintext(String v2plaintext)
         {
-            if (v2plaintext.Length < 128)
-                return v2plaintext.Substring(2, -1);
-            else
-                return v2plaintext.Substring(3, -1);
+            String ret = SubStr(v2plaintext, 2, -1);
+            return FixPadding(ret);
         }
 
-        #region raise a delegates error event to the main aplication
+        public static String FixPadding(String result)
+        {
+            /* Php */
+            Char lastChar = result[result.Length - 1];
+            String unpadded = result.TrimEnd(lastChar);
+            /* Php */
+
+            return unpadded;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public string TrimNonAscii(String data)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in data.Select(b => (char)b))
+            {
+                if ((c > '\u0020' && c < '\u007F') || c == 32)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString();
+        }
+
+
+        public static string SubStr(String value, int startIndex, int length = 0)
+        {
+            if (length == 0)
+                return value.Substring(startIndex);
+
+            if (length < 0)
+                length = value.Length - 1 + length;
+
+            return value.Substring(startIndex, length);
+        }
+
+
+        #region Raise a Delegates Error Event to The Main Application
 
         public event OnErrorAxolotlDelegate OnErrorAxolotl;
 
@@ -554,11 +623,11 @@ namespace WhatsAppApi.Helper
 
         public delegate void OnErrorAxolotlDelegate(string ErrorMessage);
 
-        #endregion raise a delegates error event to the main aplication
+        #endregion Raise a Delegates Error Event to The Main Application
 
         #region Public Interfaces for AxolotlStore
 
-        #region session event and delegates ISessionStore
+        #region Session Event and Delegates ISessionStore
 
         public event OnstoreSessionDataDelegate OnstoreSession;
 
@@ -640,11 +709,11 @@ namespace WhatsAppApi.Helper
 
         public delegate void OndeleteSessionDelegate(string recipientId, uint deviceId);
 
-        #endregion session event and delegates ISessionStore
+        #endregion Session Event and Delegates ISessionStore
 
-        #region PreKeys event and delegates IPreKeyStore
+        #region PreKeys Event and Delegates IPreKeyStore
 
-        // Internat Store All Generatet Keys
+        // Internal Store All Generate Keys
         public void StorePreKeys(IList<PreKeyRecord> keys)
         {
             foreach (PreKeyRecord key in keys)
@@ -727,7 +796,7 @@ namespace WhatsAppApi.Helper
 
         public delegate void OnremoveAllPreKeysDelegate();
 
-        #endregion PreKeys event and delegates IPreKeyStore
+        #endregion PreKeys Event and Delegates IPreKeyStore
 
         #region SignedPreKey Event and Delegates ISignedPreKeyStore
 
@@ -798,7 +867,7 @@ namespace WhatsAppApi.Helper
 
         #endregion SignedPreKey Event and Delegates ISignedPreKeyStore
 
-        #region identity event and delegates IIdentityKeyStore
+        #region Identity Event and Delegates IIdentityKeyStore
 
         public event OngetIdentityKeyPairDelegate OngetIdentityKeyPair;
 
@@ -820,7 +889,7 @@ namespace WhatsAppApi.Helper
             {
                 return this.OngetLocalRegistrationId();
             }
-            return 0; // FIXME: this isn't correct workaround only
+            return 0; // FIXME: This isn't Correct Workaround Only
         }
 
         /// <summary>
@@ -863,7 +932,7 @@ namespace WhatsAppApi.Helper
             }
         }
 
-        //event delegates
+        //Event Delegates
         public delegate void OnstoreLocalDataDelegate(uint registrationId, byte[] publickey, byte[] privatekey);
 
         public delegate List<byte[]> OngetIdentityKeyPairDelegate();
@@ -874,9 +943,9 @@ namespace WhatsAppApi.Helper
 
         public delegate bool OnsaveIdentityDelegate(string recipientId, byte[] identityKey);
 
-        #endregion identity event and delegates IIdentityKeyStore
+        #endregion Identity Event and Delegates IIdentityKeyStore
 
-        #region sender_keys event and delegates
+        #region Sender_Keys Event and Delegates
 
         public event OnstoreSenderKeyDelegate OnstoreSenderKey;
 
@@ -921,7 +990,7 @@ namespace WhatsAppApi.Helper
             return false;
         }
 
-        //event delegates
+        //Event Delegates
         public delegate void OnstoreSenderKeyDelegate(int senderKeyId, byte[] senderKeyRecord);
 
         public delegate byte[] OnloadSenderKeyDelegate(int senderKeyId);
@@ -930,11 +999,11 @@ namespace WhatsAppApi.Helper
 
         public delegate bool OncontainsSenderKeyDelegate(int senderKeyId);
 
-        #endregion sender_keys event and delegates
+        #endregion Sender_Keys Event and Delegates
 
         #endregion Public Interfaces for AxolotlStore
 
-        #region TESTING IN MEMORY STORE
+        #region Testing in MemoryStore
 
         /*
         private  InMemoryPreKeyStore preKeyStore             = new InMemoryPreKeyStore();
@@ -1030,11 +1099,11 @@ namespace WhatsAppApi.Helper
         }
         */
 
-        #endregion TESTING IN MEMORY STORE
+        #endregion Testing in MemoryStore
     }
 
     /// <summary>
-    /// NOT USED YET
+    /// Not Used Yet
     /// </summary>
     public class ExtraFunctions
     {

@@ -19,8 +19,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Tr.Com.Eimza.LibAxolotl.Util
 {
@@ -112,7 +114,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
                     //Create new byte array that should contain both unencrypted iv and encrypted data
                     byte[] result = new byte[iv.Length + encryptedContent.Length];
 
-                    //copy our 2 array into one
+                    //Copy Our 2 Array Into One
                     System.Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
                     System.Buffer.BlockCopy(encryptedContent, 0, result, iv.Length, encryptedContent.Length);
 
@@ -144,7 +146,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
                     //Create new byte array that should contain both unencrypted iv and encrypted data
                     byte[] result = new byte[iv.Length + encryptedContent.Length];
 
-                    //copy our 2 array into one
+                    //Copy Our 2 Array Into One
                     System.Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
                     System.Buffer.BlockCopy(encryptedContent, 0, result, iv.Length, encryptedContent.Length);
 
@@ -158,14 +160,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
     {
         public static byte[] AesCbcPkcs5(byte[] encryptedContent, byte[] key, byte[] iv)
         {
-            /*    byte[] iv = new byte[16]; //initial vector is 16 bytes
-                byte[] encryptedContent = new byte[secret.Length - 16]; //the rest should be encryptedcontent
-
-                //Copy data to byte array
-                System.Buffer.BlockCopy(secret, 0, iv, 0, iv.Length);
-                System.Buffer.BlockCopy(secret, iv.Length, encryptedContent, 0, encryptedContent.Length);
-              */
-
             using (MemoryStream ms = new MemoryStream())
             {
                 using (AesManaged cryptor = new AesManaged())
@@ -178,8 +172,10 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
                     using (CryptoStream cs = new CryptoStream(ms, cryptor.CreateDecryptor(key, iv), CryptoStreamMode.Write))
                     {
                         cs.Write(encryptedContent, 0, encryptedContent.Length);
+                        cs.FlushFinalBlock();
                     }
-                    return ms.ToArray();
+                    byte[] result = ms.ToArray();
+                    return result;
                 }
             }
         }
@@ -201,8 +197,10 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
                     using (CryptoStream cs = new CryptoStream(ms, cryptor.CreateDecryptor(key, iv), CryptoStreamMode.Write))
                     {
                         cs.Write(encryptedContent, 0, encryptedContent.Length);
+                        cs.FlushFinalBlock();
                     }
-                    return ms.ToArray();
+                    byte[] result = ms.ToArray();
+                    return result;
                 }
             }
         }

@@ -378,5 +378,6 @@ namespace WhatsAppApi
         public delegate void OnGetParticipantRenamedDelegate(string gjid, string oldJid, string newJid, DateTime time);
 
         public delegate void OnGetGroupSubjectDelegate(string gjid, string jid, string username, string subject, DateTime time);
+
     }
 }

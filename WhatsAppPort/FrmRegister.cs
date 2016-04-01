@@ -34,7 +34,11 @@ namespace WhatsAppPort
                 this.number = this.txtPhoneNumber.Text;
                 this.cc = this.number.Substring(0, 2);
                 this.phone = this.number.Substring(2);
-                if (WhatsAppApi.Register.WhatsRegisterV2.RequestCode(this.number, out this.password, method))
+
+                String response = String.Empty;
+                String request = String.Empty;
+
+                if (WhatsAppApi.Register.WhatsRegisterV2.RequestCode(this.number, out this.password, out request, out response, method))
                 {
                     if (!string.IsNullOrEmpty(this.password))
                     {
@@ -54,8 +58,10 @@ namespace WhatsAppPort
         {
             if (!String.IsNullOrEmpty(this.txtCode.Text) && this.txtCode.Text.Length == 6)
             {
-                string code = this.txtCode.Text;
-                this.password = WhatsAppApi.Register.WhatsRegisterV2.RegisterCode(this.number, code);
+                String code = this.txtCode.Text;
+                String response = String.Empty;
+
+                this.password = WhatsAppApi.Register.WhatsRegisterV2.RegisterCode(this.number, code, out response);
                 if (!String.IsNullOrEmpty(this.password))
                 {
                     this.OnReceivePassword();
