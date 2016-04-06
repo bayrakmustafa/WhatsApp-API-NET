@@ -16,7 +16,7 @@ namespace WhatsAppPort
                 }
                 else
                 {
-                    throw new Exception("Instance is not set");
+                    throw new Exception("Instance is Not Set");
                 }
             }
         }

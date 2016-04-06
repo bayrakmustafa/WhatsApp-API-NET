@@ -28,8 +28,8 @@ namespace WhatsAppPort
         public static User UserExists(string phoneNum, string nickName)
         {
             WhatsUserManager man = new WhatsUserManager();
-            var whatsUser = man.CreateUser(phoneNum, phoneNum);
-            var tmpUser = new User(phoneNum, nickName);
+            WhatsUser whatsUser = man.CreateUser(phoneNum, phoneNum);
+            User tmpUser = new User(phoneNum, nickName);
             tmpUser.SetUser(whatsUser);
             return tmpUser;
         }

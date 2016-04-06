@@ -16,7 +16,7 @@ namespace WhatsAppApi.Helper
 
         public byte[] StartStream(string domain, string resource)
         {
-            var attributes = new List<KeyValue>();
+            List<KeyValue> attributes = new List<KeyValue>();
             this.buffer = new List<byte>();
 
             attributes.Add(new KeyValue("to", domain));
@@ -85,7 +85,7 @@ namespace WhatsAppApi.Helper
         {
             if (attributes != null)
             {
-                foreach (var item in attributes)
+                foreach (KeyValue item in attributes)
                 {
                     this.WriteString(item.Key);
                     this.WriteString(item.Value);
@@ -174,7 +174,7 @@ namespace WhatsAppApi.Helper
             if (node.children != null && node.children.Any())
             {
                 this.WriteListStart(node.children.Count());
-                foreach (var item in node.children)
+                foreach (ProtocolTreeNode item in node.children)
                 {
                     this.WriteInternal(item);
                 }

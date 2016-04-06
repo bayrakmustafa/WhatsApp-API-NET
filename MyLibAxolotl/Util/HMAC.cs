@@ -32,9 +32,9 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
         {
             try
             {
-                using (var hmac = new HMACSHA256(key))
+                using (HMACSHA256 hmac = new HMACSHA256(key))
                 {
-                    var result = hmac.ComputeHash(message);
+                    byte[] result = hmac.ComputeHash(message);
                     return result;
                 }
             }
@@ -51,9 +51,9 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
         {
             try
             {
-                using (var hmac = new HMACSHA256(key))
+                using (HMACSHA256 hmac = new HMACSHA256(key))
                 {
-                    var result = hmac.ComputeHash(message);
+                    byte[] result = hmac.ComputeHash(message);
                     return result;
                 }
             }

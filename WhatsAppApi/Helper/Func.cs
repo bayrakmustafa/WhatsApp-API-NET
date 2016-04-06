@@ -25,7 +25,7 @@ namespace WhatsAppApi.Helper
 
         public static string RandomUUID()
         {
-            var mt_rand = new Random();
+            Random mt_rand = new Random();
             return string.Format("{0}{1}-{2}-{3}-{4}-{5}{6}{7}",
                                  mt_rand.Next(0, 0xffff), mt_rand.Next(0, 0xffff),
                                  mt_rand.Next(0, 0xffff),

@@ -15,11 +15,11 @@ namespace WhatsAppPort
         {
             if (!this.CheckLogin(this.textBoxPhone.Text, this.textBoxPass.Text))
             {
-                MessageBox.Show(this, "Login failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Login Failed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            using (var frm = new FrmForm(this.textBoxPhone.Text, this.textBoxPass.Text, this.textBoxNick.Text))
+            using (FrmForm frm = new FrmForm(this.textBoxPhone.Text, this.textBoxPass.Text, this.textBoxNick.Text))
             {
                 this.Visible = false;
                 frm.ShowDialog();

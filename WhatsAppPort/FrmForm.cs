@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using WhatsAppApi;
 using WhatsAppApi.Helper;
+using WhatsAppApi.Parser;
+using WhatsAppApi.Response;
 
 namespace WhatsAppPort
 {
     public partial class FrmForm : Form
     {
-        private WhatsMessageHandler messageHandler;
+        //private WhatsMessageHandler _MessageHandler;
 
         private BackgroundWorker bgWorker;
         private volatile bool isRunning;
@@ -19,11 +25,15 @@ namespace WhatsAppPort
         private string phonePass;
         private string phoneNick;
 
+        private User phoneUser;
+
         public FrmForm(string num, string pass, string nick)
         {
             this.phoneNum = num;
             this.phonePass = pass;
             this.phoneNick = nick;
+
+            this.phoneUser = new User(this.phoneNum, this.phoneNick);
 
             InitializeComponent();
 
@@ -33,15 +43,21 @@ namespace WhatsAppPort
             this.bgWorker = new BackgroundWorker();
             this.bgWorker.DoWork += ProcessMessages;
             this.bgWorker.ProgressChanged += NewMessageArrived;
+            this.bgWorker.RunWorkerCompleted += RunWorkerCompleted;
             this.bgWorker.WorkerSupportsCancellation = true;
             this.bgWorker.WorkerReportsProgress = true;
 
-            this.messageHandler = new WhatsMessageHandler();
+            //this._MessageHandler = WhatsMessageHandler.Instance;
+        }
+
+        private void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.isRunning = false;
         }
 
         private void btnAddContact_Click(object sender, EventArgs e)
         {
-            using (var tmpAddUser = new FrmAddUser())
+            using (FrmAddUser tmpAddUser = new FrmAddUser())
             {
                 tmpAddUser.ShowDialog(this);
                 if (tmpAddUser.DialogResult != DialogResult.OK)
@@ -49,10 +65,10 @@ namespace WhatsAppPort
                 if (tmpAddUser.Tag == null || !(tmpAddUser.Tag is User))
                     return;
 
-                var tmpUser = tmpAddUser.Tag as User;
+                User tmpUser = tmpAddUser.Tag as User;
                 this.userList.Add(tmpUser.PhoneNumber, tmpUser);
 
-                var tmpListUser = new ListViewItem(tmpUser.UserName)
+                ListViewItem tmpListUser = new ListViewItem(tmpUser.UserName)
                 {
                     Tag = tmpUser
                 };
@@ -62,8 +78,17 @@ namespace WhatsAppPort
 
         private void FrmForm_Load(object sender, EventArgs e)
         {
+            WhatSocket.Instance.SendGetServerProperties();
+
             WhatSocket.Instance.Connect();
             WhatSocket.Instance.Login();
+            WhatSocket.Instance.SendGetPrivacyList();
+            WhatSocket.Instance.SendGetClientConfig();
+
+            if (WhatSocket.Instance.LoadPreKeys() == null)
+                WhatSocket.Instance.SendSetPreKeys(true);            
+
+            //Run Worker
             this.bgWorker.RunWorkerAsync();
         }
 
@@ -76,12 +101,12 @@ namespace WhatsAppPort
             {
                 if (!WhatSocket.Instance.HasMessages())
                 {
-                    WhatSocket.Instance.PollMessages();
+                    WhatSocket.Instance.PollMessage();
                     Thread.Sleep(100);
                     continue;
                 }
 
-                var tmpMessages = WhatSocket.Instance.GetAllMessages();
+                ProtocolTreeNode[] tmpMessages = WhatSocket.Instance.GetAllMessages();
                 (sender as BackgroundWorker).ReportProgress(1, tmpMessages);
             }
         }
@@ -91,30 +116,19 @@ namespace WhatsAppPort
             if (args.UserState == null || !(args.UserState is ProtocolTreeNode[]))
                 return;
 
-            var tmpMessages = args.UserState as ProtocolTreeNode[];
-            foreach (var protocolNode in tmpMessages)
+            ProtocolTreeNode[] tmpMessages = args.UserState as ProtocolTreeNode[];
+            foreach (ProtocolTreeNode msg in tmpMessages)
             {
-                this.PopulateNewMessage(protocolNode);
+                ProtocolTreeNode contentNode = msg.GetChild("body") ?? msg.GetChild("enc");
+                byte[] contentData = contentNode.GetData();
+                String message = WhatsApp.SysEncoding.GetString(contentData);
+
+                FMessage tmpMessage = new FMessage(new FMessage.FMessageIdentifierKey(msg.GetAttribute("from"), false, msg.GetAttribute("id")));
+                tmpMessage.binary_data = contentData;
+                tmpMessage.data = message;
+
+                WhatsEventHandler.OnMessageRecievedEventHandler(tmpMessage);
             }
-        }
-
-        private void PopulateNewMessage(ProtocolTreeNode protocolNode)
-        {
-            this.GetMessageType(protocolNode);
-            this.GetMessageBody(protocolNode);
-            this.GetMessageSender(protocolNode);
-        }
-
-        private void GetMessageSender(ProtocolTreeNode protocolNode)
-        {
-        }
-
-        private void GetMessageBody(ProtocolTreeNode protocolNode)
-        {
-        }
-
-        private void GetMessageType(ProtocolTreeNode protocolNode)
-        {
         }
 
         private void FrmForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -129,16 +143,23 @@ namespace WhatsAppPort
             if (sender == null || !(sender is ListView))
                 return;
 
-            var tmpListView = sender as ListView;
+            ListView tmpListView = sender as ListView;
             if (tmpListView.SelectedItems.Count == 0)
                 return;
 
-            var selItem = tmpListView.SelectedItems[0];
-            var tmpUser = selItem.Tag as User;
+            ListViewItem selItem = tmpListView.SelectedItems[0];
+            User tmpUser = selItem.Tag as User;
 
-            var tmpDialog = new FrmUserChat(tmpUser);
-            //tmpDialog.MessageRecievedEvent += new frmUserChat.ProtocolDelegate(tmpDialog_MessageRecievedEvent);
+            FrmUserChat tmpDialog = new FrmUserChat(phoneUser, tmpUser);
             tmpDialog.Show();
+        }
+
+        private void timerCheck_Tick(object sender, EventArgs e)
+        {
+            if (this.bgWorker != null && !this.isRunning)
+            {
+                this.bgWorker.RunWorkerAsync();
+            }
         }
     }
 }

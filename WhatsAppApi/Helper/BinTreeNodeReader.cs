@@ -41,9 +41,9 @@ namespace WhatsAppApi.Helper
             {
                 if (this.Key != null)
                 {
-                    var realStanzaSize = stanzaSize - 4;
-                    var macOffset = stanzaSize - 4;
-                    var treeData = this.buffer.ToArray();
+                    int realStanzaSize = stanzaSize - 4;
+                    int macOffset = stanzaSize - 4;
+                    byte[] treeData = this.buffer.ToArray();
                     try
                     {
                         this.Key.DecodeMessage(treeData, macOffset, 0, realStanzaSize);
@@ -137,20 +137,20 @@ namespace WhatsAppApi.Helper
 
         protected string ReadNibble()
         {
-            var nextByte = ReadInt8();
+            int nextByte = ReadInt8();
 
-            var ignoreLastNibble = (nextByte & 0x80) != 0;
-            var size = (nextByte & 0x7f);
-            var nrOfNibbles = size * 2 - (ignoreLastNibble ? 1 : 0);
+            bool ignoreLastNibble = (nextByte & 0x80) != 0;
+            int size = (nextByte & 0x7f);
+            int nrOfNibbles = size * 2 - (ignoreLastNibble ? 1 : 0);
 
-            var data = FillArray(size);
-            var chars = new List<char>();
+            byte[] data = FillArray(size);
+            List<char> chars = new List<char>();
 
             for (int i = 0; i < nrOfNibbles; i++)
             {
                 nextByte = data[(int)Math.Floor(i / 2.0)];
 
-                var shift = 4 * (1 - i % 2);
+                int shift = 4 * (1 - i % 2);
                 byte dec = (byte)((nextByte & (15 << shift)) >> shift);
 
                 switch (dec)
@@ -185,7 +185,7 @@ namespace WhatsAppApi.Helper
 
         protected IEnumerable<KeyValue> ReadAttributes(int size)
         {
-            var attributes = new List<KeyValue>();
+            List<KeyValue> attributes = new List<KeyValue>();
             int attribCount = (size - 2 + size % 2) / 2;
             for (int i = 0; i < attribCount; i++)
             {
@@ -205,7 +205,7 @@ namespace WhatsAppApi.Helper
             int token2 = this.ReadInt8();
             if (token2 == 1)
             {
-                var attributes = this.ReadAttributes(size);
+                IEnumerable<KeyValue> attributes = this.ReadAttributes(size);
                 return new ProtocolTreeNode("start", attributes);
             }
             if (token2 == 2)
@@ -213,7 +213,7 @@ namespace WhatsAppApi.Helper
                 return null;
             }
             string tag = WhatsApp.SysEncoding.GetString(this.ReadBytes(token2));
-            var tmpAttributes = this.ReadAttributes(size);
+            IEnumerable<KeyValue> tmpAttributes = this.ReadAttributes(size);
 
             if ((size % 2) == 1)
             {
@@ -236,7 +236,7 @@ namespace WhatsAppApi.Helper
         protected List<ProtocolTreeNode> ReadList(int token)
         {
             int size = this.ReadListSize(token);
-            var ret = new List<ProtocolTreeNode>();
+            List<ProtocolTreeNode> ret = new List<ProtocolTreeNode>();
             for (int i = 0; i < size; i++)
             {
                 ret.Add(this.NextTreeInternal());

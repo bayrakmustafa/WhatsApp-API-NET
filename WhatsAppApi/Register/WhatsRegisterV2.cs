@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -193,11 +194,11 @@ namespace WhatsAppApi.Register
                 {
                     if (exception.Response != null)
                     {
-                        var responseStream = exception.Response.GetResponseStream();
+                        Stream responseStream = exception.Response.GetResponseStream();
 
                         if (responseStream != null)
                         {
-                            using (var reader = new System.IO.StreamReader(responseStream))
+                            using (StreamReader reader = new System.IO.StreamReader(responseStream))
                             {
                                 return reader.ReadToEnd();
                             }
@@ -214,7 +215,7 @@ namespace WhatsAppApi.Register
             request.KeepAlive = false;
             request.UserAgent = WhatsConstants.UserAgent;
             request.Accept = "text/json";
-            using (var reader = new System.IO.StreamReader(request.GetResponse().GetResponseStream()))
+            using (StreamReader reader = new System.IO.StreamReader(request.GetResponse().GetResponseStream()))
             {
                 return reader.ReadLine();
             }

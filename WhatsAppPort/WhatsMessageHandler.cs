@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WhatsAppApi.Account;
 using WhatsAppApi.Parser;
 using WhatsAppApi.Response;
@@ -8,10 +9,23 @@ namespace WhatsAppPort
     internal class WhatsMessageHandler
     {
         private Dictionary<string, List<FMessage>> messageHistory;
-
         private Dictionary<string, WhatsEventHandler.MessageRecievedHandler> userMessageDict;
 
-        public WhatsMessageHandler()
+        private static WhatsMessageHandler _WhatsMessageHandler = null;
+
+        public static WhatsMessageHandler Instance
+        {
+            get
+            {
+                if (_WhatsMessageHandler == null)
+                {
+                    _WhatsMessageHandler = new WhatsMessageHandler();
+                }
+                return _WhatsMessageHandler;
+            }
+        }
+
+        private WhatsMessageHandler()
         {
             this.messageHistory = new Dictionary<string, List<FMessage>>();
             this.userMessageDict = new Dictionary<string, WhatsEventHandler.MessageRecievedHandler>();
@@ -19,7 +33,7 @@ namespace WhatsAppPort
             WhatsEventHandler.MessageRecievedEvent += WhatsEventHandlerOnMessageRecievedEvent;
         }
 
-        private void WhatsEventHandlerOnMessageRecievedEvent(FMessage mess)
+        public void WhatsEventHandlerOnMessageRecievedEvent(FMessage mess)
         {
             if (mess == null || mess.identifier_key.remote_jid == null || mess.identifier_key.remote_jid.Length == 0)
                 return;
@@ -31,12 +45,12 @@ namespace WhatsAppPort
             this.CheckIfUserRegisteredAndCreate(mess);
         }
 
-        private void CheckIfUserRegisteredAndCreate(FMessage mess)
+        public void CheckIfUserRegisteredAndCreate(FMessage mess)
         {
             if (this.messageHistory.ContainsKey(mess.identifier_key.remote_jid))
                 return;
 
-            var jidSplit = mess.identifier_key.remote_jid.Split('@');
+            String[] jidSplit = mess.identifier_key.remote_jid.Split('@');
             WhatsUser tmpWhatsUser = new WhatsUser(jidSplit[0], jidSplit[1], mess.identifier_key.serverNickname);
             User tmpUser = new User(jidSplit[0], jidSplit[1]);
             tmpUser.SetUser(tmpWhatsUser);

@@ -14,7 +14,7 @@ namespace WhatsAppPort
         {
             if (this.txtBxNick.Text.Length == 0 || this.txtBxPhoneNum.Text.Length == 0)
                 return;
-            var user = User.UserExists(this.txtBxPhoneNum.Text.Trim(), this.txtBxNick.Text.Trim());
+            User user = User.UserExists(this.txtBxPhoneNum.Text.Trim(), this.txtBxNick.Text.Trim());
             this.Tag = user;
             this.DialogResult = DialogResult.OK;
             this.Close();

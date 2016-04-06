@@ -172,7 +172,7 @@ namespace WhatsAppApi
                 throw new ConnectionException("Socket not connected");
             }
 
-            var buff = new byte[length];
+            byte[] buff = new byte[length];
             int receiveLength = 0;
             do
             {
@@ -207,7 +207,7 @@ namespace WhatsAppApi
         /// <param name="flags">Optional flags</param>
         private void SocketSend(string data, int length, int flags)
         {
-            var tmpBytes = WhatsApp.SysEncoding.GetBytes(data);
+            byte[] tmpBytes = WhatsApp.SysEncoding.GetBytes(data);
             this.socket.Send(tmpBytes);
         }
 

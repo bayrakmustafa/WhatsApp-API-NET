@@ -74,6 +74,7 @@ namespace WhatsAppApi
             {
                 this.whatsNetwork.Connect();
                 this.loginStatus = CONNECTION_STATUS.CONNECTED;
+
                 //Success
                 this.FireOnConnectSuccess();
             }

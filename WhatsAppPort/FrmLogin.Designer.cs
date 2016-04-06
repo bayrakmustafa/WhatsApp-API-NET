@@ -78,6 +78,7 @@
             this.textBoxPhone.Name = "textBoxPhone";
             this.textBoxPhone.Size = new System.Drawing.Size(365, 20);
             this.textBoxPhone.TabIndex = 0;
+            this.textBoxPhone.Text = "";
             // 
             // textBoxNick
             // 
@@ -87,6 +88,7 @@
             this.textBoxNick.Name = "textBoxNick";
             this.textBoxNick.Size = new System.Drawing.Size(365, 20);
             this.textBoxNick.TabIndex = 2;
+            this.textBoxNick.Text = "";
             // 
             // textBoxPass
             // 
@@ -97,6 +99,7 @@
             this.textBoxPass.PasswordChar = '*';
             this.textBoxPass.Size = new System.Drawing.Size(365, 20);
             this.textBoxPass.TabIndex = 1;
+            this.textBoxPass.Text = "";
             // 
             // label3
             // 

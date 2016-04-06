@@ -272,7 +272,7 @@ namespace WhatsAppApi
         {
             MD5 md5 = MD5.Create();
             byte[] dataMd5 = md5.ComputeHash(WhatsApp.SysEncoding.GetBytes(pass));
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             foreach (byte t in dataMd5)
                 sb.AppendFormat("{0:x2}", t);
             return sb.ToString();

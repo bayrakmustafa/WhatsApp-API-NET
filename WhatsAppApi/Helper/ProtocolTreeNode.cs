@@ -45,7 +45,7 @@ namespace WhatsAppApi.Helper
             string ret = "\n" + indent + "<" + this.tag;
             if (this.attributeHash != null)
             {
-                foreach (var item in this.attributeHash)
+                foreach (KeyValue item in this.attributeHash)
                 {
                     ret += string.Format(" {0}=\"{1}\"", item.Key, item.Value);
                 }
@@ -65,7 +65,7 @@ namespace WhatsAppApi.Helper
 
             if (this.children != null && this.children.Count() > 0)
             {
-                foreach (var item in this.children)
+                foreach (ProtocolTreeNode item in this.children)
                 {
                     ret += item.NodeString(indent + "  ");
                 }
@@ -77,7 +77,7 @@ namespace WhatsAppApi.Helper
 
         public string GetAttribute(string attribute)
         {
-            var ret = this.attributeHash.FirstOrDefault(x => x.Key.Equals(attribute));
+            KeyValue ret = this.attributeHash.FirstOrDefault(x => x.Key.Equals(attribute));
             return (ret == null) ? null : ret.Value;
         }
 
@@ -85,7 +85,7 @@ namespace WhatsAppApi.Helper
         {
             if (this.children != null && this.children.Any())
             {
-                foreach (var item in this.children)
+                foreach (ProtocolTreeNode item in this.children)
                 {
                     if (ProtocolTreeNode.TagEquals(item, tag))
                     {
@@ -115,10 +115,10 @@ namespace WhatsAppApi.Helper
 
         public IEnumerable<ProtocolTreeNode> GetAllChildren(string tag)
         {
-            var tmpReturn = new List<ProtocolTreeNode>();
+            List<ProtocolTreeNode> tmpReturn = new List<ProtocolTreeNode>();
             if (this.children != null && this.children.Any())
             {
-                foreach (var item in this.children)
+                foreach (ProtocolTreeNode item in this.children)
                 {
                     if (tag.Equals(item.tag, StringComparison.InvariantCultureIgnoreCase))
                     {

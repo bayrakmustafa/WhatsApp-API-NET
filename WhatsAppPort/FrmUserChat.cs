@@ -9,20 +9,15 @@ namespace WhatsAppPort
 {
     public partial class FrmUserChat : Form
     {
-        //public delegate void StringDelegate(string value);
-        //public delegate void ProtocolDelegate(ProtocolTreeNode node);
-
-        //public event StringDelegate MessageSentEvent;
-        //public event Action MessageAckEvent;
-        //public event ProtocolDelegate MessageRecievedEvent;
-
+        private User loginUser;
         private User user;
         private bool isTyping;
 
-        public FrmUserChat(User user)
+        public FrmUserChat(User loginUser, User user)
         {
             InitializeComponent();
 
+            this.loginUser = loginUser;
             this.user = user;
             this.isTyping = false;
 
@@ -40,7 +35,9 @@ namespace WhatsAppPort
 
         private void WhatsEventHandlerOnMessageRecievedEvent(FMessage mess)
         {
-            var tmpMes = mess.data;
+            if (!this.user.WhatsUser.GetFullJid().Equals(mess.identifier_key.remote_jid))
+                return;
+            string tmpMes = mess.data;
             this.AddNewText(this.user.UserName, tmpMes);
         }
 
@@ -50,7 +47,7 @@ namespace WhatsAppPort
                 return;
 
             WhatSocket.Instance.SendMessage(this.user.WhatsUser.GetFullJid(), txtBxSentText.Text);
-            this.AddNewText(this.user.UserName, txtBxSentText.Text);
+            this.AddNewText(this.loginUser.UserName, txtBxSentText.Text);
             txtBxSentText.Clear();
         }
 

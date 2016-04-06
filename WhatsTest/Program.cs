@@ -25,7 +25,7 @@ namespace WhatsTest
 
             string nickname = "";
             string sender = ""; //Mobile Number with Country Code (but without + or 00)
-            string password = "="; //v2 password
+            string password = ""; //v2 password
             string _Target = ""; // Mobile Number to Send the Message to
 
             _WhatsAppApi = new WhatsApp(sender, password, nickname, true);
@@ -94,7 +94,7 @@ namespace WhatsTest
 
         private static void Instance_OnPrintDebug(object value)
         {
-            Console.WriteLine(value);
+            Console.WriteLine("Debug Message : " + value);
         }
 
         private static void OnGetPrivacySettings(Dictionary<ApiBase.VisibilityCategory, ApiBase.VisibilitySetting> settings)
@@ -111,7 +111,7 @@ namespace WhatsTest
 
         private static void OnGetStatus(string from, string type, string name, string status)
         {
-            Console.WriteLine(String.Format("Got status from {0}: {1}", from, status));
+            Console.WriteLine(String.Format("Got Status From {0}: {1}", from, status));
         }
 
         private static string GetDatFileName(string pn)
@@ -260,7 +260,10 @@ namespace WhatsTest
             {
                 File.WriteAllText(GetDatFileName(phoneNumber), sdata);
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+
+            }
         }
 
         private static void ProcessChat(WhatsApp _WhatsAppApi, string _Dest)
@@ -286,7 +289,7 @@ namespace WhatsTest
             thRecv.Start();
 
             WhatsUserManager usrMan = new WhatsUserManager();
-            var tmpUser = usrMan.CreateUser(_Dest, "User");
+            WhatsUser tmpUser = usrMan.CreateUser(_Dest, "User");
 
             while (true)
             {

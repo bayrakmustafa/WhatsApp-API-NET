@@ -24,6 +24,8 @@ namespace WhatsAppApi.Parser
         public DateTime? timestamp;
         public bool wants_receipt;
 
+
+
         public WhatsAppApi.Account.WhatsUser User
         {
             get; private set;
@@ -594,8 +596,7 @@ namespace WhatsAppApi.Parser
 
             public override string ToString()
             {
-                return
-                    string.Concat(new object[]
+                return string.Concat(new object[]
                                       {
                                           "Key[id=", this.id, ", from_me=", this.from_me, ", remote_jid=", this.remote_jid,
                                           "]"

@@ -47,7 +47,7 @@ namespace WhatsAppApi.Helper
                 if (cipherKeys.Contains(node.GetAttribute("id")))
                 {
                     cipherKeys.Remove(node.GetAttribute("id"));
-                    foreach (var child in node.children)
+                    foreach (ProtocolTreeNode child in node.children)
                     {
                         string jid = child.GetChild("user").GetAttribute("jid");
                         uint registrationId = DeAdjustID(child.GetChild("registration").GetData());
@@ -68,7 +68,7 @@ namespace WhatsAppApi.Helper
 
                         if (pending_nodes.ContainsKey(ExtractNumber(jid)))
                         {
-                            var pendingNodes = pending_nodes[ExtractNumber(jid)].ToArray();
+                            ProtocolTreeNode[] pendingNodes = pending_nodes[ExtractNumber(jid)].ToArray();
                             pending_nodes.Remove(ExtractNumber(jid));
                             return pendingNodes;
                         }
@@ -256,7 +256,7 @@ namespace WhatsAppApi.Helper
         public void SendGetCipherKeysFromUser(string number, bool replaceKeyIn = false)
         {
             replaceKey = replaceKeyIn;
-            var msgId = TicketManager.GenerateId();
+            string msgId = TicketManager.GenerateId();
             cipherKeys.Add(msgId);
 
             ProtocolTreeNode user = new ProtocolTreeNode("user", new[] {
@@ -399,7 +399,7 @@ namespace WhatsAppApi.Helper
         /// <param name="counter"></param>
         public void SetRetryCounter(string id, int counter)
         {
-            //   retryCounters[$id] = $counter;
+            //retryCounters[id] = counter;
         }
 
         /// <summary>
@@ -477,10 +477,7 @@ namespace WhatsAppApi.Helper
             byte[] bytebase = new byte[] { (byte)0x00 };
             byte[] rv = bytebase.Concat(val).ToArray();
 
-            if (val.Length < 4)
-                newval = rv;
-            else
-                newval = val;
+            newval = val.Length < 4 ? rv : val;
 
             byte[] reversed = newval.Reverse().ToArray();
             return BitConverter.ToUInt32(reversed, 0);
@@ -1109,8 +1106,8 @@ namespace WhatsAppApi.Helper
     {
         public static byte[] SerializeToBytes<T>(T item)
         {
-            var formatter = new BinaryFormatter();
-            using (var stream = new MemoryStream())
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (MemoryStream stream = new MemoryStream())
             {
                 formatter.Serialize(stream, item);
                 stream.Seek(0, SeekOrigin.Begin);
@@ -1120,8 +1117,8 @@ namespace WhatsAppApi.Helper
 
         public static object DeserializeFromBytes(byte[] bytes)
         {
-            var formatter = new BinaryFormatter();
-            using (var stream = new MemoryStream(bytes))
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (MemoryStream stream = new MemoryStream(bytes))
             {
                 return formatter.Deserialize(stream);
             }

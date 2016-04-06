@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.listViewContacts = new System.Windows.Forms.ListView();
             this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnAddContact = new System.Windows.Forms.Button();
+            this.timerCheck = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // listViewContacts
@@ -65,6 +67,12 @@
             this.btnAddContact.UseVisualStyleBackColor = true;
             this.btnAddContact.Click += new System.EventHandler(this.btnAddContact_Click);
             // 
+            // timerCheck
+            // 
+            this.timerCheck.Enabled = true;
+            this.timerCheck.Interval = 1000;
+            this.timerCheck.Tick += new System.EventHandler(this.timerCheck_Tick);
+            // 
             // FrmForm
             // 
             this.AcceptButton = this.btnAddContact;
@@ -86,6 +94,7 @@
         private System.Windows.Forms.ListView listViewContacts;
         private System.Windows.Forms.Button btnAddContact;
         private System.Windows.Forms.ColumnHeader columnHeaderName;
+        private System.Windows.Forms.Timer timerCheck;
     }
 }
 

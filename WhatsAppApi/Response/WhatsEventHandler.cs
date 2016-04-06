@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using WhatsAppApi.Parser;
 
 namespace WhatsAppApi.Response
@@ -79,88 +80,88 @@ namespace WhatsAppApi.Response
          * User will only handle the delagates and events
          * */
 
-        internal static void OnMessageRecievedEventHandler(FMessage mess)
+        public static void OnMessageRecievedEventHandler(FMessage mess)
         {
-            var h = MessageRecievedEvent;
+            MessageRecievedHandler h = MessageRecievedEvent;
             if (h == null)
                 return;
-            foreach (var tmpSingleCast in h.GetInvocationList())
+            foreach (Delegate tmpSingleCast in h.GetInvocationList())
             {
-                var tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
+                ISynchronizeInvoke tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
                 if (tmpSyncInvoke != null && tmpSyncInvoke.InvokeRequired)
                 {
-                    tmpSyncInvoke.BeginInvoke(tmpSingleCast, new object[] { mess });
+                    tmpSyncInvoke.Invoke(tmpSingleCast, new object[] { mess });
                     continue;
                 }
-                h.BeginInvoke(mess, null, null);
+                h.Invoke(mess);
             }
         }
 
-        internal static void OnPhotoChangedEventHandler(FMessage mess)
+        public static void OnPhotoChangedEventHandler(FMessage mess)
         {
-            var h = MessageRecievedEvent;
+            MessageRecievedHandler h = MessageRecievedEvent;
             if (h == null)
                 return;
-            foreach (var tmpSingleCast in h.GetInvocationList())
+            foreach (Delegate tmpSingleCast in h.GetInvocationList())
             {
-                var tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
+                ISynchronizeInvoke tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
                 if (tmpSyncInvoke != null && tmpSyncInvoke.InvokeRequired)
                 {
-                    tmpSyncInvoke.BeginInvoke(tmpSingleCast, new object[] { mess });
+                    tmpSyncInvoke.Invoke(tmpSingleCast, new object[] { mess });
                     continue;
                 }
-                h.BeginInvoke(mess, null, null);
+                h.Invoke(mess);
             }
         }
 
-        internal static void OnIsTypingEventHandler(string from, bool isTyping)
+        public static void OnIsTypingEventHandler(string from, bool isTyping)
         {
-            var h = IsTypingEvent;
+            BoolHandler h = IsTypingEvent;
             if (h == null)
                 return;
-            foreach (var tmpSingleCast in h.GetInvocationList())
+            foreach (Delegate tmpSingleCast in h.GetInvocationList())
             {
-                var tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
+                ISynchronizeInvoke tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
                 if (tmpSyncInvoke != null && tmpSyncInvoke.InvokeRequired)
                 {
-                    tmpSyncInvoke.BeginInvoke(tmpSingleCast, new object[] { from, isTyping });
+                    tmpSyncInvoke.Invoke(tmpSingleCast, new object[] { from, isTyping });
                     continue;
                 }
-                h.BeginInvoke(from, isTyping, null, null);
+                h.Invoke(from, isTyping);
             }
         }
 
-        internal static void OnGroupNewSubjectEventHandler(string from, string uJid, string subject, int t)
+        public static void OnGroupNewSubjectEventHandler(string from, string uJid, string subject, int t)
         {
-            var h = GroupNewSubjectEvent;
+            GroupNewSubjectHandler h = GroupNewSubjectEvent;
             if (h == null)
                 return;
-            foreach (var tmpSingleCast in h.GetInvocationList())
+            foreach (Delegate tmpSingleCast in h.GetInvocationList())
             {
-                var tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
+                ISynchronizeInvoke tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
                 if (tmpSyncInvoke != null && tmpSyncInvoke.InvokeRequired)
                 {
-                    tmpSyncInvoke.BeginInvoke(tmpSingleCast, new object[] { from, uJid, subject, t });
+                    tmpSyncInvoke.Invoke(tmpSingleCast, new object[] { from, uJid, subject, t });
                     continue;
                 }
-                h.BeginInvoke(from, uJid, subject, t, null, null);
+                h.Invoke(from, uJid, subject, t);
             }
         }
 
-        internal static void OnPhotoChangedEventHandler(string from, string uJid, string photoId)
+        public static void OnPhotoChangedEventHandler(string from, string uJid, string photoId)
         {
-            var h = PhotoChangedEvent;
+            PhotoChangedHandler h = PhotoChangedEvent;
             if (h == null)
                 return;
-            foreach (var tmpSingleCast in h.GetInvocationList())
+            foreach (Delegate tmpSingleCast in h.GetInvocationList())
             {
-                var tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
+                ISynchronizeInvoke tmpSyncInvoke = tmpSingleCast.Target as ISynchronizeInvoke;
                 if (tmpSyncInvoke != null && tmpSyncInvoke.InvokeRequired)
                 {
-                    tmpSyncInvoke.BeginInvoke(tmpSingleCast, new object[] { from, uJid, photoId });
+                    tmpSyncInvoke.Invoke(tmpSingleCast, new object[] { from, uJid, photoId });
                     continue;
                 }
-                h.BeginInvoke(from, uJid, photoId, null, null);
+                h.Invoke(from, uJid, photoId);
             }
         }
 
