@@ -49,6 +49,12 @@ namespace Tr.Com.Eimza.LibAxolotl.State.Impl
             return true;
         }
 
+        //TODO: Mustafa
+        public void StoreLocalData(uint registrationId, IdentityKeyPair identityKey)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsTrustedIdentity(String name, IdentityKey identityKey)
         {
             return identityKeyStore.IsTrustedIdentity(name, identityKey);
@@ -72,6 +78,18 @@ namespace Tr.Com.Eimza.LibAxolotl.State.Impl
         public void RemovePreKey(uint preKeyId)
         {
             preKeyStore.RemovePreKey(preKeyId);
+        }
+
+        //TODO: Mustafa
+        public void RemoveAllPreKeys()
+        {
+            throw new NotImplementedException();
+        }
+
+        //TODO: Mustafa
+        public List<PreKeyRecord> LoadPreKeys()
+        {
+            throw new NotImplementedException();
         }
 
         public SessionRecord LoadSession(AxolotlAddress address)

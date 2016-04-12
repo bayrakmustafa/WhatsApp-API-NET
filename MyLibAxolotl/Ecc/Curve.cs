@@ -28,10 +28,8 @@ namespace Tr.Com.Eimza.LibAxolotl.Ecc
 
         public static ECKeyPair GenerateKeyPair()
         {
-            Curve25519KeyPair keyPair = Curve25519.GetInstance(Curve25519ProviderType.BEST).generateKeyPair();
-
-            return new ECKeyPair(new DjbECPublicKey(keyPair.getPublicKey()),
-                                 new DjbECPrivateKey(keyPair.getPrivateKey()));
+            Curve25519KeyPair keyPair = Curve25519.GetInstance(Curve25519ProviderType.BEST).GenerateKeyPair();
+            return new ECKeyPair(new DjbECPublicKey(keyPair.GetPublicKey()), new DjbECPrivateKey(keyPair.GetPrivateKey()));
         }
 
         public static ECPublicKey DecodePoint(byte[] bytes, int offset)
@@ -90,8 +88,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Ecc
         {
             if (signingKey.GetKeyType() == DJB_TYPE)
             {
-                return Curve25519.GetInstance(Curve25519ProviderType.BEST)
-                                 .CalculateSignature(((DjbECPrivateKey)signingKey).GetPrivateKey(), message);
+                return Curve25519.GetInstance(Curve25519ProviderType.BEST).CalculateSignature(((DjbECPrivateKey)signingKey).GetPrivateKey(), message);
             }
             else
             {

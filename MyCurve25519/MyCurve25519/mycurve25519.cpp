@@ -1,9 +1,8 @@
-// This is the main DLL file.
 #include "pch.h"
 #include "Windows.h"
 #include "mycurve25519.h"
-#include "Curve25519_Internal.h" //Curve25519_donna
-#include "ed25519\additions\curve_sigs.h" //Curve25519_sign
+#include "Curve25519_Internal.h" //Curve25519_Donna
+#include "ed25519\additions\curve_sigs.h" //Curve25519_Sign
 
 using namespace MyCurve25519;
 using namespace System;

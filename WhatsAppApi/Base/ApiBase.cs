@@ -283,15 +283,15 @@ namespace WhatsAppApi
             target = target.TrimStart(new char[] { '+', '0' });
             if (!target.Contains('@'))
             {
-                //check if group message
+                //Check If Group Message
                 if (target.Contains('-'))
                 {
-                    //to group
+                    //To Group
                     target += "@g.us";
                 }
                 else
                 {
-                    //to normal user
+                    //To Normal User
                     target += "@s.whatsapp.net";
                 }
             }

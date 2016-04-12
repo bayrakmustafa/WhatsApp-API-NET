@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatsAppApi", "..\WhatsAppApi\WhatsAppApi.csproj", "{3FC9096A-C4D2-40C7-BE7B-D98ACAB3BD2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyLibAxolotl", "..\mylibaxolotl\MyLibAxolotl.csproj", "{1DEBDA0C-62C7-40A9-B74A-0F086FC2B65D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyLibAxolotl", "..\MyLibAxolotl\MyLibAxolotl.csproj", "{1DEBDA0C-62C7-40A9-B74A-0F086FC2B65D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyCurve25519", "MyCurve25519\MyCurve25519.vcxproj", "{C2BED275-103A-437A-8DA3-0E17EA241F3E}"
 EndProject

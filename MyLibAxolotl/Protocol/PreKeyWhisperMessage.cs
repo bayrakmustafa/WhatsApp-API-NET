@@ -23,7 +23,7 @@ using Tr.Com.Eimza.LibAxolotl.Util;
 
 namespace Tr.Com.Eimza.LibAxolotl.Protocol
 {
-    public partial class PreKeyWhisperMessage : CiphertextMessage
+    public partial class PreKeyWhisperMessage : CipherTextMessage
     {
         private readonly uint version;
         private readonly uint registrationId;
@@ -40,7 +40,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
             {
                 this.version = (uint)ByteUtil.HighBitsToInt(serialized[0]);
 
-                if (this.version > CiphertextMessage.CURRENT_VERSION)
+                if (this.version > CipherTextMessage.CURRENT_VERSION)
                 {
                     throw new InvalidVersionException("Unknown Version: " + this.version);
                 }
@@ -145,7 +145,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
 
         public override uint GetKeyType()
         {
-            return CiphertextMessage.PREKEY_TYPE;
+            return CipherTextMessage.PREKEY_TYPE;
         }
     }
 }

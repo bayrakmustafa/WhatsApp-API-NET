@@ -66,13 +66,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups.Ratchet
 
         private byte[] GetDerivative(byte[] seed, byte[] key)
         {
-            // try
-            //{
             return Sign.Sha256sum(key, seed);
-            /*}
-            catch (NoSuchAlgorithmException | InvalidKeyException e) {
-                throw new AssertionError(e);
-            }*/
         }
     }
 }

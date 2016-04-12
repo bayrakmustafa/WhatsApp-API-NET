@@ -22,7 +22,7 @@ using Tr.Com.Eimza.LibAxolotl.Util;
 
 namespace Tr.Com.Eimza.LibAxolotl.Protocol
 {
-    public partial class SenderKeyMessage : CiphertextMessage
+    public partial class SenderKeyMessage : CipherTextMessage
     {
         private static readonly int SIGNATURE_LENGTH = 64;
 
@@ -141,7 +141,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
 
         public override uint GetKeyType()
         {
-            return CiphertextMessage.SENDERKEY_TYPE;
+            return CipherTextMessage.SENDERKEY_TYPE;
         }
     }
 }

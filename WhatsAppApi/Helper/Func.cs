@@ -35,6 +35,27 @@ namespace WhatsAppApi.Helper
                 );
         }
 
+        public static String RandomStr(int len)
+        {
+            String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            String retVal = String.Empty;
+
+            Random mt_rand = new Random();
+            for (int i = 0; i < len; i++)
+            {
+                retVal += characters[mt_rand.Next(0, characters.Length - 1)];
+            }
+
+            return retVal;
+        }
+
+        public static string GetRandomGcm()
+        {
+            return RandomStr(5) + "_" + RandomStr(5) + ":" + "APA91b" + RandomStr(64) +
+                    "_" + RandomStr(5) + "-" + RandomStr(12) + "_" + RandomStr(9) +
+                    "_" + RandomStr(11) + "_" + RandomStr(1) + "_" + RandomStr(26);
+        }
+
         public static string Str2Hex(string str)
         {
             string hex = "0x";

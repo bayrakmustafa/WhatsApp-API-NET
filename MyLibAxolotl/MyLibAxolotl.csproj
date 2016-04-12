@@ -136,6 +136,8 @@
     <Compile Include="Protocol\CiphertextMessage.cs" />
     <Compile Include="Protocol\KeyExchangeMessage.cs" />
     <Compile Include="Protocol\PreKeyWhisperMessage.cs" />
+    <Compile Include="Protocol\SenderKeyGroupData.cs" />
+    <Compile Include="Protocol\SenderKeyGroupMessage.cs" />
     <Compile Include="Protocol\SenderKeyDistributionMessage.cs" />
     <Compile Include="Protocol\SenderKeyMessage.cs" />
     <Compile Include="Protocol\WhisperMessage.cs" />

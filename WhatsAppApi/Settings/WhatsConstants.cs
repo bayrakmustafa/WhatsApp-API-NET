@@ -45,12 +45,22 @@ namespace WhatsAppApi.Settings
         /// iPhone device
         /// </summary>
         //	public const string Device = "S40";
-        public const string Device = "Android";
+        public const string Platform = "Android";
 
         /// <summary>
-        /// manufacturer
+        /// Device Name
+        /// </summary>
+        public const string Device = "Armani";
+
+        /// <summary>
+        /// Manufacturer
         /// </summary>
         public const string Manufacturer = "Xiaomi";
+
+        /// <summary>
+        /// Build Version
+        /// </summary>
+        public const string Build_Version = "JLS36C";
 
         /// <summary>
         /// OS Version

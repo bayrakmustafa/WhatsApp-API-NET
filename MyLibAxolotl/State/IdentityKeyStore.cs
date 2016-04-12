@@ -58,6 +58,17 @@ namespace Tr.Com.Eimza.LibAxolotl.State
         bool SaveIdentity(String name, IdentityKey identityKey);
 
         /**
+         * Save a remote client's identity key
+         * <p>
+         * Store a remote client's identity key as trusted.
+         *
+         * @param registrationId The name of the remote client.
+         * @param identityKey The remote client's identity key.
+         */
+
+        void StoreLocalData(uint registrationId, IdentityKeyPair identityKey);
+
+        /**
          * Verify a remote client's identity key.
          * <p>
          * Determine whether a remote client's identity is trusted.  Convention is

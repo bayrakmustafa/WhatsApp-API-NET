@@ -8,21 +8,30 @@ namespace WhatsAppApi
 {
     public class WhatsAppBase : WhatsEventBase
     {
-        public long m_LastSentInfo = 0;
-
-        protected ProtocolTreeNode uploadResponse;
-
-        protected AccountInfo accountinfo;
+        public static readonly Encoding SysEncoding = Encoding.UTF8;
 
         public static bool Debug;
-
         public static bool DebugOutBound;
+        public long m_LastSentInfo = 0;
 
-        protected string password;
+        protected static object messageLock = new object();
+
+        protected byte[] _ChallengeBytes;
+        protected AccountInfo accountinfo;
+
+        protected BinTreeNodeWriter BinWriter;
+        protected BinTreeNodeReader BinReader;
 
         protected bool hidden;
-
         protected CONNECTION_STATUS loginStatus;
+        protected List<ProtocolTreeNode> messageQueue;
+        protected string name;
+        protected KeyStream outputKey;
+        protected string password;
+        protected string phoneNumber;
+        protected int timeout = 300000;
+        protected ProtocolTreeNode uploadResponse;
+        protected WhatsNetwork whatsNetwork;
 
         public CONNECTION_STATUS ConnectionStatus
         {
@@ -32,37 +41,15 @@ namespace WhatsAppApi
             }
         }
 
-        protected KeyStream outputKey;
-
-        protected object messageLock = new object();
-
-        protected List<ProtocolTreeNode> messageQueue;
-
-        protected string name;
-
-        protected string phoneNumber;
-
-        protected BinTreeNodeReader reader;
-
-        protected int timeout = 300000;
-
-        protected WhatsNetwork whatsNetwork;
-
-        public static readonly Encoding SysEncoding = Encoding.UTF8;
-
-        protected byte[] _ChallengeBytes;
-
-        protected BinTreeNodeWriter BinWriter;
-
-        protected void ConstructBase(string phoneNum, string imei, string nick, bool debug, bool hidden)
+        public WhatsAppBase(string phoneNum, string password, string nick, bool debug, bool hidden)
         {
             this.messageQueue = new List<ProtocolTreeNode>();
             this.phoneNumber = phoneNum;
-            this.password = imei;
+            this.password = password;
             this.name = nick;
             this.hidden = hidden;
             WhatsApp.Debug = debug;
-            this.reader = new BinTreeNodeReader();
+            this.BinReader = new BinTreeNodeReader();
             this.loginStatus = CONNECTION_STATUS.DISCONNECTED;
             this.BinWriter = new BinTreeNodeWriter();
             this.whatsNetwork = new WhatsNetwork(WhatsConstants.WhatsAppHost, WhatsConstants.WhatsPort, this.timeout);
@@ -91,11 +78,6 @@ namespace WhatsAppApi
             this.FireOnDisconnect(ex);
         }
 
-        protected byte[] EncryptPassword()
-        {
-            return Convert.FromBase64String(this.password);
-        }
-
         public AccountInfo GetAccountInfo()
         {
             return this.accountinfo;
@@ -112,6 +94,19 @@ namespace WhatsAppApi
             return tmpReturn;
         }
 
+        public bool HasMessages()
+        {
+            if (this.messageQueue == null)
+                return false;
+            return this.messageQueue.Count > 0;
+        }
+
+        public void SendNode(ProtocolTreeNode node)
+        {
+            m_LastSentInfo = DateTime.UtcNow.ToFileTime();
+            this.SendData(this.BinWriter.Write(node));
+        }
+
         protected void AddMessage(ProtocolTreeNode node)
         {
             lock (messageLock)
@@ -120,11 +115,9 @@ namespace WhatsAppApi
             }
         }
 
-        public bool HasMessages()
+        protected byte[] EncryptPassword()
         {
-            if (this.messageQueue == null)
-                return false;
-            return this.messageQueue.Count > 0;
+            return Convert.FromBase64String(this.password);
         }
 
         protected void SendData(byte[] data)
@@ -137,12 +130,6 @@ namespace WhatsAppApi
             {
                 this.Disconnect();
             }
-        }
-
-        public void SendNode(ProtocolTreeNode node)
-        {
-            m_LastSentInfo = DateTime.UtcNow.ToFileTime();
-            this.SendData(this.BinWriter.Write(node));
         }
     }
 }

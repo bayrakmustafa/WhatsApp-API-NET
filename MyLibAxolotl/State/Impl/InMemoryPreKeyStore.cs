@@ -57,5 +57,17 @@ namespace Tr.Com.Eimza.LibAxolotl.State.Impl
         {
             store.Remove(preKeyId);
         }
+
+        //TODO: Mustafa
+        public void RemoveAllPreKeys()
+        {
+            throw new NotImplementedException();
+        }
+
+        //TODO: Mustafa
+        public List<PreKeyRecord> LoadPreKeys()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

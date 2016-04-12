@@ -57,7 +57,7 @@ namespace WhatsAppApi.Helper
                 }
                 else
                 {
-                    throw new Exception("Received encrypted message, encryption key not set");
+                    throw new Exception("Received Encrypted Message, Encryption Key not Set");
                 }
             }
 
@@ -90,7 +90,7 @@ namespace WhatsAppApi.Helper
             byte[] ret = new byte[0];
             if (token == -1)
             {
-                throw new Exception("BinTreeNodeReader->readString: Invalid token " + token);
+                throw new Exception("BinTreeNodeReader->ReadString: Invalid token " + token);
             }
             if ((token > 2) && (token < 245))
             {
@@ -177,7 +177,7 @@ namespace WhatsAppApi.Helper
                         break;
 
                     default:
-                        throw new Exception("Bad nibble: " + dec);
+                        throw new Exception("Bad Nibble: " + dec);
                 }
             }
             return new string(chars.ToArray());

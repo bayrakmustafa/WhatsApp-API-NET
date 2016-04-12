@@ -72,7 +72,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
                                                                              senderKeyState.GetSigningKeyPrivate());
 
                     senderKeyState.SetSenderChainKey(senderKeyState.GetSenderChainKey().GetNext());
-
                     senderKeyStore.StoreSenderKey(senderKeyId, record);
 
                     return senderKeyMessage.Serialize();
@@ -125,7 +124,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups
 
                     if (record.IsEmpty())
                     {
-                        throw new NoSessionException("No sender key for: " + senderKeyId);
+                        throw new NoSessionException("No Sender Key For: " + senderKeyId);
                     }
 
                     SenderKeyMessage senderKeyMessage = new SenderKeyMessage(senderKeyMessageBytes);

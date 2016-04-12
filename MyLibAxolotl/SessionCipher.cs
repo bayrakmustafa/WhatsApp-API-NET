@@ -78,7 +78,7 @@ namespace Tr.Com.Eimza.LibAxolotl
          * @return A ciphertext message encrypted to the recipient+device tuple.
          */
 
-        public CiphertextMessage Encrypt(byte[] paddedMessage)
+        public CipherTextMessage Encrypt(byte[] paddedMessage)
         {
             lock (SESSION_LOCK)
             {
@@ -91,7 +91,7 @@ namespace Tr.Com.Eimza.LibAxolotl
                 uint sessionVersion = sessionState.GetSessionVersion();
 
                 byte[] ciphertextBody = GetCiphertext(sessionVersion, messageKeys, paddedMessage);
-                CiphertextMessage ciphertextMessage = new WhisperMessage(sessionVersion, messageKeys.GetMacKey(),
+                CipherTextMessage ciphertextMessage = new WhisperMessage(sessionVersion, messageKeys.GetMacKey(),
                                                                          senderEphemeral, chainKey.GetIndex(),
                                                                          previousCounter, ciphertextBody,
                                                                          sessionState.GetLocalIdentityKey(),

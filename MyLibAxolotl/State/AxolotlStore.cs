@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Tr.Com.Eimza.LibAxolotl.Groups.State;
+
 namespace Tr.Com.Eimza.LibAxolotl.State
 {
     public interface AxolotlStore : IdentityKeyStore, PreKeyStore, SessionStore, SignedPreKeyStore

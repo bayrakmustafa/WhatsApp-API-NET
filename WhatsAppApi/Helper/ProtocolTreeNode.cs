@@ -6,28 +6,27 @@ namespace WhatsAppApi.Helper
 {
     public class ProtocolTreeNode
     {
-        public string tag;
-        public IEnumerable<KeyValue> attributeHash;
-        public IEnumerable<ProtocolTreeNode> children;
-        public byte[] data;
+        public string _Tag;
+        public IEnumerable<KeyValue> _AttributeHash;
+        public IEnumerable<ProtocolTreeNode> _Children;
+        public byte[] _Data;
 
-        public ProtocolTreeNode(string tag, IEnumerable<KeyValue> attributeHash, IEnumerable<ProtocolTreeNode> children = null,
-                            byte[] data = null)
+        public ProtocolTreeNode(string tag, IEnumerable<KeyValue> attributeHash, IEnumerable<ProtocolTreeNode> children = null, byte[] data = null)
         {
-            this.tag = tag ?? "";
-            this.attributeHash = attributeHash ?? new KeyValue[0];
-            this.children = children ?? new ProtocolTreeNode[0];
-            this.data = new byte[0];
+            this._Tag = tag ?? "";
+            this._AttributeHash = attributeHash ?? new KeyValue[0];
+            this._Children = children ?? new ProtocolTreeNode[0];
+            this._Data = new byte[0];
             if (data != null)
-                this.data = data;
+                this._Data = data;
         }
 
         public ProtocolTreeNode(string tag, IEnumerable<KeyValue> attributeHash, ProtocolTreeNode children = null)
         {
-            this.tag = tag ?? "";
-            this.attributeHash = attributeHash ?? new KeyValue[0];
-            this.children = children != null ? new ProtocolTreeNode[] { children } : new ProtocolTreeNode[0];
-            this.data = new byte[0];
+            this._Tag = tag ?? "";
+            this._AttributeHash = attributeHash ?? new KeyValue[0];
+            this._Children = children != null ? new ProtocolTreeNode[] { children } : new ProtocolTreeNode[0];
+            this._Data = new byte[0];
         }
 
         public ProtocolTreeNode(string tag, IEnumerable<KeyValue> attributeHash, byte[] data = null)
@@ -42,50 +41,55 @@ namespace WhatsAppApi.Helper
 
         public string NodeString(string indent = "")
         {
-            string ret = "\n" + indent + "<" + this.tag;
-            if (this.attributeHash != null)
+            string ret = "\n" + indent + "<" + this._Tag;
+            if (this._AttributeHash != null)
             {
-                foreach (KeyValue item in this.attributeHash)
+                foreach (KeyValue item in this._AttributeHash)
                 {
                     ret += string.Format(" {0}=\"{1}\"", item.Key, item.Value);
                 }
             }
             ret += ">";
-            if (this.data.Length > 0)
+            if (this._Data.Length > 0)
             {
-                if (this.data.Length <= 1024)
+                if (this._Data.Length <= 1024)
                 {
-                    ret += WhatsApp.SysEncoding.GetString(this.data);
+                    ret += WhatsApp.SysEncoding.GetString(this._Data);
                 }
                 else
                 {
-                    ret += string.Format("--{0} byte--", this.data.Length);
+                    ret += string.Format("--{0} byte--", this._Data.Length);
                 }
             }
 
-            if (this.children != null && this.children.Count() > 0)
+            if (this._Children != null && this._Children.Count() > 0)
             {
-                foreach (ProtocolTreeNode item in this.children)
+                foreach (ProtocolTreeNode item in this._Children)
                 {
                     ret += item.NodeString(indent + "  ");
                 }
                 ret += "\n" + indent;
             }
-            ret += "</" + this.tag + ">";
+            ret += "</" + this._Tag + ">";
             return ret;
         }
 
         public string GetAttribute(string attribute)
         {
-            KeyValue ret = this.attributeHash.FirstOrDefault(x => x.Key.Equals(attribute));
+            KeyValue ret = this._AttributeHash.FirstOrDefault(x => x.Key.Equals(attribute));
             return (ret == null) ? null : ret.Value;
+        }
+
+        public bool HashChild(string tag)
+        {
+            return GetChild(tag) != null;
         }
 
         public ProtocolTreeNode GetChild(string tag)
         {
-            if (this.children != null && this.children.Any())
+            if (this._Children != null && this._Children.Any())
             {
-                foreach (ProtocolTreeNode item in this.children)
+                foreach (ProtocolTreeNode item in this._Children)
                 {
                     if (ProtocolTreeNode.TagEquals(item, tag))
                     {
@@ -103,11 +107,42 @@ namespace WhatsAppApi.Helper
 
         public ProtocolTreeNode GetChild(int index)
         {
-            if (this.children != null && this.children.Any())
+            if (this._Children != null && this._Children.Any())
             {
-                if (children.Count() >= index)
+                if (_Children.Count() >= index)
                 {
-                    return children.ElementAt(index);
+                    return _Children.ElementAt(index);
+                }
+            }
+            return null;
+        }
+
+        public ProtocolTreeNode GetChild(string tag, Dictionary<String, String> attrDic)
+        {
+            if (this._Children != null && this._Children.Any())
+            {
+                foreach (ProtocolTreeNode item in this._Children)
+                {
+                    if (ProtocolTreeNode.TagEquals(item, tag))
+                    {
+                        return item;
+                    }
+                    ProtocolTreeNode ret = item.GetChild(tag);
+                    if (ret != null)
+                    {
+                        Boolean found = true;
+                        foreach (KeyValuePair<String, String> pair in attrDic)
+                        {
+                            if (!item.GetAttribute(pair.Key).Equals(pair.Value))
+                            {
+                                found = false;
+                            }
+                        }
+                        if (found)
+                        {
+                            return ret;
+                        }
+                    }
                 }
             }
             return null;
@@ -116,11 +151,11 @@ namespace WhatsAppApi.Helper
         public IEnumerable<ProtocolTreeNode> GetAllChildren(string tag)
         {
             List<ProtocolTreeNode> tmpReturn = new List<ProtocolTreeNode>();
-            if (this.children != null && this.children.Any())
+            if (this._Children != null && this._Children.Any())
             {
-                foreach (ProtocolTreeNode item in this.children)
+                foreach (ProtocolTreeNode item in this._Children)
                 {
-                    if (tag.Equals(item.tag, StringComparison.InvariantCultureIgnoreCase))
+                    if (tag.Equals(item._Tag, StringComparison.InvariantCultureIgnoreCase))
                     {
                         tmpReturn.Add(item);
                     }
@@ -132,17 +167,22 @@ namespace WhatsAppApi.Helper
 
         public IEnumerable<ProtocolTreeNode> GetAllChildren()
         {
-            return this.children.ToArray();
+            return this._Children.ToArray();
+        }
+
+        public void SetChildren(IEnumerable<ProtocolTreeNode> children)
+        {
+            this._Children = children;
         }
 
         public byte[] GetData()
         {
-            return this.data;
+            return this._Data;
         }
 
         public static bool TagEquals(ProtocolTreeNode node, string _string)
         {
-            return (((node != null) && (node.tag != null)) && node.tag.Equals(_string, StringComparison.OrdinalIgnoreCase));
+            return (((node != null) && (node._Tag != null)) && node._Tag.Equals(_string, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

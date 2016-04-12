@@ -81,12 +81,7 @@ namespace WhatsAppPort
             WhatSocket.Instance.SendGetServerProperties();
 
             WhatSocket.Instance.Connect();
-            WhatSocket.Instance.Login();
-            WhatSocket.Instance.SendGetPrivacyList();
-            WhatSocket.Instance.SendGetClientConfig();
-
-            if (WhatSocket.Instance.LoadPreKeys() == null)
-                WhatSocket.Instance.SendSetPreKeys(true);            
+            WhatSocket.Instance.Login();     
 
             //Run Worker
             this.bgWorker.RunWorkerAsync();

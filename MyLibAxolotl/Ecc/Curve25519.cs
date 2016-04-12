@@ -73,7 +73,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Ecc
         /// Generates a Curve25519 keypair.
         /// </summary>
         /// <returns>A randomly generated Curve25519 keypair.</returns>
-        public Curve25519KeyPair generateKeyPair()
+        public Curve25519KeyPair GenerateKeyPair()
         {
             RandomNumberGenerator rng = new RNGCryptoServiceProvider();
             byte[] random = new byte[32];
@@ -146,7 +146,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Ecc
         /// Curve25519 public key
         /// </summary>
         /// <returns></returns>
-        public byte[] getPublicKey()
+        public byte[] GetPublicKey()
         {
             return publicKey;
         }
@@ -155,7 +155,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Ecc
         /// Curve25519 private key
         /// </summary>
         /// <returns></returns>
-        public byte[] getPrivateKey()
+        public byte[] GetPrivateKey()
         {
             return privateKey;
         }

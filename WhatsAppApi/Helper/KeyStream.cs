@@ -7,13 +7,14 @@ namespace WhatsAppApi.Helper
     {
         public const string AuthMethod = "WAUTH-2";
         private const int Drop = 768;
+
         private RC4 rc4;
         private HMACSHA1 mac;
         private uint seq;
 
         public KeyStream(byte[] key, byte[] macKey)
         {
-            this.rc4 = new RC4(key, 768);
+            this.rc4 = new RC4(key, Drop);
             this.mac = new HMACSHA1(macKey);
         }
 

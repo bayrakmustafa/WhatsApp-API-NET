@@ -6,6 +6,7 @@ WhatsAppApi_vs2010.userprefs
 *.userosscache
 *.sln.docstates
 *.opendb
+*.db
 
 # Build results
 [Dd]ebug/

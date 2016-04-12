@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+
 namespace Tr.Com.Eimza.LibAxolotl.Groups.State
 {
     public interface SenderKeyStore
@@ -45,5 +48,35 @@ namespace Tr.Com.Eimza.LibAxolotl.Groups.State
          */
 
         SenderKeyRecord LoadSenderKey(SenderKeyName senderKeyName);
+
+        /**
+         * @param senderKeyName A SenderKeyStore ID.
+         * @return true if the store has a record for the senderKeyName, otherwise false.
+         */
+        bool ContainsSenderKey(SenderKeyName senderKeyName);
+
+        /**
+         * Delete a SenderKeyStore from local storage.
+         *
+         * @param senderKeyName The ID of the SenderKeyRecord to remove.
+         */
+        void RemoveSenderKey(SenderKeyName senderKeyName);
+
+
+        /**
+         * Returns a copy of the {@link org.whispersystems.libaxolotl.groups.state.SenderKeyRecord}
+         * corresponding to the (groupId + senderId + deviceId) tuple, or a new SenderKeyRecord if
+         * one does not currently exist.
+         * <p>
+         * It is important that implementations return a copy of the current durable information.  The
+         * returned SenderKeyRecord may be modified, but those changes should not have an effect on the
+         * durable session state (what is returned by subsequent calls to this method) without the
+         * store method being called here first.
+         *
+         * @param senderKeyName The (groupId + senderId + deviceId) tuple.
+         * @return a copy of the SenderKeyRecord corresponding to the (groupId + senderId + deviceId tuple, or
+         *         a new SenderKeyRecord if one does not currently exist.
+         */
+        List<SenderKeyRecord> LoadSenderKeys();
     }
 }

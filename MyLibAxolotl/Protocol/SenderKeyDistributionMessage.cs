@@ -22,7 +22,7 @@ using Tr.Com.Eimza.LibAxolotl.Util;
 
 namespace Tr.Com.Eimza.LibAxolotl.Protocol
 {
-    public partial class SenderKeyDistributionMessage : CiphertextMessage
+    public partial class SenderKeyDistributionMessage : CipherTextMessage
     {
         private readonly uint id;
         private readonly uint iteration;
@@ -55,7 +55,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
                 byte version = messageParts[0][0];
                 byte[] message = messageParts[1];
 
-                if (ByteUtil.HighBitsToInt(version) < CiphertextMessage.CURRENT_VERSION)
+                if (ByteUtil.HighBitsToInt(version) < CipherTextMessage.CURRENT_VERSION)
                 {
                     throw new LegacyMessageException("Legacy message: " + ByteUtil.HighBitsToInt(version));
                 }
@@ -83,7 +83,6 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
             }
             catch (Exception e)
             {
-                //InvalidProtocolBufferException | InvalidKey
                 throw new InvalidMessageException(e);
             }
         }

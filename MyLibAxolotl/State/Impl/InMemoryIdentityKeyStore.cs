@@ -55,6 +55,12 @@ namespace Tr.Com.Eimza.LibAxolotl.State.Impl
             return true;
         }
 
+        //TODO: Mustafa
+        public void StoreLocalData(uint registrationId, IdentityKeyPair identityKey)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsTrustedIdentity(String name, IdentityKey identityKey)
         {
             IdentityKey trusted;

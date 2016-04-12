@@ -152,29 +152,29 @@ namespace WhatsAppApi.Helper
         protected void WriteInternal(ProtocolTreeNode node)
         {
             int len = 1;
-            if (node.attributeHash != null)
+            if (node._AttributeHash != null)
             {
-                len += node.attributeHash.Count() * 2;
+                len += node._AttributeHash.Count() * 2;
             }
-            if (node.children.Any())
+            if (node._Children.Any())
             {
                 len += 1;
             }
-            if (node.data.Length > 0)
+            if (node._Data.Length > 0)
             {
                 len += 1;
             }
             this.WriteListStart(len);
-            this.WriteString(node.tag);
-            this.WriteAttributes(node.attributeHash);
-            if (node.data.Length > 0)
+            this.WriteString(node._Tag);
+            this.WriteAttributes(node._AttributeHash);
+            if (node._Data.Length > 0)
             {
-                this.WriteBytes(node.data);
+                this.WriteBytes(node._Data);
             }
-            if (node.children != null && node.children.Any())
+            if (node._Children != null && node._Children.Any())
             {
-                this.WriteListStart(node.children.Count());
-                foreach (ProtocolTreeNode item in node.children)
+                this.WriteListStart(node._Children.Count());
+                foreach (ProtocolTreeNode item in node._Children)
                 {
                     this.WriteInternal(item);
                 }

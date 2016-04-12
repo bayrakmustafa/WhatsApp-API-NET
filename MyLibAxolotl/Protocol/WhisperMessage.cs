@@ -24,7 +24,7 @@ using Tr.Com.Eimza.LibAxolotl.Util;
 
 namespace Tr.Com.Eimza.LibAxolotl.Protocol
 {
-    public partial class WhisperMessage : CiphertextMessage
+    public partial class WhisperMessage : CipherTextMessage
     {
         private static readonly int MAC_LENGTH = 8;
 
@@ -44,7 +44,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
                 byte[] message = messageParts[1];
                 byte[] mac = messageParts[2];
 
-                if (ByteUtil.HighBitsToInt(version) <= CiphertextMessage.UNSUPPORTED_VERSION)
+                if (ByteUtil.HighBitsToInt(version) <= CipherTextMessage.UNSUPPORTED_VERSION)
                 {
                     throw new LegacyMessageException("Legacy message: " + ByteUtil.HighBitsToInt(version));
                 }
@@ -166,12 +166,12 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
 
         public override uint GetKeyType()
         {
-            return CiphertextMessage.WHISPER_TYPE;
+            return CipherTextMessage.WHISPER_TYPE;
         }
 
         public static bool IsLegacy(byte[] message)
         {
-            return message != null && message.Length >= 1 && ByteUtil.HighBitsToInt(message[0]) <= CiphertextMessage.UNSUPPORTED_VERSION;
+            return message != null && message.Length >= 1 && ByteUtil.HighBitsToInt(message[0]) <= CipherTextMessage.UNSUPPORTED_VERSION;
         }
     }
 }

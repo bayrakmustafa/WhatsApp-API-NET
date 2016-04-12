@@ -1,6 +1,5 @@
 package textsecure;
 
-
 message SessionStructure {
     message Chain {
         optional bytes senderRatchetKey = 1;
@@ -35,7 +34,7 @@ message SessionStructure {
 
     message PendingPreKey {
         optional uint32 preKeyId       = 1;
-        optional int32  signedPreKeyId = 3;
+        optional uint32 signedPreKeyId = 3;
         optional bytes  baseKey        = 2;
     }
 

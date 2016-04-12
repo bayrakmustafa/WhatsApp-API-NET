@@ -136,11 +136,11 @@ namespace Tr.Com.Eimza.LibAxolotl
         {
             if (sessionRecord.HasSessionState(message.GetMessageVersion(), message.GetBaseKey().Serialize()))
             {
-                //Log.w(TAG, "We've already setup a session for this V3 message, letting bundled message fall through...");
                 return May<uint>.NoValue;
             }
 
-            ECKeyPair ourSignedPreKey = signedPreKeyStore.LoadSignedPreKey(message.GetSignedPreKeyId()).GetKeyPair();
+            SignedPreKeyRecord signedPreKeyRecord = signedPreKeyStore.LoadSignedPreKey(message.GetSignedPreKeyId());
+            ECKeyPair ourSignedPreKey = signedPreKeyRecord.GetKeyPair();
 
             BobAxolotlParameters.Builder parameters = BobAxolotlParameters.NewBuilder();
 
@@ -188,8 +188,7 @@ namespace Tr.Com.Eimza.LibAxolotl
             if (!preKeyStore.ContainsPreKey(message.GetPreKeyId().ForceGetValue()) &&
                 sessionStore.ContainsSession(remoteAddress))
             {
-                //Log.w(TAG, "We've already processed the prekey part of this V2 session, letting bundled message fall through...");
-                return May<uint>.NoValue; //May.absent();
+                return May<uint>.NoValue;
             }
 
             ECKeyPair ourPreKey = preKeyStore.LoadPreKey(message.GetPreKeyId().ForceGetValue()).GetKeyPair();
@@ -262,8 +261,7 @@ namespace Tr.Com.Eimza.LibAxolotl
                 ECPublicKey theirSignedPreKey = supportsV3 ? preKey.GetSignedPreKey() : preKey.GetPreKey();
                 ECPublicKey test = preKey.GetPreKey(); // TODO: Cleanup
                 May<ECPublicKey> theirOneTimePreKey = (test == null) ? May<ECPublicKey>.NoValue : new May<ECPublicKey>(test);
-                May<uint> theirOneTimePreKeyId = theirOneTimePreKey.HasValue ? new May<uint>(preKey.GetPreKeyId()) :
-                                                                                              May<uint>.NoValue;
+                May<uint> theirOneTimePreKeyId = theirOneTimePreKey.HasValue ? new May<uint>(preKey.GetPreKeyId()) : May<uint>.NoValue;
 
                 AliceAxolotlParameters.Builder parameters = AliceAxolotlParameters.NewBuilder();
 
@@ -313,15 +311,15 @@ namespace Tr.Com.Eimza.LibAxolotl
                 KeyExchangeMessage responseMessage = null;
 
                 if (message.IsInitiate())
-                    responseMessage = processInitiate(message);
+                    responseMessage = ProcessInitiate(message);
                 else
-                    processResponse(message);
+                    ProcessResponse(message);
 
                 return responseMessage;
             }
         }
 
-        private KeyExchangeMessage processInitiate(KeyExchangeMessage message)
+        private KeyExchangeMessage ProcessInitiate(KeyExchangeMessage message)
         {
             uint flags = KeyExchangeMessage.RESPONSE_FLAG;
             SessionRecord sessionRecord = sessionStore.LoadSession(remoteAddress);
@@ -360,7 +358,7 @@ namespace Tr.Com.Eimza.LibAxolotl
                 sessionRecord.ArchiveCurrentState();
 
             RatchetingSession.InitializeSession(sessionRecord.GetSessionState(),
-                                                Math.Min(message.GetMaxVersion(), CiphertextMessage.CURRENT_VERSION),
+                                                Math.Min(message.GetMaxVersion(), CipherTextMessage.CURRENT_VERSION),
                                                 parameters);
 
             sessionStore.StoreSession(remoteAddress, sessionRecord);
@@ -376,7 +374,7 @@ namespace Tr.Com.Eimza.LibAxolotl
                                           parameters.GetOurIdentityKey().GetPublicKey());
         }
 
-        private void processResponse(KeyExchangeMessage message)
+        private void ProcessResponse(KeyExchangeMessage message)
         {
             SessionRecord sessionRecord = sessionStore.LoadSession(remoteAddress);
             SessionState sessionState = sessionRecord.GetSessionState();
@@ -405,7 +403,7 @@ namespace Tr.Com.Eimza.LibAxolotl
                 sessionRecord.ArchiveCurrentState();
 
             RatchetingSession.InitializeSession(sessionRecord.GetSessionState(),
-                                                Math.Min(message.GetMaxVersion(), CiphertextMessage.CURRENT_VERSION),
+                                                Math.Min(message.GetMaxVersion(), CipherTextMessage.CURRENT_VERSION),
                                                 parameters.Create());
 
             if (sessionRecord.GetSessionState().GetSessionVersion() >= 3 &&
@@ -443,8 +441,7 @@ namespace Tr.Com.Eimza.LibAxolotl
                     sessionRecord.GetSessionState().SetPendingKeyExchange(sequence, baseKey, ratchetKey, identityKey);
                     sessionStore.StoreSession(remoteAddress, sessionRecord);
 
-                    return new KeyExchangeMessage(2, sequence, flags, baseKey.GetPublicKey(), baseKeySignature,
-                                                  ratchetKey.GetPublicKey(), identityKey.GetPublicKey());
+                    return new KeyExchangeMessage(2, sequence, flags, baseKey.GetPublicKey(), baseKeySignature, ratchetKey.GetPublicKey(), identityKey.GetPublicKey());
                 }
                 catch (InvalidKeyException e)
                 {

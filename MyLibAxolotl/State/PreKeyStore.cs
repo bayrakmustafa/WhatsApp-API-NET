@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+
 namespace Tr.Com.Eimza.LibAxolotl.State
 {
     /**
@@ -58,5 +60,23 @@ namespace Tr.Com.Eimza.LibAxolotl.State
          */
 
         void RemovePreKey(uint preKeyId);
+
+        /**
+         * Delete All PreKeyRecord from local storage.
+         *
+         * @param preKeyId The ID of the PreKeyRecord to remove.
+         */
+
+        void RemoveAllPreKeys();
+
+
+        /**
+         * Load all local PreKeyRecord.
+         *
+         * @param preKeyId the ID of the local PreKeyRecord.
+         * @return the corresponding PreKeyRecord.
+         * @throws InvalidKeyIdException when there is no corresponding PreKeyRecord.
+         */
+        List<PreKeyRecord> LoadPreKeys();
     }
 }

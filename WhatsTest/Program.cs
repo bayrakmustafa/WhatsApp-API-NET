@@ -19,16 +19,20 @@ namespace WhatsTest
 
         private static void Main(string[] args)
         {
-            Encoding tmpEncoding = Encoding.UTF8;
-            System.Console.OutputEncoding = Encoding.UTF8;
-            System.Console.InputEncoding = Encoding.UTF8;
+            //Turkish Encoding
+            System.Console.OutputEncoding = Encoding.GetEncoding(857);
+            System.Console.InputEncoding = Encoding.GetEncoding(857);
 
-            string nickname = "";
-            string sender = ""; //Mobile Number with Country Code (but without + or 00)
-            string password = ""; //v2 password
+            //UTF-8 Encoding
+            //System.Console.OutputEncoding = Encoding.UTF8;
+            //System.Console.InputEncoding = Encoding.UTF8;
+
+            string _Nickname = "";
+            string _Sender = ""; //Mobile Number with Country Code (but without + or 00)
+            string _Password = ""; //v2 password
             string _Target = ""; // Mobile Number to Send the Message to
 
-            _WhatsAppApi = new WhatsApp(sender, password, nickname, true);
+            _WhatsAppApi = new WhatsApp(_Sender, _Password, _Nickname, true);
 
             //Event Bindings
             _WhatsAppApi.OnLoginSuccess += OnLoginSuccess;
@@ -55,7 +59,8 @@ namespace WhatsTest
             _WhatsAppApi.OnGetStatus += OnGetStatus;
             _WhatsAppApi.OnGetPrivacySettings += OnGetPrivacySettings;
 
-            //DebugAdapter.Instance.OnPrintDebug += Instance_OnPrintDebug;
+            /*Debug Code*/
+            DebugAdapter.Instance.OnPrintDebug += Instance_OnPrintDebug;
 
             _WhatsAppApi.SendGetServerProperties();
 
@@ -64,7 +69,7 @@ namespace WhatsTest
 
             _WhatsAppApi.Connect();
 
-            string datFile = GetDatFileName(sender);
+            string datFile = GetDatFileName(_Sender);
             byte[] nextChallenge = null;
             if (File.Exists(datFile))
             {
@@ -77,11 +82,6 @@ namespace WhatsTest
             }
 
             _WhatsAppApi.Login(nextChallenge);
-            _WhatsAppApi.SendGetPrivacyList();
-            _WhatsAppApi.SendGetClientConfig();
-
-            if (_WhatsAppApi.LoadPreKeys() == null)
-                _WhatsAppApi.SendSetPreKeys(true);
 
             ProcessChat(_WhatsAppApi, _Target);
             Console.ReadKey();

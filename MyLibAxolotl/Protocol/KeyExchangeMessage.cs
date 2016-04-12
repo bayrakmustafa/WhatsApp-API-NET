@@ -43,7 +43,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
                                   ECPublicKey ratchetKey,
                                   IdentityKey identityKey)
         {
-            this.supportedVersion = CiphertextMessage.CURRENT_VERSION;
+            this.supportedVersion = CipherTextMessage.CURRENT_VERSION;
             this.version = messageVersion;
             this.sequence = sequence;
             this.flags = flags;
@@ -76,12 +76,12 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
                 this.version = (uint)ByteUtil.HighBitsToInt(parts[0][0]);
                 this.supportedVersion = (uint)ByteUtil.LowBitsToInt(parts[0][0]);
 
-                if (this.version <= CiphertextMessage.UNSUPPORTED_VERSION)
+                if (this.version <= CipherTextMessage.UNSUPPORTED_VERSION)
                 {
                     throw new LegacyMessageException("Unsupported legacy version: " + this.version);
                 }
 
-                if (this.version > CiphertextMessage.CURRENT_VERSION)
+                if (this.version > CipherTextMessage.CURRENT_VERSION)
                 {
                     throw new InvalidVersionException("Unknown version: " + this.version);
                 }

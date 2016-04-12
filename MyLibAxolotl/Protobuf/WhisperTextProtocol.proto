@@ -34,3 +34,57 @@ message SenderKeyDistributionMessage {
   optional bytes  chainKey   = 3;
   optional bytes  signingKey = 4;
 }
+
+message SenderKeyGroupMessage {
+  optional bytes  groupId   = 1;
+  optional bytes  senderKey = 2;
+}
+
+message SenderKeyGroupData {
+  optional bytes  message				    = 1;
+  optional SenderKeyGroupMessage  senderKey = 2;
+}
+
+message MediaUrl {
+  optional bytes message     = 1;
+  optional bytes url	     = 2;
+  optional uint32 unknown1   = 3;
+  optional bytes unknown2    = 4;
+  optional bytes description = 5;
+  optional bytes title       = 6;
+}
+
+message ImageMessage {
+  optional bytes url       = 1;
+  optional bytes mimetype  = 2;
+  optional bytes caption   = 3;
+  optional bytes sha256    = 4;
+  optional uint32 length   = 5;
+  optional uint32 height   = 6;
+  optional uint32 width    = 7;
+  optional bytes refkey	   = 8;
+  optional bytes key       = 9;
+  optional bytes iv        = 10;
+  optional bytes thumbnail = 11;
+}
+
+message Location {
+  optional double Latitude   = 1;
+  optional double Longitude	 = 2;
+  optional bytes Name		 = 3;
+  optional bytes Description = 4;
+  optional bytes Url		 = 5;
+  optional bytes Thumbnail   = 6;
+}
+
+message DocumentMessage {
+  optional bytes url       = 1;
+  optional bytes mimetype  = 2;
+  optional bytes name	   = 3;
+  optional uint32 length   = 4;
+  optional bytes sha256	   = 5;
+  optional uint32 unknown  = 6;
+  optional bytes refkey    = 7;
+  optional bytes filename  = 8;
+  optional bytes thumbnail = 9;
+}

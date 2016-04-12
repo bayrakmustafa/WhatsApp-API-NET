@@ -23,7 +23,6 @@ namespace WhatsAppApi.Register
         public static string GetToken(string number)
         {
             return WaToken.GenerateTokenAndroid(number);
-            //return WaToken.GenerateToken(number);
         }
 
         public static bool RequestCode(string phoneNumber, out string password, string method = "sms", string id = null)

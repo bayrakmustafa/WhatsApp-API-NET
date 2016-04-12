@@ -17,7 +17,7 @@
 
 namespace Tr.Com.Eimza.LibAxolotl.Protocol
 {
-    public abstract class CiphertextMessage // interface
+    public abstract class CipherTextMessage // Interface
     {
         public const uint UNSUPPORTED_VERSION = 1;
         public const uint CURRENT_VERSION = 3;
@@ -27,11 +27,14 @@ namespace Tr.Com.Eimza.LibAxolotl.Protocol
         public const uint SENDERKEY_TYPE = 4;
         public const uint SENDERKEY_DISTRIBUTION_TYPE = 5;
 
+        public const uint SENDERKEY_GROUP_MESSAGE_TYPE = 6;
+        public const uint SENDERKEY_GROUP_DATA_TYPE = 7;
+
         // This should be the worst case (worse than V2).  So not always accurate, but good enough for padding.
         public const uint ENCRYPTED_MESSAGE_OVERHEAD = 53;
 
-        public abstract byte[] Serialize(); // -abstract
+        public abstract byte[] Serialize(); // Abstract
 
-        public abstract uint GetKeyType(); // -abstract
+        public abstract uint GetKeyType(); // Abstract
     }
 }

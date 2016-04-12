@@ -64,18 +64,11 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
 
         public static uint GenerateRegistrationId(bool extendedRange)
         {
-            //try
-            //{
-            //SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+
             if (extendedRange)
                 return GetRandomSequence(uint.MaxValue - 1) + 1;
             else
                 return GetRandomSequence(16380) + 1;
-            /*}
-            catch (NoSuchAlgorithmException e)
-            {
-                throw new AssertionError(e);
-            }*/
         }
 
         public static uint GetRandomSequence(uint maxValue, uint minValue = 0)
@@ -84,7 +77,7 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
             byte[] _uint32Buffer = new byte[4];
 
             if (minValue > maxValue)
-                throw new ArgumentOutOfRangeException("minValue");
+                throw new ArgumentOutOfRangeException(nameof(minValue));
 
             if (minValue == maxValue)
                 return minValue;

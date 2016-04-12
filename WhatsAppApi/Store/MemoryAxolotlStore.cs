@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using Tr.Com.Eimza.LibAxolotl;
+using Tr.Com.Eimza.LibAxolotl.Ecc;
+using Tr.Com.Eimza.LibAxolotl.Groups;
+using Tr.Com.Eimza.LibAxolotl.Groups.State;
+using Tr.Com.Eimza.LibAxolotl.State;
 
 namespace WhatsAppApi.Store
 {
-    public class MemoryAxolotlStore
+    public class MemoryAxolotlStore : IAxolotStore
     {
-        // Demo Store Should be Database or Permanent Media in Real Case
         public IDictionary<string, IdentitiesObject> IdentitiesObjectDic = new Dictionary<string, IdentitiesObject>();
+        public IDictionary<string, SessionsObject> SessionsObjectDic = new Dictionary<string, SessionsObject>();
 
         public IDictionary<uint, PreKeysObject> PreKeysObjectDic = new Dictionary<uint, PreKeysObject>();
-        public IDictionary<uint, SenderKeysObject> SenderKeysObjectDic = new Dictionary<uint, SenderKeysObject>();
-        public IDictionary<string, SessionsObject> SessionsObjectDic = new Dictionary<string, SessionsObject>();
         public IDictionary<uint, SignedPreKeysObject> SignedPreKeysObjectDic = new Dictionary<uint, SignedPreKeysObject>();
+
+        public IDictionary<SenderKeyName, SenderKeysObject> SenderKeysObjectsDic = new Dictionary<SenderKeyName, SenderKeysObject>();
 
         #region Database Binding For IIdentityKeyStore
 
@@ -23,7 +29,7 @@ namespace WhatsAppApi.Store
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="identityKey"></param>
-        public bool OnsaveIdentity(string recipientId, byte[] identityKey)
+        public bool SaveIdentity(string recipientId, IdentityKey identityKey)
         {
             if (IdentitiesObjectDic.ContainsKey(recipientId))
                 IdentitiesObjectDic.Remove(recipientId);
@@ -31,7 +37,7 @@ namespace WhatsAppApi.Store
             IdentitiesObjectDic.Add(recipientId, new IdentitiesObject()
             {
                 RecipientId = recipientId,
-                PublicKey = identityKey
+                PublicKey = identityKey.GetPublicKey().Serialize()
             });
 
             return true;
@@ -43,18 +49,18 @@ namespace WhatsAppApi.Store
         /// <param name="recipientId"></param>
         /// <param name="identityKey"></param>
         /// <returns></returns>
-        public bool OnisTrustedIdentity(string recipientId, byte[] identityKey)
+        public bool IsTrustedIdentity(string recipientId, IdentityKey identityKey)
         {
             IdentitiesObject trusted;
             IdentitiesObjectDic.TryGetValue(recipientId, out trusted);
-            return true; // (trusted == null || trusted.public_key.Equals(identityKey));
+            return true;
         }
 
         /// <summary>
         ///
         /// </summary>
         /// <returns></returns>
-        public uint OngetLocalRegistrationId()
+        public uint GetLocalRegistrationId()
         {
             IdentitiesObject identity;
             IdentitiesObjectDic.TryGetValue("-1", out identity);
@@ -65,19 +71,15 @@ namespace WhatsAppApi.Store
         ///
         /// </summary>
         /// <returns></returns>
-        public List<byte[]> OngetIdentityKeyPair()
+        public IdentityKeyPair GetIdentityKeyPair()
         {
-            List<byte[]> result = new List<byte[]> { };
+            IdentityKeyPair result = null;
             IdentitiesObject identity;
             IdentitiesObjectDic.TryGetValue("-1", out identity);
             if (identity != null)
             {
-                result.Add(identity.PublicKey);
-                result.Add(identity.PrivateKey);
+                result = new IdentityKeyPair(new IdentityKey(new DjbECPublicKey(identity.PublicKey)), new DjbECPrivateKey(identity.PrivateKey));
             }
-
-            if (result.Count == 0)
-                return null;
 
             return result;
         }
@@ -86,9 +88,8 @@ namespace WhatsAppApi.Store
         ///
         /// </summary>
         /// <param name="registrationId"></param>
-        /// <param name="publickey"></param>
-        /// <param name="privatekey"></param>
-        public void OnstoreLocalData(uint registrationId, byte[] publickey, byte[] privatekey)
+        /// <param name="identityKey"></param>
+        public void StoreLocalData(uint registrationId, IdentityKeyPair identityKey)
         {
             if (IdentitiesObjectDic.ContainsKey("-1"))
                 IdentitiesObjectDic.Remove("-1");
@@ -97,8 +98,8 @@ namespace WhatsAppApi.Store
             {
                 RecipientId = "-1",
                 RegistrationId = registrationId.ToString(),
-                PublicKey = publickey,
-                PrivateKey = privatekey
+                PublicKey = identityKey.GetPublicKey().Serialize(),
+                PrivateKey = identityKey.GetPrivateKey().Serialize()
             });
         }
 
@@ -110,7 +111,7 @@ namespace WhatsAppApi.Store
         ///
         /// </summary>
         /// <param name="preKeyId"></param>
-        public void OnremoveSignedPreKey(uint preKeyId)
+        public void RemoveSignedPreKey(uint preKeyId)
         {
             if (SignedPreKeysObjectDic.ContainsKey(preKeyId))
                 SignedPreKeysObjectDic.Remove(preKeyId);
@@ -121,7 +122,7 @@ namespace WhatsAppApi.Store
         /// </summary>
         /// <param name="preKeyId"></param>
         /// <returns></returns>
-        public bool OncontainsSignedPreKey(uint preKeyId)
+        public bool ContainsSignedPreKey(uint preKeyId)
         {
             SignedPreKeysObject prekey;
             SignedPreKeysObjectDic.TryGetValue(preKeyId, out prekey);
@@ -132,11 +133,11 @@ namespace WhatsAppApi.Store
         ///
         /// </summary>
         /// <returns></returns>
-        public List<byte[]> OnloadSignedPreKeys()
+        public List<SignedPreKeyRecord> LoadSignedPreKeys()
         {
-            List<byte[]> result = new List<byte[]> { };
+            List<SignedPreKeyRecord> result = new List<SignedPreKeyRecord> { };
             foreach (SignedPreKeysObject key in SignedPreKeysObjectDic.Values)
-                result.Add(key.Record);
+                result.Add(new SignedPreKeyRecord(key.Record));
 
             if (result.Count == 0)
                 return null;
@@ -149,11 +150,11 @@ namespace WhatsAppApi.Store
         /// </summary>
         /// <param name="preKeyId"></param>
         /// <returns></returns>
-        public byte[] OnloadSignedPreKey(uint preKeyId)
+        public SignedPreKeyRecord LoadSignedPreKey(uint preKeyId)
         {
             SignedPreKeysObject prekey;
             SignedPreKeysObjectDic.TryGetValue(preKeyId, out prekey);
-            return (prekey == null) ? new byte[] { } : prekey.Record;
+            return prekey != null ? new SignedPreKeyRecord(prekey.Record) : null;
         }
 
         /// <summary>
@@ -161,7 +162,7 @@ namespace WhatsAppApi.Store
         /// </summary>
         /// <param name="signedPreKeyId"></param>
         /// <param name="signedPreKeyRecord"></param>
-        public void OnstoreSignedPreKey(uint signedPreKeyId, byte[] signedPreKeyRecord)
+        public void StoreSignedPreKey(uint signedPreKeyId, SignedPreKeyRecord signedPreKeyRecord)
         {
             if (SignedPreKeysObjectDic.ContainsKey(signedPreKeyId))
                 SignedPreKeysObjectDic.Remove(signedPreKeyId);
@@ -169,11 +170,83 @@ namespace WhatsAppApi.Store
             SignedPreKeysObjectDic.Add(signedPreKeyId, new SignedPreKeysObject()
             {
                 PreKeyId = signedPreKeyId,
-                Record = signedPreKeyRecord
+                Record = signedPreKeyRecord.Serialize()
             });
         }
 
         #endregion Database Binding For ISignedPreKeyStore
+
+        #region Database Binding For SenderKeyStore
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="senderKeyName"></param>
+        public void RemoveSenderKey(SenderKeyName senderKeyName)
+        {
+            if (SenderKeysObjectsDic.ContainsKey(senderKeyName))
+                SenderKeysObjectsDic.Remove(senderKeyName);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="senderKeyName"></param>
+        /// <returns></returns>
+        public bool ContainsSenderKey(SenderKeyName senderKeyName)
+        {
+            SenderKeysObject prekey;
+            SenderKeysObjectsDic.TryGetValue(senderKeyName, out prekey);
+            return (prekey != null);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns></returns>
+        public List<SenderKeyRecord> LoadSenderKeys()
+        {
+            List<SenderKeyRecord> result = new List<SenderKeyRecord> { };
+            foreach (SenderKeysObject key in SenderKeysObjectsDic.Values)
+                result.Add(new SenderKeyRecord(key.Record));
+
+            if (result.Count == 0)
+                return null;
+
+            return result;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="senderKeyName"></param>
+        /// <returns></returns>
+        public SenderKeyRecord LoadSenderKey(SenderKeyName senderKeyName)
+        {
+            SenderKeysObject prekey;
+            SenderKeysObjectsDic.TryGetValue(senderKeyName, out prekey);
+            return prekey != null ? new SenderKeyRecord(prekey.Record) : new SenderKeyRecord();
+
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="senderKeyName"></param>
+        /// <param name="record"></param>
+        public void StoreSenderKey(SenderKeyName senderKeyName, SenderKeyRecord record)
+        {
+            if (SenderKeysObjectsDic.ContainsKey(senderKeyName))
+                SenderKeysObjectsDic.Remove(senderKeyName);
+
+            SenderKeysObjectsDic.Add(senderKeyName, new SenderKeysObject()
+            {
+                SenderKeyKeyName = senderKeyName,
+                Record = record.Serialize()
+            });
+        }
+
+        #endregion Database Binding For SenderKeyStore
 
         #region Database Binding For IPreKeyStore
 
@@ -181,7 +254,7 @@ namespace WhatsAppApi.Store
         ///
         /// </summary>
         /// <param name="preKeyId"></param>
-        public void OnremovePreKey(uint preKeyId)
+        public void RemovePreKey(uint preKeyId)
         {
             if (PreKeysObjectDic.ContainsKey(preKeyId))
                 PreKeysObjectDic.Remove(preKeyId);
@@ -190,9 +263,17 @@ namespace WhatsAppApi.Store
         /// <summary>
         ///
         /// </summary>
+        public void RemoveAllPreKeys()
+        {
+            PreKeysObjectDic.Clear();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
         /// <param name="preKeyId"></param>
         /// <returns></returns>
-        public bool OncontainsPreKey(uint preKeyId)
+        public bool ContainsPreKey(uint preKeyId)
         {
             PreKeysObject prekey;
             PreKeysObjectDic.TryGetValue(preKeyId, out prekey);
@@ -204,22 +285,22 @@ namespace WhatsAppApi.Store
         /// </summary>
         /// <param name="preKeyId"></param>
         /// <returns></returns>
-        public byte[] OnloadPreKey(uint preKeyId)
+        public PreKeyRecord LoadPreKey(uint preKeyId)
         {
             PreKeysObject prekey;
             PreKeysObjectDic.TryGetValue(preKeyId, out prekey);
-            return (prekey == null) ? new byte[] { } : prekey.Record;
+            return prekey != null ? new PreKeyRecord(prekey.Record) : null;
         }
 
         /// <summary>
         ///
         /// </summary>
         /// <returns></returns>
-        public List<byte[]> OnloadPreKeys()
+        public List<PreKeyRecord> LoadPreKeys()
         {
-            List<byte[]> result = new List<byte[]> { };
+            List<PreKeyRecord> result = new List<PreKeyRecord> { };
             foreach (PreKeysObject key in PreKeysObjectDic.Values)
-                result.Add(key.Record);
+                result.Add(new PreKeyRecord(key.Record));
 
             if (result.Count == 0)
                 return null;
@@ -232,7 +313,7 @@ namespace WhatsAppApi.Store
         /// </summary>
         /// <param name="prekeyId"></param>
         /// <param name="preKeyRecord"></param>
-        public void OnstorePreKey(uint prekeyId, byte[] preKeyRecord)
+        public void StorePreKey(uint prekeyId, PreKeyRecord preKeyRecord)
         {
             if (PreKeysObjectDic.ContainsKey(prekeyId))
                 PreKeysObjectDic.Remove(prekeyId);
@@ -240,7 +321,7 @@ namespace WhatsAppApi.Store
             PreKeysObjectDic.Add(prekeyId, new PreKeysObject()
             {
                 PreKeyId = prekeyId.ToString(),
-                Record = preKeyRecord
+                Record = preKeyRecord.Serialize()
             });
         }
 
@@ -251,10 +332,10 @@ namespace WhatsAppApi.Store
         /// <summary>
         ///
         /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="deviceId"></param>
-        public void OndeleteSession(string recipientId, uint deviceId)
+        /// <param name="address"></param>
+        public void DeleteSession(AxolotlAddress address)
         {
+            String recipientId = address.GetName();
             if (SessionsObjectDic.ContainsKey(recipientId))
                 SessionsObjectDic.Remove(recipientId);
         }
@@ -262,13 +343,22 @@ namespace WhatsAppApi.Store
         /// <summary>
         ///
         /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="deviceId"></param>
+        /// <param name="name"></param>
+        public void DeleteAllSessions(string name)
+        {
+            if (SessionsObjectDic.ContainsKey(name))
+                SessionsObjectDic.Remove(name);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="address"></param>
         /// <returns></returns>
-        public bool OncontainsSession(string recipientId, uint deviceId)
+        public bool ContainsSession(AxolotlAddress address)
         {
             SessionsObject session;
-            SessionsObjectDic.TryGetValue(recipientId, out session);
+            SessionsObjectDic.TryGetValue(address.GetName(), out session);
             return (session != null);
         }
 
@@ -277,7 +367,7 @@ namespace WhatsAppApi.Store
         /// </summary>
         /// <param name="recipientId"></param>
         /// <returns></returns>
-        public List<uint> OngetSubDeviceSessions(string recipientId)
+        public List<uint> GetSubDeviceSessions(string recipientId)
         {
             List<uint> result = new List<uint> { };
             foreach (SessionsObject key in SessionsObjectDic.Values)
@@ -286,27 +376,27 @@ namespace WhatsAppApi.Store
             return result;
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="deviceId"></param>
+        ///  <summary>
+        /// 
+        ///  </summary>
+        /// <param name="address"></param>
         /// <returns></returns>
-        public byte[] OnloadSession(string recipientId, uint deviceId)
+        public SessionRecord LoadSession(AxolotlAddress address)
         {
             SessionsObject session;
-            SessionsObjectDic.TryGetValue(recipientId, out session);
-            return (session == null) ? new byte[] { } : session.Record;
+            SessionsObjectDic.TryGetValue(address.GetName(), out session);
+            return session != null ? new SessionRecord(session.Record) : new SessionRecord();
         }
 
         /// <summary>
         ///
         /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="deviceId"></param>
-        /// <param name="sessionRecord"></param>
-        public void OnstoreSession(string recipientId, uint deviceId, byte[] sessionRecord)
+        /// <param name="address"></param>
+        /// <param name="record"></param>
+        public void StoreSession(AxolotlAddress address, SessionRecord record)
         {
+            String recipientId = address.GetName();
+            uint deviceId = address.GetDeviceId();
             if (SessionsObjectDic.ContainsKey(recipientId))
                 SessionsObjectDic.Remove(recipientId);
 
@@ -314,7 +404,7 @@ namespace WhatsAppApi.Store
             {
                 DeviceId = deviceId,
                 RecipientId = recipientId,
-                Record = sessionRecord
+                Record = record.Serialize()
             });
         }
 
@@ -324,9 +414,15 @@ namespace WhatsAppApi.Store
         {
             IdentitiesObjectDic = new Dictionary<string, IdentitiesObject>();
             PreKeysObjectDic = new Dictionary<uint, PreKeysObject>();
-            SenderKeysObjectDic = new Dictionary<uint, SenderKeysObject>();
+            SenderKeysObjectsDic = new Dictionary<SenderKeyName, SenderKeysObject>();
             SessionsObjectDic = new Dictionary<string, SessionsObject>();
             SignedPreKeysObjectDic = new Dictionary<uint, SignedPreKeysObject>();
+        }
+
+        public void ClearRecipient(String recipientId)
+        {
+            IdentitiesObjectDic.Remove(recipientId);
+            SessionsObjectDic.Remove(recipientId);
         }
     }
 
@@ -368,7 +464,7 @@ namespace WhatsAppApi.Store
 
     public class SenderKeysObject
     {
-        public uint SenderKeyId
+        public SenderKeyName SenderKeyKeyName
         {
             get; set;
         }
