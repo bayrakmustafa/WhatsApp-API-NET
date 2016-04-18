@@ -16,7 +16,7 @@ namespace WhatsAppApi
 
         protected static object messageLock = new object();
 
-        protected byte[] _ChallengeBytes;
+        protected byte[] _ChallengeData;
         protected AccountInfo accountinfo;
 
         protected BinTreeNodeWriter BinWriter;

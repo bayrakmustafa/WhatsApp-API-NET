@@ -185,7 +185,7 @@ namespace WhatsAppApi
                     throw new ConnectionException(String.Format("Socket exception: {0}", excpt.Message), excpt);
                 }
 
-                //sleep to prevent CPU intensive loop
+                //Sleep to Prevent CPU Intensive Loop
                 if (receiveLength <= 0)
                 {
                     System.Threading.Thread.Sleep(100);

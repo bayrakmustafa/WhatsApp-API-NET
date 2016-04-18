@@ -118,7 +118,8 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
 
             for (uint i = 0; i < count; i++)
             {
-                results.Add(new PreKeyRecord(((start + i) % (Medium.MAX_VALUE - 1)) + 1, Curve.GenerateKeyPair()));
+                uint prekeyId = ((start + i) % (Medium.MAX_VALUE - 1)) + 1;
+                results.Add(new PreKeyRecord(prekeyId, Curve.GenerateKeyPair()));
             }
 
             return results;
@@ -170,10 +171,13 @@ namespace Tr.Com.Eimza.LibAxolotl.Util
 
         public static uint GenerateSenderKeyId()
         {
+            /*
             RandomNumberGenerator rng = new RNGCryptoServiceProvider();
             byte[] random = new byte[4];
             rng.GetBytes(random);
             return BitConverter.ToUInt32(random, 0);
+            */
+            return GetRandomSequence(2147483647);
         }
 
         public static ulong GetTime()

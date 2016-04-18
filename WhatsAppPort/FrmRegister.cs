@@ -42,7 +42,7 @@ namespace WhatsAppPort
                 {
                     if (!string.IsNullOrEmpty(this.password))
                     {
-                        //password received
+                        //Password Received
                         this.OnReceivePassword();
                     }
                     else
@@ -50,6 +50,10 @@ namespace WhatsAppPort
                         this.grpStep1.Enabled = false;
                         this.grpStep2.Enabled = true;
                     }
+                }
+                else
+                {
+                    txtOutput.Text = response;
                 }
             }
         }

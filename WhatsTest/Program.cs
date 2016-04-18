@@ -75,10 +75,13 @@ namespace WhatsTest
             {
                 try
                 {
-                    string foo = File.ReadAllText(datFile);
+                    String foo = File.ReadAllText(datFile);
                     nextChallenge = Convert.FromBase64String(foo);
                 }
-                catch (Exception) { };
+                catch (Exception)
+                {
+
+                };
             }
 
             _WhatsAppApi.Login(nextChallenge);
