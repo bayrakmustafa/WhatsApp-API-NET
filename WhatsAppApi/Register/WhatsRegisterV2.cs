@@ -48,13 +48,16 @@ namespace WhatsAppApi.Register
                 }
                 PhoneNumber pn = new PhoneNumber(phoneNumber);
 
+                String countryCode = (pn.ISO3166 != "") ? pn.ISO3166 : "US";
+                String langCode = (pn.ISO639 != "") ? pn.ISO639 : "en";
+
                 byte[] sha256bytes = new byte[20];
                 new Random().NextBytes(sha256bytes);
                 NameValueCollection QueryStringParameters = new NameValueCollection();
                 QueryStringParameters.Add("cc", pn.CC);
                 QueryStringParameters.Add("in", pn.Number);
-                QueryStringParameters.Add("lg", pn.ISO639);
-                QueryStringParameters.Add("lc", pn.ISO3166);
+                QueryStringParameters.Add("lg", langCode);
+                QueryStringParameters.Add("lc", countryCode);
                 QueryStringParameters.Add("id", id);
                 QueryStringParameters.Add("mistyped", "6");
                 QueryStringParameters.Add("network_radio_type", "1");
@@ -111,7 +114,7 @@ namespace WhatsAppApi.Register
             }
         }
 
-        public static bool RequestCode(string phoneNumber, out string password, out string request, out string response, string method = "sms", string id = null)
+        public static bool RequestCode(string phoneNumber, out string password, out string request, out string response, string method = "sms", string id = null, string carrierName = "T-Mobile5")
         {
             response = null;
             password = null;
@@ -126,13 +129,22 @@ namespace WhatsAppApi.Register
                 PhoneNumber pn = new PhoneNumber(phoneNumber);
                 string token = System.Uri.EscapeDataString(WhatsRegisterV2.GetToken(pn.Number));
 
+                String countryCode = (pn.ISO3166 != "") ? pn.ISO3166 : "US";
+                String langCode = (pn.ISO639 != "") ? pn.ISO639 : "en";
+
+                String mnc = pn.MNC;
+                if (carrierName != null)
+                {
+                    mnc = PhoneNumber.DetectMnc(countryCode, carrierName);
+                }
+
                 byte[] sha256bytes = new byte[20];
                 new Random().NextBytes(sha256bytes);
                 NameValueCollection QueryStringParameters = new NameValueCollection();
                 QueryStringParameters.Add("cc", pn.CC);
                 QueryStringParameters.Add("in", pn.Number);
-                QueryStringParameters.Add("lg", pn.ISO639);
-                QueryStringParameters.Add("lc", pn.ISO3166);
+                QueryStringParameters.Add("lg", langCode);
+                QueryStringParameters.Add("lc", countryCode);
                 QueryStringParameters.Add("id", id);
                 QueryStringParameters.Add("token", token);
                 QueryStringParameters.Add("mistyped", "6");
@@ -148,9 +160,9 @@ namespace WhatsAppApi.Register
                 QueryStringParameters.Add("extexist", "1");
                 QueryStringParameters.Add("extstate", "1");
                 QueryStringParameters.Add("mcc", pn.MCC);
-                QueryStringParameters.Add("mnc", pn.MNC);
+                QueryStringParameters.Add("mnc", mnc);
                 QueryStringParameters.Add("sim_mcc", pn.MCC);
-                QueryStringParameters.Add("sim_mnc", pn.MNC);
+                QueryStringParameters.Add("sim_mnc", mnc);
                 QueryStringParameters.Add("method", method);
 
                 NameValueCollection RequestHttpHeaders = new NameValueCollection();
@@ -190,13 +202,16 @@ namespace WhatsAppApi.Register
                 }
                 PhoneNumber pn = new PhoneNumber(phoneNumber);
 
+                String countryCode = (pn.ISO3166 != "") ? pn.ISO3166 : "US";
+                String langCode = (pn.ISO639 != "") ? pn.ISO639 : "en";
+
                 byte[] sha256bytes = new byte[20];
                 new Random().NextBytes(sha256bytes);
                 NameValueCollection QueryStringParameters = new NameValueCollection();
                 QueryStringParameters.Add("cc", pn.CC);
                 QueryStringParameters.Add("in", pn.Number);
-                QueryStringParameters.Add("lg", pn.ISO639);
-                QueryStringParameters.Add("lc", pn.ISO3166);
+                QueryStringParameters.Add("lg", langCode);
+                QueryStringParameters.Add("lc", countryCode);
                 QueryStringParameters.Add("id", id);
                 QueryStringParameters.Add("mistyped", "6");
                 QueryStringParameters.Add("network_radio_type", "1");
@@ -246,13 +261,16 @@ namespace WhatsAppApi.Register
                 }
                 PhoneNumber pn = new PhoneNumber(phoneNumber);
 
+                String countryCode = (pn.ISO3166 != "") ? pn.ISO3166 : "US";
+                String langCode = (pn.ISO639 != "") ? pn.ISO639 : "en";
+
                 byte[] sha256bytes = new byte[20];
                 new Random().NextBytes(sha256bytes);
                 NameValueCollection QueryStringParameters = new NameValueCollection();
                 QueryStringParameters.Add("cc", pn.CC);
                 QueryStringParameters.Add("in", pn.Number);
-                QueryStringParameters.Add("lg", pn.ISO639);
-                QueryStringParameters.Add("lc", pn.ISO3166);
+                QueryStringParameters.Add("lg", langCode);
+                QueryStringParameters.Add("lc", countryCode);
                 QueryStringParameters.Add("id", id);
                 QueryStringParameters.Add("mistyped", "6");
                 QueryStringParameters.Add("network_radio_type", "1");

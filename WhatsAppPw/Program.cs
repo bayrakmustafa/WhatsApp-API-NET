@@ -8,8 +8,8 @@ namespace WhatsAppPw
         public static void Main()
         {
             String phoneNumber = "";
-            String password = PwExtractor.ExtractPassword(phoneNumber);
-            Console.WriteLine("Password : " +password);
+            String password = PwExtractor.ExtractPassword(phoneNumber, "pw");
+            Console.WriteLine("Password : " + password);
             Console.ReadKey();
         }
     }
