@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using WhatsAppPasswordExtractor;
+using WhatsAppPw;
 
 namespace WhatsAppPort
 {

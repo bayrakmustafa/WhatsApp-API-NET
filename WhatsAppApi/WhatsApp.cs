@@ -29,20 +29,22 @@ namespace WhatsAppApi
     public class WhatsApp : WhatsAppBase
     {
         public List<String> _CipherKeys = new List<String>();
+        public List<String> _SendCipherKeys = new List<String>();
+        public String _GetLists = String.Empty;
+        public List<String> _V2Jids = new List<String>();
+
         public Dictionary<String, GroupCipher> _GroupCiphers = new Dictionary<String, GroupCipher>();
         public Dictionary<String, List<ProtocolTreeNode>> _PendingNodes = new Dictionary<String, List<ProtocolTreeNode>>();
         public bool _ReplaceKey = false;
         public Dictionary<String, int> _RetryCounters = new Dictionary<String, int>();
         public Dictionary<String, ProtocolTreeNode> _RetryNodes = new Dictionary<String, ProtocolTreeNode>();
-        public List<String> _SendCipherKeys = new List<String>();
+
         public Dictionary<String, SessionCipher> _SessionCiphers = new Dictionary<String, SessionCipher>();
-        public List<String> _V2Jids = new List<String>();
 
         protected bool m_usePoolMessages = false;
 
-        private long pTimeout = 0;
         private String _LastServerReceivedID = null;
-
+        private long pTimeout = 0;
         public WhatsApp(string phoneNum, string imei, string nick, bool debug = false, bool hidden = false)
             : base(phoneNum, imei, nick, debug, hidden)
         {
@@ -93,10 +95,10 @@ namespace WhatsAppApi
 
         public static String FixPadding(String result)
         {
-            /* Php */
+            /* From Chat-API Php Code */
             Char lastChar = result[result.Length - 1];
             String unpadded = result.TrimEnd(lastChar);
-            /* Php */
+            /* From Chat-API Php Code */
 
             return unpadded;
         }
@@ -380,6 +382,20 @@ namespace WhatsAppApi
             return false;
         }
 
+        public String EncodeInt7Bit(int value)
+        {
+            int v = value;
+            String ret = "";
+            while (v >= 0x80)
+            {
+                ret += Convert.ToChar((v | 0x80) % 256);
+                v >>= 7;
+            }
+            ret += Convert.ToChar(v % 256);
+
+            return ret;
+        }
+
         /// <summary>
         /// jid from address
         /// </summary>
@@ -639,6 +655,16 @@ namespace WhatsAppApi
                 this.SendSetPreKeys(true);
         }
 
+        public String PadMessage(String message)
+        {
+            String padding = String.Empty;
+            padding += Convert.ToChar(10);
+            padding += EncodeInt7Bit(message.Length);
+            padding += message;
+            padding += Convert.ToChar(1);
+            return padding;
+        }
+
         public bool PollMessage(bool autoReceipt = true)
         {
             if (this.loginStatus == ApiBase.CONNECTION_STATUS.CONNECTED || this.loginStatus == ApiBase.CONNECTION_STATUS.LOGGEDIN)
@@ -732,14 +758,30 @@ namespace WhatsAppApi
                     switch (node.GetAttribute("type"))
                     {
                         case "text":
-                            //Convert to List.
-                            List<ProtocolTreeNode> children = node._Children.ToList();
-                            List<KeyValue> attributeHash = node._AttributeHash.ToList();
-                            children.Add(new ProtocolTreeNode("body", null, null, (byte[])plaintext));
-                            rtnNode = new ProtocolTreeNode(node._Tag, attributeHash.ToArray(), children.ToArray(), node._Data);
+                            {
+                                //Convert to List.
+                                List<ProtocolTreeNode> children = node._Children.ToList();
+                                List<KeyValue> attributeHash = node._AttributeHash.ToList();
+                                children.Add(new ProtocolTreeNode("body", null, null, (byte[])plaintext));
+                                rtnNode = new ProtocolTreeNode(node._Tag, attributeHash.ToArray(), children.ToArray(), node._Data);
+                            }
                             break;
-
                         case "media":
+                            {
+                                //Convert to list.
+                                List<ProtocolTreeNode> children = (from q in node._Children where !string.Equals(q._Tag, "enc") select q).ToList();
+                                List<KeyValue> attributeHash = node._AttributeHash.ToList();
+                                byte[] data = null;
+
+                                String text = plaintext as string;
+                                if (text != null)
+                                {
+                                    data = System.Text.Encoding.UTF8.GetBytes(text);
+                                }
+
+                                children.Add(new ProtocolTreeNode("media", null, null, data));
+                                rtnNode = new ProtocolTreeNode(node._Tag, attributeHash.ToArray(), children.ToArray(), node._Data);
+                            }
                             break;
                     }
 
@@ -749,6 +791,7 @@ namespace WhatsAppApi
                 }
             }
             //Is Group
+            /*
             else
             {
                 author = ExtractNumber(node.GetAttribute("participant"));
@@ -885,7 +928,7 @@ namespace WhatsAppApi
                         return ret;
                     }
                 }
-            }
+            }*/
 
             return ret;
         }
@@ -1084,7 +1127,22 @@ namespace WhatsAppApi
         {
             string id = TicketCounter.MakeId();
             ProtocolTreeNode child = new ProtocolTreeNode("group", new[] { new KeyValue("action", "delete") });
-            ProtocolTreeNode node = new ProtocolTreeNode("iq", new[] { new KeyValue("id", id), new KeyValue("type", "set"), new KeyValue("xmlns", "w:g2"), new KeyValue("to", gjid) }, new ProtocolTreeNode[] { child });
+            ProtocolTreeNode node = new ProtocolTreeNode("iq",
+                new[] { new KeyValue("id", id), new KeyValue("type", "set"), new KeyValue("xmlns", "w:g2"), new KeyValue("to", gjid) }, new ProtocolTreeNode[] { child });
+            this.SendNode(node);
+        }
+
+        public void SendGetBroadcastLists()
+        {
+            String msgId = TicketManager.GenerateId();
+
+            _GetLists = msgId;
+
+            ProtocolTreeNode listsNode = new ProtocolTreeNode("lists", null, null, null);
+            ProtocolTreeNode node = new ProtocolTreeNode("id", new[]
+            {
+                new KeyValue("id", msgId), new KeyValue("xmlns", "w:b"), new KeyValue("type", "get"), new KeyValue("to", WhatsConstants.WhatsAppServer)
+            }, new ProtocolTreeNode[] { listsNode }, null);
             this.SendNode(node);
         }
 
@@ -1271,8 +1329,8 @@ namespace WhatsAppApi
 
             if (!force_plain)
             {
+                /* TODO:Send Encrypted Message
                 ProtocolTreeNode msgNode = null;
-
                 if (!to.Contains("-"))
                 {
                     if (!_AxolotKeyStore.ContainsSession(new AxolotlAddress(toNumber, 1)))
@@ -1298,13 +1356,9 @@ namespace WhatsAppApi
                     String type = String.Empty;
                     CipherTextMessage cipherText = sessionCipher.Encrypt(Encoding.UTF8.GetBytes(_AlteredText));
                     if (cipherText is WhisperMessage)
-                    {
                         type = "msg";
-                    }
                     else
-                    {
                         type = "pkmsg";
-                    }
 
                     byte[] message = cipherText.Serialize();
                     msgNode = new ProtocolTreeNode("enc", new KeyValue[] { new KeyValue("v", _Version), new KeyValue("type", type) }, null, message);
@@ -1321,7 +1375,14 @@ namespace WhatsAppApi
 
                 ProtocolTreeNode plaintextNode = new ProtocolTreeNode("body", null, null, Encoding.UTF8.GetBytes(txt));
                 return SendMessageNode(to, msgNode, null, plaintextNode);
+                */
 
+                FMessage tmpMessage = new FMessage(GetJID(to), true)
+                {
+                    data = txt
+                };
+                this.SendMessage(tmpMessage, this.hidden);
+                return tmpMessage.identifier_key.ToString();
             }
             else
             {
@@ -1333,31 +1394,6 @@ namespace WhatsAppApi
                 return tmpMessage.identifier_key.ToString();
             }
         }
-
-        public String EncodeInt7Bit(int value)
-        {
-            int v = value;
-            String ret = "";
-            while (v >= 0x80)
-            {
-                ret += Convert.ToChar((v | 0x80) % 256);
-                v >>= 7;
-            }
-            ret += Convert.ToChar(v % 256);
-
-            return ret;
-        }
-
-        public String PadMessage(String message)
-        {
-            String padding = String.Empty;
-            padding += Convert.ToChar(10);
-            padding += EncodeInt7Bit(message.Length);
-            padding += message;
-            padding += Convert.ToChar(1);
-            return padding;
-        }
-
         public void SendMessage(FMessage message, bool hidden = false)
         {
             if (message.media_wa_type != FMessage.Type.Undefined)
@@ -2397,6 +2433,37 @@ namespace WhatsAppApi
 
             #endregion Privacy Result IQ
 
+            #region BroadCastLists Result IQ
+
+            if (String.IsNullOrEmpty(_GetLists) && _GetLists.Equals(node.GetAttribute("id")))
+            {
+                List<WaBroadcast> broadcasts = new List<WaBroadcast>();
+
+                foreach (ProtocolTreeNode child in node.GetAllChildren())
+                {
+                    foreach (ProtocolTreeNode subChild in child.GetAllChildren())
+                    {
+                        String id = subChild.GetAttribute("id");
+                        String name = subChild.GetAttribute("name");
+                        List<string> recipients = new List<string>();
+
+                        foreach (ProtocolTreeNode recipient in subChild.GetAllChildren())
+                        {
+                            recipients.Add(recipient.GetAttribute("jid"));
+                        }
+
+                        broadcasts.Add(new WaBroadcast(id, name, recipients));
+                    }
+                }
+
+                if (broadcasts.Count > 0)
+                {
+                    FireOnGetBroadcastLists(this.phoneNumber, broadcasts);
+                }
+            }
+
+            #endregion BroadCastLists Result IQ
+
             #region CipherKeys && Message IQ
 
             ProtocolTreeNode[] pendingNodes = ProcessIqTreeNode(node);
@@ -2704,31 +2771,6 @@ namespace WhatsAppApi
             this.SendReceiptAck(to, id, "delivered");
         }
 
-        protected void SendMessageReceived(ProtocolTreeNode msg, string type = "read")
-        {
-            FMessage tmpMessage = new FMessage(new FMessage.FMessageIdentifierKey(msg.GetAttribute("from"), true, msg.GetAttribute("id")));
-            this.SendMessageReceived(tmpMessage, type);
-        }
-
-        protected void SendMessageReceived(FMessage message, string type = "read")
-        {
-            KeyValue toAttrib = new KeyValue("to", message.identifier_key.remote_jid);
-            KeyValue idAttrib = new KeyValue("id", message.identifier_key.id);
-
-            List<KeyValue> attribs = new List<KeyValue>();
-            attribs.Add(toAttrib);
-            attribs.Add(idAttrib);
-            if (type.Equals("read"))
-            {
-                KeyValue typeAttrib = new KeyValue("type", type);
-                attribs.Add(typeAttrib);
-            }
-
-            ProtocolTreeNode node = new ProtocolTreeNode("receipt", attribs.ToArray());
-
-            this.SendNode(node);
-        }
-
         protected String SendMessageNode(String to, ProtocolTreeNode node, String id = null, ProtocolTreeNode plaintextNode = null)
         {
             String messageId = TicketCounter.MakeId();
@@ -2759,6 +2801,30 @@ namespace WhatsAppApi
             return messageId;
         }
 
+        protected void SendMessageReceived(ProtocolTreeNode msg, string type = "read")
+        {
+            FMessage tmpMessage = new FMessage(new FMessage.FMessageIdentifierKey(msg.GetAttribute("from"), true, msg.GetAttribute("id")));
+            this.SendMessageReceived(tmpMessage, type);
+        }
+
+        protected void SendMessageReceived(FMessage message, string type = "read")
+        {
+            KeyValue toAttrib = new KeyValue("to", message.identifier_key.remote_jid);
+            KeyValue idAttrib = new KeyValue("id", message.identifier_key.id);
+
+            List<KeyValue> attribs = new List<KeyValue>();
+            attribs.Add(toAttrib);
+            attribs.Add(idAttrib);
+            if (type.Equals("read"))
+            {
+                KeyValue typeAttrib = new KeyValue("type", type);
+                attribs.Add(typeAttrib);
+            }
+
+            ProtocolTreeNode node = new ProtocolTreeNode("receipt", attribs.ToArray());
+
+            this.SendNode(node);
+        }
         protected void SendMessageWithBody(FMessage message, bool hidden = false)
         {
             ProtocolTreeNode child = new ProtocolTreeNode("body", null, null, WhatsApp.SysEncoding.GetBytes(message.data));

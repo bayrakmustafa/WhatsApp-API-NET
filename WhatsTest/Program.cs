@@ -9,7 +9,7 @@ using WhatsAppApi;
 using WhatsAppApi.Account;
 using WhatsAppApi.Helper;
 using WhatsAppApi.Response;
-using WhatsAppPasswordExtractor;
+using WhatsAppPw;
 
 namespace WhatsTest
 {
@@ -58,6 +58,7 @@ namespace WhatsTest
             _WhatsAppApi.OnGetSyncResult += OnGetSyncResult;
             _WhatsAppApi.OnGetStatus += OnGetStatus;
             _WhatsAppApi.OnGetPrivacySettings += OnGetPrivacySettings;
+            _WhatsAppApi.OnGetBroadcastLists += OnGetBroadcastLists;
 
             /*Debug Code*/
             DebugAdapter.Instance.OnPrintDebug += Instance_OnPrintDebug;
@@ -88,6 +89,19 @@ namespace WhatsTest
 
             ProcessChat(_WhatsAppApi, _Target);
             Console.ReadKey();
+        }
+
+        private static void OnGetBroadcastLists(string phoneNumber, List<WaBroadcast> broadcastLists)
+        {
+            foreach (WaBroadcast broadcast in broadcastLists)
+            {
+                Console.WriteLine("Broadcast Lists");
+                Console.WriteLine("Name : " + broadcast.Name);
+                foreach (string recipient in broadcast.Recipients)
+                {
+                    Console.WriteLine("Recipient : " + recipient);
+                }
+            }
         }
 
         private static void OnGetMessageReadedClient(string from, string id)

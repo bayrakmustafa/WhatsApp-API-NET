@@ -38,6 +38,8 @@ namespace WhatsAppApi
 
         public delegate void OnErrorDelegate(string id, string from, int code, string text);
 
+        public delegate void OnGetBroadcastListsDelegate(string phoneNumber, List<WaBroadcast> broadcastLists);
+
         public delegate void OnGetChatStateDelegate(string from);
 
         public delegate void OnGetGroupParticipantsDelegate(string gjid, string[] jids);
@@ -143,6 +145,8 @@ namespace WhatsAppApi
         public event OnErrorAxolotlDelegate OnErrorAxolotl;
 
         public event OnContactNameDelegate OnGetContactName;
+
+        public event OnGetBroadcastListsDelegate OnGetBroadcastLists;
 
         public event OnGetGroupParticipantsDelegate OnGetGroupParticipants;
 
@@ -401,6 +405,14 @@ namespace WhatsAppApi
             return null;
         }
 
+        public void RemoveAllPreKeys()
+        {
+            if (this.OnRemoveAllPreKeys != null)
+            {
+                this.OnRemoveAllPreKeys();
+            }
+        }
+
         public void RemovePreKey(uint preKeyId)
         {
             if (this.OnRemovePreKey != null)
@@ -508,6 +520,14 @@ namespace WhatsAppApi
             if (this.OnError != null)
             {
                 this.OnError(id, from, code, text);
+            }
+        }
+
+        protected void FireOnGetBroadcastLists(string phoneNumber, List<WaBroadcast> broadcastLists)
+        {
+            if (this.OnGetBroadcastLists != null)
+            {
+                this.OnGetBroadcastLists(phoneNumber, broadcastLists);
             }
         }
 
@@ -731,13 +751,6 @@ namespace WhatsAppApi
             if (this.OnNotificationPicture != null)
             {
                 this.OnNotificationPicture(type, jid, id);
-            }
-        }
-        public void RemoveAllPreKeys()
-        {
-            if (this.OnRemoveAllPreKeys != null)
-            {
-                this.OnRemoveAllPreKeys();
             }
         }
     }

@@ -14,9 +14,9 @@ using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Macs;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Utilities.Encoders;
-using WhatsAppPasswordExtractor.Properties;
+using WhatsAppPw.Properties;
 
-namespace WhatsAppPasswordExtractor
+namespace WhatsAppPw
 {
     public class PwExtractor
     {

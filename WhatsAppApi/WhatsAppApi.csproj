@@ -143,6 +143,7 @@
     <Compile Include="Register\WaToken.cs" />
     <Compile Include="Register\WhatsRegisterV2.cs" />
     <Compile Include="Response\CorruptStreamException.cs" />
+    <Compile Include="Response\WaBroadcast.cs" />
     <Compile Include="Response\WaGroupInfo.cs" />
     <Compile Include="Response\WaUploadResponse.cs" />
     <Compile Include="Response\WhatsEventHandler.cs" />
