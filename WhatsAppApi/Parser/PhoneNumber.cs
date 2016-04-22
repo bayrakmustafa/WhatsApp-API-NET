@@ -21,14 +21,14 @@ namespace WhatsAppApi.Parser
 
         public string ISO3166;
         public string ISO639;
-        protected string _mcc;
-        protected string _mnc;
+        protected string _Mcc;
+        protected string _Mnc;
 
         public string MCC
         {
             get
             {
-                return this._mcc.PadLeft(3, '0');
+                return this._Mcc.PadLeft(3, '0');
             }
         }
 
@@ -36,11 +36,11 @@ namespace WhatsAppApi.Parser
         {
             get
             {
-                return this._mnc.PadLeft(3, '0');
+                return this._Mnc.PadLeft(3, '0');
             }
         }
 
-        public PhoneNumber(string number)
+        public PhoneNumber(string number, string carrierName = "Vodafone-Telsim")
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("WhatsAppApi.Parser.Countries.csv"))
             {
@@ -51,35 +51,66 @@ namespace WhatsAppApi.Parser
                     foreach (string line in lines)
                     {
                         string[] values = line.Trim(new char[] { '\r' }).Split(new char[] { ',' });
-                        //try to match
+                        //Try to Match
                         if (number.StartsWith(values[1]))
                         {
-                            //matched
+                            //Matched
                             this.Country = values[0].Trim(new char[] { '"' });
-                            //hook: Fix CC for North America
+
+                            //Hook: Fix CC for North America
                             if (values[1].StartsWith("1"))
                             {
                                 values[1] = "1";
                             }
                             this.CC = values[1];
                             this.Number = number.Substring(this.CC.Length);
-                            this.ISO3166 = values[4].Trim(new char[] { '"' });
-                            this.ISO639 = values[5].Trim(new char[] { '"' });
-                            this._mcc = values[2].Trim(new char[] { '"' });
-                            this._mnc = values[3].Trim(new char[] { '"' });
-                            if (this._mcc.Contains('|'))
+                            this.ISO3166 = values[3].Trim(new char[] { '"' });
+                            this.ISO639 = values[4].Trim(new char[] { '"' });
+                            this._Mcc = values[2].Trim(new char[] { '"' });
+                            this._Mnc = values[5].Trim(new char[] { '"' });
+                            if (this._Mcc.Contains('|'))
                             {
-                                //take first one
-                                string[] parts = this._mcc.Split(new char[] { '|' });
-                                this._mcc = parts[0];
+                                //Take First One
+                                string[] parts = this._Mcc.Split(new char[] { '|' });
+                                this._Mcc = parts[0];
+                            }
+
+                            if (!String.IsNullOrEmpty(carrierName))
+                            {
+                                this._Mnc = DetectMnc(ISO3166, carrierName);
                             }
                             return;
                         }
                     }
-                    //could not match!
-                    throw new Exception(String.Format("Could not dissect phone number {0}", number));
+                    //Could Not Match!
+                    throw new Exception(String.Format("Could not Dissect Phone Number {0}", number));
                 }
             }
+        }
+
+        public String DetectMnc(string countryCode, String carrierName)
+        {
+            String mnc = "000";
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("WhatsAppApi.Parser.NetworkInfo.csv"))
+            {
+                using (StreamReader reader = new System.IO.StreamReader(stream))
+                {
+                    string csv = reader.ReadToEnd();
+                    string[] lines = csv.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string line in lines)
+                    {
+                        string[] values = line.Trim(new char[] { '\r' }).Split(new char[] { ',' });
+                        //Try to Match
+                        if (countryCode.Equals(values[4], StringComparison.InvariantCultureIgnoreCase) && carrierName.Equals(values[7], StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            mnc = values[2];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return mnc;
         }
     }
 }

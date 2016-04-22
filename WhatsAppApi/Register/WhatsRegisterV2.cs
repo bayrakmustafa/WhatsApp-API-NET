@@ -37,6 +37,80 @@ namespace WhatsAppApi.Register
             return RequestCode(phoneNumber, out password, out request, out response, method, id);
         }
 
+        public static bool CheckCredentials(string phoneNumber, out string response, string id = null)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    //Auto-Generate
+                    id = GenerateIdentity(phoneNumber);
+                }
+                PhoneNumber pn = new PhoneNumber(phoneNumber);
+
+                byte[] sha256bytes = new byte[20];
+                new Random().NextBytes(sha256bytes);
+                NameValueCollection QueryStringParameters = new NameValueCollection();
+                QueryStringParameters.Add("cc", pn.CC);
+                QueryStringParameters.Add("in", pn.Number);
+                QueryStringParameters.Add("lg", pn.ISO639);
+                QueryStringParameters.Add("lc", pn.ISO3166);
+                QueryStringParameters.Add("id", id);
+                QueryStringParameters.Add("mistyped", "6");
+                QueryStringParameters.Add("network_radio_type", "1");
+                QueryStringParameters.Add("simnum", "1");
+                QueryStringParameters.Add("s", "");
+                QueryStringParameters.Add("copiedrc", "1");
+                QueryStringParameters.Add("hasinrc", "1");
+                QueryStringParameters.Add("rcmatch", "1");
+                QueryStringParameters.Add("pid", new Random().Next(100, 9999).ToString());
+                QueryStringParameters.Add("extexist", "1");
+                QueryStringParameters.Add("extstate", "1");
+
+                NameValueCollection RequestHttpHeaders = new NameValueCollection();
+                RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgent);
+                RequestHttpHeaders.Add("Accept", "text/json");
+
+                response = GetResponse("https://" + WhatsConstants.WhatsAppRequestHost, QueryStringParameters, RequestHttpHeaders);
+                if (!response.GetJsonValue("status").Equals("ok"))
+                {
+                    /*
+                    $this->eventManager()->fire('onCredentialsBad',
+                    [
+                        $this->phoneNumber,
+                        $response->status,
+                        $response->reason,
+                    ]);
+                     */
+                    return false;
+                }
+                else
+                {
+                    /*
+                    $this->eventManager()->fire('onCredentialsGood',
+                    [
+                        $this->phoneNumber,
+                        $response->login,
+                        $response->pw,
+                        $response->type,
+                        $response->expiration,
+                        $response->kind,
+                        $response->price,
+                        $response->cost,
+                        $response->currency,
+                        $response->price_expiration,
+                    ]);
+                     */
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                response = e.Message;
+                return false;
+            }
+        }
+
         public static bool RequestCode(string phoneNumber, out string password, out string request, out string response, string method = "sms", string id = null)
         {
             response = null;
@@ -84,8 +158,6 @@ namespace WhatsAppApi.Register
                 RequestHttpHeaders.Add("Accept", "text/json");
 
                 response = GetResponse("https://" + WhatsConstants.WhatsAppRequestHost, QueryStringParameters, RequestHttpHeaders);
-                // request = String.Format("https://" + WhatsConstants.WhatsAppRequestHost + ?method={0}&in={1}&cc={2}&id={3}&lg={4}&lc={5}&token={6}&sim_mcc=000&sim_mnc=000", method, pn.Number, pn.CC, id, pn.ISO639, pn.ISO3166, token, pn.MCC, pn.MNC);
-                // response = GetResponse(request);
                 password = response.GetJsonValue("pw");
                 if (!string.IsNullOrEmpty(password))
                 {
@@ -113,13 +185,38 @@ namespace WhatsAppApi.Register
             {
                 if (string.IsNullOrEmpty(id))
                 {
-                    //auto generate
+                    //Auto Generate
                     id = GenerateIdentity(phoneNumber);
                 }
                 PhoneNumber pn = new PhoneNumber(phoneNumber);
 
-                string uri = string.Format("https://" + WhatsConstants.WhatsAppRegisterHost + "?cc={0}&in={1}&id={2}&code={3}", pn.CC, pn.Number, id, code);
-                response = GetResponse(uri);
+                byte[] sha256bytes = new byte[20];
+                new Random().NextBytes(sha256bytes);
+                NameValueCollection QueryStringParameters = new NameValueCollection();
+                QueryStringParameters.Add("cc", pn.CC);
+                QueryStringParameters.Add("in", pn.Number);
+                QueryStringParameters.Add("lg", pn.ISO639);
+                QueryStringParameters.Add("lc", pn.ISO3166);
+                QueryStringParameters.Add("id", id);
+                QueryStringParameters.Add("mistyped", "6");
+                QueryStringParameters.Add("network_radio_type", "1");
+                QueryStringParameters.Add("simnum", "1");
+                QueryStringParameters.Add("s", "");
+                QueryStringParameters.Add("copiedrc", "1");
+                QueryStringParameters.Add("hasinrc", "1");
+                QueryStringParameters.Add("rcmatch", "1");
+                QueryStringParameters.Add("pid", new Random().Next(100, 9999).ToString());
+                QueryStringParameters.Add("rchash", BitConverter.ToString(HashAlgorithm.Create("sha256").ComputeHash(sha256bytes)));
+                QueryStringParameters.Add("anhash", BitConverter.ToString(HashAlgorithm.Create("md5").ComputeHash(sha256bytes)));
+                QueryStringParameters.Add("extexist", "1");
+                QueryStringParameters.Add("extstate", "1");
+                QueryStringParameters.Add("code", code);
+
+                NameValueCollection RequestHttpHeaders = new NameValueCollection();
+                RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgent);
+                RequestHttpHeaders.Add("Accept", "text/json");
+
+                response = GetResponse("https://" + WhatsConstants.WhatsAppRequestHost, QueryStringParameters, RequestHttpHeaders);
                 if (response.GetJsonValue("status") == "ok")
                 {
                     return response.GetJsonValue("pw");
@@ -149,8 +246,30 @@ namespace WhatsAppApi.Register
                 }
                 PhoneNumber pn = new PhoneNumber(phoneNumber);
 
-                string uri = String.Format("https://" + WhatsConstants.WhatsAppCheckHost + "?cc={0}&in={1}&id={2}&&lg={3}&lc={4}", pn.CC, pn.Number, id, pn.ISO639, pn.ISO3166);
-                response = GetResponse(uri);
+                byte[] sha256bytes = new byte[20];
+                new Random().NextBytes(sha256bytes);
+                NameValueCollection QueryStringParameters = new NameValueCollection();
+                QueryStringParameters.Add("cc", pn.CC);
+                QueryStringParameters.Add("in", pn.Number);
+                QueryStringParameters.Add("lg", pn.ISO639);
+                QueryStringParameters.Add("lc", pn.ISO3166);
+                QueryStringParameters.Add("id", id);
+                QueryStringParameters.Add("mistyped", "6");
+                QueryStringParameters.Add("network_radio_type", "1");
+                QueryStringParameters.Add("simnum", "1");
+                QueryStringParameters.Add("s", "");
+                QueryStringParameters.Add("copiedrc", "1");
+                QueryStringParameters.Add("hasinrc", "1");
+                QueryStringParameters.Add("rcmatch", "1");
+                QueryStringParameters.Add("pid", new Random().Next(100, 9999).ToString());
+                QueryStringParameters.Add("extexist", "1");
+                QueryStringParameters.Add("extstate", "1");
+
+                NameValueCollection RequestHttpHeaders = new NameValueCollection();
+                RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgent);
+                RequestHttpHeaders.Add("Accept", "text/json");
+
+                response = GetResponse("https://" + WhatsConstants.WhatsAppRequestHost, QueryStringParameters, RequestHttpHeaders);
                 if (response.GetJsonValue("status") == "ok")
                 {
                     return response.GetJsonValue("pw");

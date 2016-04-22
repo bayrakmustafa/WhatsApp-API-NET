@@ -158,9 +158,6 @@
     <Compile Include="WhatsNetwork.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Parser\Countries.csv" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\mylibaxolotl\MyLibAxolotl.csproj">
       <Project>{1debda0c-62c7-40a9-b74a-0f086fc2b65d}</Project>
       <Name>MyLibAxolotl</Name>
@@ -168,6 +165,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Parser\Countries.csv" />
+    <EmbeddedResource Include="Parser\NetworkInfo.csv" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\NHibernate.xml">
