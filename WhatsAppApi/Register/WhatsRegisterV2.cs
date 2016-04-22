@@ -74,7 +74,7 @@ namespace WhatsAppApi.Register
                 RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgent);
                 RequestHttpHeaders.Add("Accept", "text/json");
 
-                response = GetResponse("https://" + WhatsConstants.WhatsAppRequestHost, QueryStringParameters, RequestHttpHeaders);
+                response = GetResponse("https://" + WhatsConstants.WhatsAppCheckHost, QueryStringParameters, RequestHttpHeaders);
                 if (!response.GetJsonValue("status").Equals("ok"))
                 {
                     /*
@@ -231,7 +231,7 @@ namespace WhatsAppApi.Register
                 RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgent);
                 RequestHttpHeaders.Add("Accept", "text/json");
 
-                response = GetResponse("https://" + WhatsConstants.WhatsAppRequestHost, QueryStringParameters, RequestHttpHeaders);
+                response = GetResponse("https://" + WhatsConstants.WhatsAppRegisterHost, QueryStringParameters, RequestHttpHeaders);
                 if (response.GetJsonValue("status") == "ok")
                 {
                     return response.GetJsonValue("pw");
@@ -287,7 +287,7 @@ namespace WhatsAppApi.Register
                 RequestHttpHeaders.Add("User-Agent", WhatsConstants.UserAgent);
                 RequestHttpHeaders.Add("Accept", "text/json");
 
-                response = GetResponse("https://" + WhatsConstants.WhatsAppRequestHost, QueryStringParameters, RequestHttpHeaders);
+                response = GetResponse("https://" + WhatsConstants.WhatsAppCheckHost, QueryStringParameters, RequestHttpHeaders);
                 if (response.GetJsonValue("status") == "ok")
                 {
                     return response.GetJsonValue("pw");
