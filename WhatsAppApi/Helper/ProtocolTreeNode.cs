@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHibernate.Util;
 
 namespace WhatsAppApi.Helper
 {
@@ -163,6 +164,29 @@ namespace WhatsAppApi.Helper
                 }
             }
             return tmpReturn.ToArray();
+        }
+
+        public void RefreshTimes(int offset = 0)
+        {
+            Dictionary<string, string> retVal = this._AttributeHash.ToDictionary(x => x.Key, x => x.Value);
+            if (retVal.ContainsKey("id"))
+            {
+                String id = retVal.Keys.FirstOrDefault();
+                String[] parts = id.Split('-');
+                parts[0] = Func.GetNowUnixTimestamp().ToString() + offset.ToString();
+
+                id = String.Join("-", parts);
+                
+                //Re-Write ID
+                retVal.Remove("id");
+                retVal.Add("id", id);
+            }
+            if (retVal.ContainsKey("t"))
+            {
+                //Re-Write T
+                retVal.Remove("t");
+                retVal.Add("t",Func.GetNowUnixTimestamp().ToString());
+            }
         }
 
         public IEnumerable<ProtocolTreeNode> GetAllChildren()

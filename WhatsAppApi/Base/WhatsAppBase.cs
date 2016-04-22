@@ -25,6 +25,7 @@ namespace WhatsAppApi
         protected bool hidden;
         protected CONNECTION_STATUS loginStatus;
         protected List<ProtocolTreeNode> messageQueue;
+        protected List<ProtocolTreeNode> outMessageQueue;
         protected string name;
         protected KeyStream outputKey;
         protected string password;
@@ -107,7 +108,15 @@ namespace WhatsAppApi
             this.SendData(this.BinWriter.Write(node));
         }
 
-        protected void AddMessage(ProtocolTreeNode node)
+        protected void AddOutMessage(ProtocolTreeNode node)
+        {
+            lock (messageLock)
+            {
+                this.outMessageQueue.Add(node);
+            }
+        }
+
+        protected void PushMessageToQueue(ProtocolTreeNode node)
         {
             lock (messageLock)
             {
