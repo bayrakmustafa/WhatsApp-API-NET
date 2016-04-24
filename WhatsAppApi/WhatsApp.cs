@@ -1096,10 +1096,10 @@ namespace WhatsAppApi
             this.SendNode(node);
         }
 
-        public void SendClientConfig(string platform, string lg, string lc)
+        public void SendClientConfig()
         {
             string v = TicketCounter.MakeId();
-            ProtocolTreeNode child = new ProtocolTreeNode("config", new[] { new KeyValue("xmlns", "urn:xmpp:whatsapp:push"), new KeyValue("platform", platform), new KeyValue("lg", lg), new KeyValue("lc", lc) });
+            ProtocolTreeNode child = new ProtocolTreeNode("config", new[] { new KeyValue("xmlns", "urn:xmpp:whatsapp:push"), new KeyValue("platform", WhatsConstants.Platform), new KeyValue("version", WhatsConstants.WhatsAppVer)});
             ProtocolTreeNode node = new ProtocolTreeNode("iq", new[] { new KeyValue("id", v), new KeyValue("type", "set"), new KeyValue("to", WhatsConstants.WhatsAppRealm) }, new ProtocolTreeNode[] { child });
             this.SendNode(node);
         }
