@@ -28,7 +28,8 @@ namespace WhatsAppApi.Parser
         {
             get
             {
-                return this._Mcc.PadLeft(3, '0');
+                //return this._Mcc.PadLeft(3, '0');
+                return this._Mcc;
             }
         }
 
@@ -36,11 +37,13 @@ namespace WhatsAppApi.Parser
         {
             get
             {
-                return this._Mnc.PadLeft(3, '0');
+                //return this._Mnc.PadLeft(3, '0');
+                return this._Mnc;
+
             }
         }
 
-        public PhoneNumber(string number, string carrierName = "Vodafone-Telsim")
+        public PhoneNumber(string number)
         {
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("WhatsAppApi.Parser.Countries.csv"))
             {
@@ -75,20 +78,16 @@ namespace WhatsAppApi.Parser
                                 this._Mcc = parts[0];
                             }
 
-                            if (!String.IsNullOrEmpty(carrierName))
-                            {
-                                this._Mnc = DetectMnc(ISO3166, carrierName);
-                            }
                             return;
                         }
                     }
                     //Could Not Match!
-                    throw new Exception(String.Format("Could not Dissect Phone Number {0}", number));
+                    throw new Exception(String.Format("Could Not Dissect Phone Number {0}", number));
                 }
             }
         }
 
-        public String DetectMnc(string countryCode, String carrierName)
+        public static string DetectMnc(string lc, String carrierName)
         {
             String mnc = "000";
             using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("WhatsAppApi.Parser.NetworkInfo.csv"))
@@ -101,7 +100,7 @@ namespace WhatsAppApi.Parser
                     {
                         string[] values = line.Trim(new char[] { '\r' }).Split(new char[] { ',' });
                         //Try to Match
-                        if (countryCode.Equals(values[4], StringComparison.InvariantCultureIgnoreCase) && carrierName.Equals(values[7], StringComparison.InvariantCultureIgnoreCase))
+                        if (lc.Equals(values[4], StringComparison.InvariantCultureIgnoreCase) && carrierName.Equals(values[7], StringComparison.InvariantCultureIgnoreCase))
                         {
                             mnc = values[2];
                             break;

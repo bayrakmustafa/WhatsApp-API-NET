@@ -29,11 +29,9 @@ namespace WhatsTest
             //System.Console.InputEncoding = Encoding.UTF8;
 
             string _Nickname = "";
-            string _Sender = "905073837756"; //Mobile Number with Country Code (but without + or 00)
+            string _Sender = ""; //Mobile Number with Country Code (but without + or 00)
             string _Password = ""; //v2 password
             string _Target = ""; // Mobile Number to Send the Message to
-
-            PhoneNumber phoneNumber = new PhoneNumber(_Sender);
 
             _WhatsAppApi = new WhatsApp(_Sender, _Password, _Nickname, true);
 
